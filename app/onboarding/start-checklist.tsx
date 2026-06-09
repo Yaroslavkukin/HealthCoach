@@ -6,6 +6,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 import { onboardingSteps } from '@/features/onboarding/onboardingSteps';
 import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
@@ -32,8 +33,8 @@ export default function StartChecklistScreen() {
       <AppText variant="body">Complete these steps to generate your personalized Health Profile.</AppText>
 
       <StateNotice
-        title="Mock checklist"
-        message={saveMessage}
+        title={getAccessProgressLabel('startChecklist')}
+        message={`${getAccessStageDescription('startChecklist')} ${saveMessage}`}
         variant="info"
       />
 

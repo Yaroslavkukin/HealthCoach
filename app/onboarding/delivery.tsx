@@ -6,6 +6,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 import { upsertDeliveryDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
@@ -25,7 +26,7 @@ export default function DeliverySetupScreen() {
     });
 
     setSaveMessage(result.message);
-    router.push('/onboarding/start-checklist');
+    router.push(accessRoutes.startChecklist);
   }
 
   return (
@@ -34,7 +35,7 @@ export default function DeliverySetupScreen() {
       <AppText variant="body">
         Placeholder setup for future supplement and bee product delivery preferences.
       </AppText>
-      <StateNotice title="Delivery persistence" message={saveMessage} variant="info" />
+      <StateNotice title={getAccessProgressLabel('deliverySetup')} message={`${getAccessStageDescription('deliverySetup')} ${saveMessage}`} variant="info" />
 
       <SectionCard>
         {['Country', 'City', 'Address', 'Postal code', 'Preferred delivery method', 'CDEK pickup point', 'Russian Post office', 'Delivery comments'].map((placeholder) => (

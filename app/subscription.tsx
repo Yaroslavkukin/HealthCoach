@@ -4,6 +4,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 
 const benefits = [
   'Personalized AI recommendations',
@@ -15,14 +16,18 @@ const benefits = [
 ];
 
 export default function SubscriptionScreen() {
+  function continueWithMockSubscription() {
+    router.push(accessRoutes.createAccount);
+  }
+
   return (
     <ScreenContainer>
       <AppText variant="title">Health Coach</AppText>
       <AppText variant="body">Your personal AI health coach based on blood analysis, nutrition, lifestyle, and progress.</AppText>
 
       <StateNotice
-        title="Mock payment flow"
-        message="Selecting a plan routes to account creation. No real payment is processed in Phase 2."
+        title={getAccessProgressLabel('subscription')}
+        message={`${getAccessStageDescription('subscription')} This is a mock subscription flow. No payment will be charged.`}
         variant="info"
       />
 
@@ -37,17 +42,17 @@ export default function SubscriptionScreen() {
         <AppText variant="subtitle">Monthly Membership</AppText>
         <AppText variant="metric">3000 ₽</AppText>
         <AppText variant="caption">per month</AppText>
-        <PrimaryButton label="Subscribe for 3000 RUB / month" onPress={() => router.push('/(auth)/create-account')} />
+        <PrimaryButton label="Subscribe for 3000 RUB / month" onPress={continueWithMockSubscription} />
       </SectionCard>
 
       <SectionCard>
         <AppText variant="subtitle">6-Month Membership</AppText>
         <AppText variant="metric">15000 ₽</AppText>
         <AppText variant="caption">2500 ₽ per month equivalent</AppText>
-        <PrimaryButton label="Subscribe for 15000 RUB / 6 months" onPress={() => router.push('/(auth)/create-account')} />
+        <PrimaryButton label="Subscribe for 15000 RUB / 6 months" onPress={continueWithMockSubscription} />
       </SectionCard>
 
-      <PrimaryButton label="Back to Preview" variant="secondary" onPress={() => router.push('/preview')} />
+      <PrimaryButton label="Back to Preview" variant="secondary" onPress={() => router.push(accessRoutes.preview)} />
     </ScreenContainer>
   );
 }

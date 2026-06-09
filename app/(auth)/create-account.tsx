@@ -6,6 +6,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 import { registerPlaceholderAccount } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
@@ -15,7 +16,7 @@ export default function CreateAccountScreen() {
   async function continueWithPlaceholderAccount() {
     const result = await registerPlaceholderAccount('demo@healthcoach.local');
     setPersistenceMessage(result.message);
-    router.push('/onboarding/profile');
+    router.push(accessRoutes.profile);
   }
 
   return (
@@ -24,8 +25,8 @@ export default function CreateAccountScreen() {
       <AppText variant="body">Registration starts after mock subscription so users can explore the app first.</AppText>
 
       <StateNotice
-        title="Auth placeholder"
-        message={persistenceMessage}
+        title={getAccessProgressLabel('accountCreation')}
+        message={`${getAccessStageDescription('accountCreation')} ${persistenceMessage}`}
         variant="info"
       />
 

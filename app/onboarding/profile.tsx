@@ -6,6 +6,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 import { upsertProfileDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
@@ -26,14 +27,14 @@ export default function ProfileSetupScreen() {
     });
 
     setSaveMessage(result.message);
-    router.push('/onboarding/delivery');
+    router.push(accessRoutes.delivery);
   }
 
   return (
     <ScreenContainer>
       <AppText variant="title">Personal Profile</AppText>
       <AppText variant="body">Enter your data once. Health Coach will reuse it across recommendations and future delivery flows.</AppText>
-      <StateNotice title="Profile persistence" message={saveMessage} variant="info" />
+      <StateNotice title={getAccessProgressLabel('profileSetup')} message={`${getAccessStageDescription('profileSetup')} ${saveMessage}`} variant="info" />
       <SectionCard>
         {['First name', 'Last name', 'Age', 'Gender', 'Height cm', 'Weight kg', 'Main goal', 'Work type', 'Activity level', 'Sleep schedule', 'Stress level', 'Current symptoms'].map((placeholder) => (
           <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} style={styles.input} />

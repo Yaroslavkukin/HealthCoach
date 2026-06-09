@@ -7,6 +7,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoAISummary, demoCoreScores, demoNutritionMeals, demoSupplements, demoUser } from '@/data/mock/healthProfile';
+import { accessRoutes, founderAccessRule, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 import { colors } from '@/theme/colors';
 
 export default function PreviewScreen() {
@@ -23,8 +24,8 @@ export default function PreviewScreen() {
       </View>
 
       <StateNotice
-        title="Fictional preview data"
-        message="No personal health data is stored in this mock prototype."
+        title={getAccessProgressLabel('preview')}
+        message={`${getAccessStageDescription('preview')} ${founderAccessRule} No personal health data is stored in this mock prototype.`}
         variant="info"
       />
 
@@ -68,8 +69,8 @@ export default function PreviewScreen() {
         <PrimaryButton label="Success Stories" variant="secondary" onPress={() => router.push('/success-stories')} />
       </View>
 
-      <PrimaryButton label="Start Your Health Journey" onPress={() => router.push('/subscription')} />
-      <PrimaryButton label="View Subscription" variant="secondary" onPress={() => router.push('/subscription')} />
+      <PrimaryButton label="Start Your Health Journey" onPress={() => router.push(accessRoutes.subscription)} />
+      <PrimaryButton label="View Subscription" variant="secondary" onPress={() => router.push(accessRoutes.subscription)} />
     </ScreenContainer>
   );
 }
