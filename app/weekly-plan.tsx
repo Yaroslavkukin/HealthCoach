@@ -3,22 +3,34 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoWeeklyPlan } from '@/data/mock/healthProfile';
+import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function WeeklyPlanScreen() {
   const [selectedDayId, setSelectedDayId] = useState(demoWeeklyPlan[0].id);
   const [completedOverrides, setCompletedOverrides] = useState<Record<string, boolean>>({});
+  const [taskSaveMessage, setTaskSaveMessage] = useState('Weekly task changes will use mock fallback unless Supabase auth is configured.');
   const selectedDay = demoWeeklyPlan.find((day) => day.id === selectedDayId) ?? demoWeeklyPlan[0];
   const tasks = selectedDay.tasks.map((task) => ({ ...task, completed: completedOverrides[task.id] ?? task.completed }));
   const completed = tasks.filter((task) => task.completed).length;
 
   function toggleTask(id: string) {
+    const currentTask = tasks.find((task) => task.id === id);
+    const nextCompleted = !(completedOverrides[id] ?? selectedDay.tasks.find((task) => task.id === id)?.completed);
+
     setCompletedOverrides((current) => ({
       ...current,
-      [id]: !(current[id] ?? selectedDay.tasks.find((task) => task.id === id)?.completed)
+      [id]: nextCompleted
     }));
+
+    if (currentTask) {
+      void saveDailyTaskStatus({ ...currentTask, completed: nextCompleted }).then((result) => {
+        setTaskSaveMessage(result.message);
+      });
+    }
   }
 
   return (
@@ -38,6 +50,7 @@ export default function WeeklyPlanScreen() {
         <AppText variant="subtitle">{selectedDay.day}</AppText>
         <AppText variant="body">Focus: {selectedDay.focus}</AppText>
         <AppText variant="caption">Progress: {completed} of {tasks.length} completed</AppText>
+        <StateNotice title="Daily task storage" message={taskSaveMessage} variant="info" />
         {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
       </SectionCard>
     </ScreenContainer>

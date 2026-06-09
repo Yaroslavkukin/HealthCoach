@@ -2,11 +2,14 @@ import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
+import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function AIProcessingScreen() {
   useEffect(() => {
-    const timer = setTimeout(() => router.replace('/onboarding/ai-summary'), 2200);
+    const timer = setTimeout(() => {
+      void saveOnboardingChecklist({ aiProfileGenerated: true }).finally(() => router.replace('/onboarding/ai-summary'));
+    }, 2200);
     return () => clearTimeout(timer);
   }, []);
 

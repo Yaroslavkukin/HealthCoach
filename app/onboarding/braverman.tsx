@@ -6,9 +6,17 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoUser } from '@/data/mock/healthProfile';
+import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 
 export default function BravermanScreen() {
   const [showResult, setShowResult] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('Braverman status has not been saved yet.');
+
+  async function completeAssessment() {
+    setShowResult(true);
+    const result = await saveOnboardingChecklist({ bravermanCompleted: true });
+    setSaveMessage(result.message);
+  }
 
   return (
     <ScreenContainer>
@@ -32,7 +40,8 @@ export default function BravermanScreen() {
         <StateNotice title="Assessment not completed" message="Tap the mock action to reveal the demo archetype result." variant="empty" />
       )}
 
-      <PrimaryButton label="Complete Mock Assessment" onPress={() => setShowResult(true)} />
+      <StateNotice title="Checklist persistence" message={saveMessage} variant="info" />
+      <PrimaryButton label="Complete Mock Assessment" onPress={completeAssessment} />
       <PrimaryButton label="Continue to Lifestyle" variant="secondary" onPress={() => router.push('/onboarding/lifestyle')} />
     </ScreenContainer>
   );

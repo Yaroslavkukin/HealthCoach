@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
@@ -6,9 +7,25 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { onboardingSteps } from '@/features/onboarding/onboardingSteps';
+import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function StartChecklistScreen() {
+  const [saveMessage, setSaveMessage] = useState('Checklist is ready to sync through the Phase 3 persistence layer.');
+
+  async function continueRequiredFlow() {
+    const result = await saveOnboardingChecklist({
+      bloodAnalysisCompleted: false,
+      bravermanCompleted: false,
+      lifestyleCompleted: true,
+      nutritionCompleted: false,
+      aiProfileGenerated: false
+    });
+
+    setSaveMessage(result.message);
+    router.push('/onboarding/blood-upload');
+  }
+
   return (
     <ScreenContainer>
       <AppText variant="title">Start Checklist</AppText>
@@ -16,7 +33,7 @@ export default function StartChecklistScreen() {
 
       <StateNotice
         title="Mock checklist"
-        message="Statuses are demo-only in Phase 2, but every item is now clickable."
+        message={saveMessage}
         variant="info"
       />
 
@@ -43,7 +60,7 @@ export default function StartChecklistScreen() {
         );
       })}
 
-      <PrimaryButton label="Continue Required Flow" onPress={() => router.push('/onboarding/blood-upload')} />
+      <PrimaryButton label="Continue Required Flow" onPress={continueRequiredFlow} />
       <PrimaryButton label="Preview Demo Dashboard" variant="secondary" onPress={() => router.replace('/(tabs)/today')} />
     </ScreenContainer>
   );

@@ -4,9 +4,15 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function LifestyleScreen() {
+  async function saveLifestyle() {
+    await saveOnboardingChecklist({ lifestyleCompleted: true });
+    router.push('/onboarding/nutrition');
+  }
+
   return (
     <ScreenContainer>
       <AppText variant="title">Lifestyle</AppText>
@@ -15,7 +21,7 @@ export default function LifestyleScreen() {
         {['Typical day', 'Sleep habits', 'Work schedule', 'Physical activity', 'Stress level'].map((placeholder) => (
           <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
         ))}
-        <PrimaryButton label="Save Mock Lifestyle" onPress={() => router.push('/onboarding/nutrition')} />
+        <PrimaryButton label="Save Mock Lifestyle" onPress={saveLifestyle} />
       </SectionCard>
     </ScreenContainer>
   );

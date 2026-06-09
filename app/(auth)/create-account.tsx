@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { router } from 'expo-router';
 import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
@@ -5,9 +6,18 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { registerPlaceholderAccount } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function CreateAccountScreen() {
+  const [persistenceMessage, setPersistenceMessage] = useState('Auth placeholder has not been checked yet.');
+
+  async function continueWithPlaceholderAccount() {
+    const result = await registerPlaceholderAccount('demo@healthcoach.local');
+    setPersistenceMessage(result.message);
+    router.push('/onboarding/profile');
+  }
+
   return (
     <ScreenContainer>
       <AppText variant="title">Create Account</AppText>
@@ -15,14 +25,14 @@ export default function CreateAccountScreen() {
 
       <StateNotice
         title="Auth placeholder"
-        message="Email and password fields are visual only in Phase 2."
+        message={persistenceMessage}
         variant="info"
       />
 
       <SectionCard>
         <TextInput placeholder="Email" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" style={styles.input} />
         <TextInput placeholder="Password" placeholderTextColor={colors.textMuted} secureTextEntry style={styles.input} />
-        <PrimaryButton label="Create Mock Account" onPress={() => router.push('/onboarding/profile')} />
+        <PrimaryButton label="Create Mock Account" onPress={continueWithPlaceholderAccount} />
       </SectionCard>
 
       <SectionCard>

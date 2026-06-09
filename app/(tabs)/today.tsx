@@ -6,17 +6,36 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScorePill } from '@/components/ScorePill';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
+import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function TodayScreen() {
   const [tasks, setTasks] = useState(demoTasks);
+  const [taskSaveMessage, setTaskSaveMessage] = useState('Task changes will use mock fallback unless Supabase auth is configured.');
   const completed = tasks.filter((task) => task.completed).length;
   const progress = Math.round((completed / tasks.length) * 100);
 
   function toggleTask(id: string) {
-    setTasks((current) => current.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)));
+    const currentTask = tasks.find((task) => task.id === id);
+
+    setTasks((current) =>
+      current.map((task) => {
+        if (task.id !== id) {
+          return task;
+        }
+
+        return { ...task, completed: !task.completed };
+      })
+    );
+
+    if (currentTask) {
+      void saveDailyTaskStatus({ ...currentTask, completed: !currentTask.completed }).then((result) => {
+        setTaskSaveMessage(result.message);
+      });
+    }
   }
 
   return (
@@ -40,6 +59,7 @@ export default function TodayScreen() {
 
       <SectionCard>
         <AppText variant="subtitle">Today’s Plan</AppText>
+        <StateNotice title="Daily task storage" message={taskSaveMessage} variant="info" />
         {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
       </SectionCard>
 

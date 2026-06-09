@@ -4,9 +4,15 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function NutritionAssessmentScreen() {
+  async function saveNutritionAndContinue() {
+    await saveOnboardingChecklist({ nutritionCompleted: true });
+    router.push('/onboarding/ai-processing');
+  }
+
   return (
     <ScreenContainer>
       <AppText variant="title">Nutrition Description</AppText>
@@ -15,7 +21,7 @@ export default function NutritionAssessmentScreen() {
         {['Typical breakfast', 'Lunch and dinner pattern', 'Sugar and processed food', 'Water intake', 'Restaurant or fast food habits'].map((placeholder) => (
           <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
         ))}
-        <PrimaryButton label="Generate Mock AI Health Profile" onPress={() => router.push('/onboarding/ai-processing')} />
+        <PrimaryButton label="Generate Mock AI Health Profile" onPress={saveNutritionAndContinue} />
       </SectionCard>
     </ScreenContainer>
   );
