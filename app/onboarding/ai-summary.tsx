@@ -3,40 +3,50 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
-import { demoAISummary } from '@/data/mock/healthProfile';
+import { getLatestGeneratedHealthProfile } from '@/lib/aiClient';
 
 export default function AISummaryScreen() {
+  const profile = getLatestGeneratedHealthProfile();
+  const summary = profile.summary;
+
   return (
     <ScreenContainer>
       <AppText variant="title">AI Summary</AppText>
       <AppText variant="body">Why do I feel this way right now?</AppText>
 
       <SectionCard>
+        <AppText variant="subtitle">Generated Health Profile</AppText>
+        <AppText variant="body">Health Score: {profile.healthScore} - {profile.healthStatus}</AppText>
+        <AppText variant="caption">Confidence: {profile.confidence}</AppText>
+        <AppText variant="caption">Outputs ready: health scores, supplement stack, bee products, nutrition plan, and 7-day plan.</AppText>
+      </SectionCard>
+
+      <SectionCard>
         <AppText variant="subtitle">Current Limiting Factors</AppText>
-        {demoAISummary.limitingFactors.map((item, index) => (
+        {summary.limitingFactors.map((item, index) => (
           <AppText key={item} variant="body">{index + 1}. {item}</AppText>
         ))}
       </SectionCard>
 
       <SectionCard>
         <AppText variant="subtitle">What Will Create the Biggest Result</AppText>
-        {demoAISummary.biggestResult.map((item, index) => (
+        {summary.biggestResult.map((item, index) => (
           <AppText key={item} variant="body">{index + 1}. {item}</AppText>
         ))}
       </SectionCard>
 
       <SectionCard>
         <AppText variant="subtitle">Expected Effect</AppText>
-        <AppText variant="body">{demoAISummary.expectedEffect}</AppText>
+        <AppText variant="body">{summary.expectedEffect}</AppText>
       </SectionCard>
 
       <SectionCard>
         <AppText variant="subtitle">Recommended Next Step</AppText>
-        <AppText variant="body">{demoAISummary.nextStep}</AppText>
+        <AppText variant="body">{summary.nextStep}</AppText>
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="caption">Recommendations are informational and do not replace consultation with a qualified healthcare professional.</AppText>
+        <AppText variant="caption">{summary.safetyNote}</AppText>
       </SectionCard>
 
       <PrimaryButton label="View Today’s Plan" onPress={() => router.replace('/(tabs)/today')} />

@@ -88,3 +88,28 @@ export type SuccessStory = {
   person: string;
   result: string;
 };
+
+export type AISummary = {
+  limitingFactors: string[];
+  biggestResult: string[];
+  expectedEffect: string;
+  nextStep: string;
+  safetyNote: string;
+};
+
+export type AIHealthProfile = {
+  id: string;
+  generatedAt: string;
+  source: 'mock' | 'edge';
+  healthScore: number;
+  healthStatus: string;
+  confidence: 'low' | 'medium' | 'high';
+  motivationArchetype: MotivationArchetype;
+  coreScores: HealthScore[];
+  systemScores: HealthScore[];
+  summary: AISummary;
+  supplementStack: SupplementRecommendation[];
+  beeProducts: BeeProductRecommendation[];
+  nutritionPlan: NutritionMeal[];
+  sevenDayPlan: WeeklyPlanDay[];
+};

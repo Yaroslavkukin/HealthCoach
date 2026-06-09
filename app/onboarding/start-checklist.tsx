@@ -12,7 +12,7 @@ import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function StartChecklistScreen() {
-  const [saveMessage, setSaveMessage] = useState('Checklist is ready to sync through the Phase 3 persistence layer.');
+  const [saveMessage, setSaveMessage] = useState('Checklist is ready to sync when secure persistence is available.');
 
   async function continueRequiredFlow() {
     const result = await saveOnboardingChecklist({

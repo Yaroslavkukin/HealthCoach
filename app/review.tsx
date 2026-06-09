@@ -20,7 +20,7 @@ export default function FourteenDayReviewScreen() {
       <AppText variant="title">14-Day Review</AppText>
       <AppText variant="body">A coaching check-in, not a medical form.</AppText>
 
-      <StateNotice title="Mock review flow" message="Selections are local UI state only in Phase 2." variant="info" />
+      <StateNotice title="Mock review flow" message="Selections are local UI state only in this prototype." variant="info" />
 
       {reviewQuestions.map((question) => (
         <SectionCard key={question}>
