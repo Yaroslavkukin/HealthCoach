@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -9,16 +9,28 @@ import { colors } from '@/theme/colors';
 export default function NutritionAssessmentScreen() {
   return (
     <ScreenContainer>
-      <AppText variant="title">Nutrition</AppText>
-      <AppText variant="body">Describe what you usually eat so Nutrition AI can personalize your plan.</AppText>
+      <AppText variant="title">Nutrition Description</AppText>
+      <AppText variant="body">Describe what you usually eat so Nutrition AI can personalize your plan later.</AppText>
       <SectionCard>
-        <TextInput placeholder="Typical breakfast, lunch, dinner, snacks, sugar, water" placeholderTextColor={colors.textMuted} multiline style={styles.textArea} />
-        <PrimaryButton label="Generate AI Health Profile" onPress={() => router.push('/onboarding/ai-processing')} />
+        {['Typical breakfast', 'Lunch and dinner pattern', 'Sugar and processed food', 'Water intake', 'Restaurant or fast food habits'].map((placeholder) => (
+          <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
+        ))}
+        <PrimaryButton label="Generate Mock AI Health Profile" onPress={() => router.push('/onboarding/ai-processing')} />
       </SectionCard>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  textArea: { minHeight: 180, backgroundColor: colors.cardElevated, color: colors.textPrimary, borderRadius: 14, padding: 14, textAlignVertical: 'top' }
+  input: {
+    minHeight: 72,
+    backgroundColor: colors.cardElevated,
+    color: colors.textPrimary,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: colors.border
+  }
 });

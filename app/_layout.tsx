@@ -21,6 +21,8 @@ export default function RootLayout() {
         <Stack.Screen name="bee-products" options={{ title: 'Bee Products' }} />
         <Stack.Screen name="nutrition" options={{ title: 'Nutrition' }} />
         <Stack.Screen name="weekly-plan" options={{ title: 'Weekly Plan' }} />
+        <Stack.Screen name="review" options={{ title: '14-Day Review' }} />
+        <Stack.Screen name="subscription-expired" options={{ title: 'Subscription Expired' }} />
         <Stack.Screen name="clinic" options={{ title: 'Clinic' }} />
         <Stack.Screen name="success-stories" options={{ title: 'Success Stories' }} />
         <Stack.Screen name="biomarker/[id]" options={{ title: 'Biomarker' }} />

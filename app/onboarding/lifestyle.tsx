@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -12,13 +12,25 @@ export default function LifestyleScreen() {
       <AppText variant="title">Lifestyle</AppText>
       <AppText variant="body">Describe your typical day, sleep, stress, work, and physical activity.</AppText>
       <SectionCard>
-        <TextInput placeholder="Describe your usual day" placeholderTextColor={colors.textMuted} multiline style={styles.textArea} />
-        <PrimaryButton label="Save and Continue" onPress={() => router.push('/onboarding/nutrition')} />
+        {['Typical day', 'Sleep habits', 'Work schedule', 'Physical activity', 'Stress level'].map((placeholder) => (
+          <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
+        ))}
+        <PrimaryButton label="Save Mock Lifestyle" onPress={() => router.push('/onboarding/nutrition')} />
       </SectionCard>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  textArea: { minHeight: 160, backgroundColor: colors.cardElevated, color: colors.textPrimary, borderRadius: 14, padding: 14, textAlignVertical: 'top' }
+  input: {
+    minHeight: 72,
+    backgroundColor: colors.cardElevated,
+    color: colors.textPrimary,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: colors.border
+  }
 });

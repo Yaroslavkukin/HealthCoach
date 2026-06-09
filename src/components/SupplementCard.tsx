@@ -15,6 +15,11 @@ export function SupplementCard({ supplement }: { supplement: SupplementRecommend
         <AppText variant="caption">{supplement.dosage}</AppText>
         <AppText variant="caption">Next: {supplement.nextIntake ?? supplement.schedule}</AppText>
       </View>
+      <View style={styles.metaRow}>
+        <AppText variant="caption">Today: {supplement.takenToday ? 'Accepted' : 'Pending'}</AppText>
+        <AppText variant="caption">Confidence: {supplement.confidence}</AppText>
+      </View>
+      {supplement.courseDuration ? <AppText variant="caption">Course: {supplement.courseDuration}</AppText> : null}
     </View>
   );
 }

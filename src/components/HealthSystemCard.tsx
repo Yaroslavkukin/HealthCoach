@@ -11,6 +11,8 @@ export function HealthSystemCard({ score }: { score: HealthScore }) {
       <View>
         <AppText style={styles.title}>{score.label}</AppText>
         <AppText variant="caption">Status: {score.status}</AppText>
+        {score.limitingFactor ? <AppText variant="caption">Limit: {score.limitingFactor}</AppText> : null}
+        {score.action ? <AppText variant="caption">Action: {score.action}</AppText> : null}
       </View>
       <View style={[styles.badge, { borderColor: statusColor }]}>
         <AppText style={[styles.value, { color: statusColor }]}>{score.value}</AppText>

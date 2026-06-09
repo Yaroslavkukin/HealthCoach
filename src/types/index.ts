@@ -11,12 +11,14 @@ export type HealthScore = {
   value: number;
   status: HealthStatus;
   trend?: 'up' | 'down' | 'stable';
+  limitingFactor?: string;
+  action?: string;
 };
 
 export type DailyTask = {
   id: string;
   title: string;
-  category: 'supplement' | 'nutrition' | 'movement' | 'sleep' | 'recovery' | 'bee_product';
+  category: 'supplement' | 'nutrition' | 'movement' | 'sleep' | 'recovery' | 'bee_product' | 'water' | 'training';
   instruction: string;
   completed: boolean;
   time?: string;
@@ -35,6 +37,9 @@ export type SupplementRecommendation = {
   stackType: SupplementStackType;
   nextIntake?: string;
   takenToday?: boolean;
+  compatibilityNotes?: string;
+  courseDuration?: string;
+  safetyNote?: string;
 };
 
 export type BeeProductRecommendation = {
@@ -44,6 +49,7 @@ export type BeeProductRecommendation = {
   howToUse: string;
   expectedBenefit: string;
   priority: 'low' | 'medium' | 'high';
+  allergyWarning?: string;
 };
 
 export type Biomarker = {
@@ -53,4 +59,32 @@ export type Biomarker = {
   unit: string;
   status: HealthStatus;
   explanation: string;
+  referenceRange?: string;
+  trend?: string;
+  affects?: string[];
+  improvementActions?: string[];
+  relatedRecommendations?: string[];
+};
+
+export type NutritionMeal = {
+  id: string;
+  meal: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack' | 'Water';
+  title: string;
+  description: string;
+  time: string;
+  modification: string;
+};
+
+export type WeeklyPlanDay = {
+  id: string;
+  day: string;
+  focus: string;
+  tasks: DailyTask[];
+};
+
+export type SuccessStory = {
+  id: string;
+  title: string;
+  person: string;
+  result: string;
 };

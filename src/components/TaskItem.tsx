@@ -1,21 +1,39 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/components/AppText';
 import { colors } from '@/theme/colors';
 import type { DailyTask } from '@/types';
 
-export function TaskItem({ task }: { task: DailyTask }) {
+export function TaskItem({ task, onToggle }: { task: DailyTask; onToggle?: () => void }) {
+  const iconName =
+    task.category === 'supplement'
+      ? 'medical-outline'
+      : task.category === 'bee_product'
+        ? 'flower-outline'
+        : task.category === 'nutrition'
+          ? 'restaurant-outline'
+          : task.category === 'sleep'
+            ? 'moon-outline'
+            : task.category === 'water'
+              ? 'water-outline'
+              : task.category === 'training'
+                ? 'barbell-outline'
+                : 'walk-outline';
+
   return (
-    <View style={styles.root}>
+    <Pressable onPress={onToggle} style={({ pressed }) => [styles.root, pressed && styles.pressed]}>
       <View style={[styles.checkbox, task.completed && styles.checkboxDone]}>
         {task.completed ? <Ionicons name="checkmark" size={16} color={colors.background} /> : null}
       </View>
       <View style={styles.textWrap}>
-        <AppText style={styles.title}>{task.title}</AppText>
+        <View style={styles.titleRow}>
+          <Ionicons name={iconName} size={16} color={colors.accent} />
+          <AppText style={styles.title}>{task.title}</AppText>
+        </View>
         <AppText variant="caption">{task.instruction}</AppText>
       </View>
       {task.time ? <AppText variant="caption">{task.time}</AppText> : null}
-    </View>
+    </Pressable>
   );
 }
 
@@ -27,6 +45,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.border
+  },
+  pressed: {
+    opacity: 0.75
   },
   checkbox: {
     width: 26,
@@ -42,6 +63,11 @@ const styles = StyleSheet.create({
   },
   textWrap: {
     flex: 1
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6
   },
   title: {
     fontWeight: '700',

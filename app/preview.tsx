@@ -1,23 +1,38 @@
 import { router } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { ScorePill } from '@/components/ScorePill';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
-import { ScorePill } from '@/components/ScorePill';
-import { demoCoreScores } from '@/data/mock/healthProfile';
+import { StateNotice } from '@/components/StateNotice';
+import { demoAISummary, demoCoreScores, demoNutritionMeals, demoSupplements, demoUser } from '@/data/mock/healthProfile';
 import { colors } from '@/theme/colors';
 
 export default function PreviewScreen() {
   return (
     <ScreenContainer>
-      <AppText variant="title">Health Coach</AppText>
-      <AppText variant="body">Explore the product before registration. This preview uses demo data.</AppText>
+      <View style={styles.headerRow}>
+        <View>
+          <AppText variant="title">Health Coach</AppText>
+          <AppText variant="body">Explore the product before registration.</AppText>
+        </View>
+        <View style={styles.demoBadge}>
+          <AppText style={styles.demoBadgeText}>Demo Mode</AppText>
+        </View>
+      </View>
+
+      <StateNotice
+        title="Fictional preview data"
+        message="No personal health data is stored in this mock prototype."
+        variant="info"
+      />
 
       <SectionCard style={styles.heroCard}>
         <AppText variant="caption">Demo Health Score</AppText>
-        <AppText variant="metric">82</AppText>
-        <AppText variant="body">Good condition</AppText>
+        <AppText variant="metric">{demoUser.healthScore}</AppText>
+        <AppText variant="body">{demoUser.healthStatus}</AppText>
+        <AppText variant="caption">Archetype: {demoUser.archetype}</AppText>
       </SectionCard>
 
       <View style={styles.row}>
@@ -27,25 +42,56 @@ export default function PreviewScreen() {
       </View>
 
       <SectionCard>
-        <AppText variant="subtitle">Demo Archetype</AppText>
-        <AppText variant="body">The Strategist</AppText>
-        <AppText variant="caption">Driven by progress, clear goals, and measurable improvement.</AppText>
+        <AppText variant="subtitle">Example AI Summary</AppText>
+        <AppText variant="body">{demoAISummary.expectedEffect}</AppText>
+        <PrimaryButton label="Open Demo AI Summary" variant="secondary" onPress={() => router.push('/onboarding/ai-summary')} />
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Example AI Insight</AppText>
-        <AppText variant="body">
-          Today your main focus is recovery. Magnesium, walking, and earlier sleep may support better energy tomorrow.
-        </AppText>
+        <AppText variant="subtitle">Demo Stack</AppText>
+        {demoSupplements.slice(0, 2).map((item) => (
+          <AppText key={item.id} variant="body">{item.name}: {item.dosage}</AppText>
+        ))}
+        <PrimaryButton label="View Demo Supplements" variant="secondary" onPress={() => router.push('/supplements')} />
       </SectionCard>
 
+      <SectionCard>
+        <AppText variant="subtitle">Demo Nutrition</AppText>
+        <AppText variant="body">{demoNutritionMeals[0].title}</AppText>
+        <AppText variant="caption">{demoNutritionMeals[0].description}</AppText>
+        <PrimaryButton label="View Demo Nutrition" variant="secondary" onPress={() => router.push('/nutrition')} />
+      </SectionCard>
+
+      <View style={styles.linkGrid}>
+        <PrimaryButton label="Demo Today" variant="secondary" onPress={() => router.push('/(tabs)/today')} />
+        <PrimaryButton label="Demo My Body" variant="secondary" onPress={() => router.push('/(tabs)/body')} />
+        <PrimaryButton label="Success Stories" variant="secondary" onPress={() => router.push('/success-stories')} />
+      </View>
+
       <PrimaryButton label="Start Your Health Journey" onPress={() => router.push('/subscription')} />
-      <PrimaryButton label="View Success Stories" variant="secondary" onPress={() => router.push('/success-stories')} />
+      <PrimaryButton label="View Subscription" variant="secondary" onPress={() => router.push('/subscription')} />
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 16,
+    alignItems: 'flex-start',
+    marginBottom: 16
+  },
+  demoBadge: {
+    backgroundColor: colors.accent,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 8
+  },
+  demoBadgeText: {
+    color: colors.background,
+    fontWeight: '900'
+  },
   heroCard: {
     alignItems: 'center',
     backgroundColor: colors.cardElevated
@@ -54,5 +100,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     marginBottom: 16
+  },
+  linkGrid: {
+    marginBottom: 4
   }
 });
