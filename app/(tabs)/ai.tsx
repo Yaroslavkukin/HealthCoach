@@ -18,7 +18,7 @@ export default function AIScreen() {
 
       <StateNotice
         title="Mock assistant"
-        message="Answers are fixed demo text. Real AI comes in a later phase through secure backend functions."
+        message="Answers are fixed demo text in this prototype. Personalized generation runs through secure backend functions when available."
         variant="info"
       />
 

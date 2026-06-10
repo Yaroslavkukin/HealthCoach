@@ -9,6 +9,7 @@ import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
+import { notificationPlaceholders, partialDataStatuses } from '@/data/mock/testingReadiness';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
@@ -66,6 +67,20 @@ export default function TodayScreen() {
       <SectionCard>
         <AppText variant="subtitle">AI Insight</AppText>
         <AppText variant="body">Today, your main focus is recovery. Magnesium and walking may help reduce stress and improve tomorrow’s energy.</AppText>
+      </SectionCard>
+
+      <SectionCard>
+        <AppText variant="subtitle">Upcoming Reminders</AppText>
+        {notificationPlaceholders.map((item) => (
+          <AppText key={item.id} variant="body">- {item.title}: {item.timing} ({item.status})</AppText>
+        ))}
+      </SectionCard>
+
+      <SectionCard>
+        <AppText variant="subtitle">Data Readiness</AppText>
+        {partialDataStatuses.map((item) => (
+          <AppText key={item.id} variant="body">- {item.label} ({item.status}): {item.detail}</AppText>
+        ))}
       </SectionCard>
 
       <PrimaryButton label="Open Weekly Plan" onPress={() => router.push('/weekly-plan')} />

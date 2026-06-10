@@ -4,6 +4,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { demoUser } from '@/data/mock/healthProfile';
+import { notificationPlaceholders, privacySafetyNotices } from '@/data/mock/testingReadiness';
 
 export default function ProfileScreen() {
   return (
@@ -21,6 +22,20 @@ export default function ProfileScreen() {
       <SectionCard>
         <AppText variant="subtitle">Subscription</AppText>
         <AppText variant="body">Mock active membership. Renewal and expired states are clickable for prototype review.</AppText>
+      </SectionCard>
+
+      <SectionCard>
+        <AppText variant="subtitle">Notification Preferences</AppText>
+        {notificationPlaceholders.map((item) => (
+          <AppText key={item.id} variant="body">- {item.title}: {item.timing}</AppText>
+        ))}
+      </SectionCard>
+
+      <SectionCard>
+        <AppText variant="subtitle">Privacy and Safety</AppText>
+        {privacySafetyNotices.map((item) => (
+          <AppText key={item.id} variant="body">- {item.title}: {item.message}</AppText>
+        ))}
       </SectionCard>
 
       <PrimaryButton label="Edit Personal Profile" onPress={() => router.push('/onboarding/profile')} />

@@ -6,6 +6,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { reviewFollowUps } from '@/data/mock/testingReadiness';
 import { colors } from '@/theme/colors';
 
 const reviewQuestions = ['Energy', 'Mood', 'Motivation', 'Productivity', 'Sleep', 'Plan follow-through'];
@@ -14,13 +15,21 @@ const answers = ['Better', 'Same', 'Worse'];
 export default function FourteenDayReviewScreen() {
   const [selected, setSelected] = useState<Record<string, string>>({});
   const answered = Object.keys(selected).length;
+  const isEmpty = answered === 0;
+  const isComplete = answered === reviewQuestions.length;
+  const reviewState = isEmpty ? 'empty' : 'info';
+  const reviewMessage = isEmpty
+    ? 'Start with one area to preview the check-in flow.'
+    : isComplete
+      ? 'All review areas are answered. Saving returns testers to Today.'
+      : `${answered} of ${reviewQuestions.length} areas are answered. Continue when ready.`;
 
   return (
     <ScreenContainer>
       <AppText variant="title">14-Day Review</AppText>
       <AppText variant="body">A coaching check-in, not a medical form.</AppText>
 
-      <StateNotice title="Mock review flow" message="Selections are local UI state only in this prototype." variant="info" />
+      <StateNotice title={isComplete ? 'Review ready' : 'Review in progress'} message={reviewMessage} variant={reviewState} />
 
       {reviewQuestions.map((question) => (
         <SectionCard key={question}>
@@ -38,6 +47,13 @@ export default function FourteenDayReviewScreen() {
       <SectionCard>
         <AppText variant="subtitle">Review Progress</AppText>
         <AppText variant="body">{answered} of {reviewQuestions.length} answered</AppText>
+      </SectionCard>
+
+      <SectionCard>
+        <AppText variant="subtitle">After This Check-In</AppText>
+        {reviewFollowUps.map((item) => (
+          <AppText key={item.id} variant="body">- {item.title}: {item.detail}</AppText>
+        ))}
       </SectionCard>
 
       <PrimaryButton label="Save Mock Review" onPress={() => router.push('/(tabs)/today')} />

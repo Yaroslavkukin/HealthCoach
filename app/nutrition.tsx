@@ -20,7 +20,7 @@ export default function NutritionScreen() {
 
       <StateNotice
         title="Mock nutrition plan"
-        message="Meal changes are visual only. Real Nutrition AI comes later."
+        message="Meal changes are visual only in this prototype. Personalized nutrition runs through the secure profile flow when available."
         variant="info"
       />
 

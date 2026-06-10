@@ -38,7 +38,7 @@ export default function CreateAccountScreen() {
 
       <SectionCard>
         <AppText variant="subtitle">Future Login Options</AppText>
-        <AppText variant="body">Apple Login and Google Login will be added in a later phase.</AppText>
+        <AppText variant="body">Apple Login and Google Login are planned options for a future release.</AppText>
       </SectionCard>
     </ScreenContainer>
   );

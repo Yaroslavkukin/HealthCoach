@@ -24,6 +24,13 @@ export default function SubscriptionExpiredScreen() {
         <AppText variant="body">- Subscription options</AppText>
       </SectionCard>
 
+      <SectionCard>
+        <AppText variant="subtitle">Locked Until Renewal</AppText>
+        <AppText variant="body">- New generated plans</AppText>
+        <AppText variant="body">- Personalized assistant updates</AppText>
+        <AppText variant="body">- Review-based plan changes</AppText>
+      </SectionCard>
+
       <PrimaryButton label="Renew Access" onPress={() => router.push('/subscription')} />
       <PrimaryButton label="Open Preview" variant="secondary" onPress={() => router.push('/preview')} />
     </ScreenContainer>
