@@ -27,7 +27,8 @@
       "package": "com.healthcoach.app"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
