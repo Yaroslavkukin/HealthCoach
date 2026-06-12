@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, ViewStyle } from 'react-native';
+import { ScrollView, StyleSheet, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 
 export function ScreenContainer({ children, scroll = true, style }: { children: ReactNode; scroll?: boolean; style?: ViewStyle }) {
