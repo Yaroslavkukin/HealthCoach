@@ -6,13 +6,31 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
 import { onboardingSteps } from '@/features/onboarding/onboardingSteps';
+import { useI18n } from '@/i18n';
+import { translatePersistenceMessage } from '@/i18n/mockContent';
+import type { TranslationKey } from '@/i18n/translations/en';
 import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
+const stepKeys: Record<string, { title: TranslationKey; description: TranslationKey }> = {
+  'blood-analysis': { title: 'onboarding.step.blood.title', description: 'onboarding.step.blood.description' },
+  braverman: { title: 'onboarding.step.braverman.title', description: 'onboarding.step.braverman.description' },
+  lifestyle: { title: 'onboarding.step.lifestyle.title', description: 'onboarding.step.lifestyle.description' },
+  nutrition: { title: 'onboarding.step.nutrition.title', description: 'onboarding.step.nutrition.description' },
+  'ai-profile': { title: 'onboarding.step.ai.title', description: 'onboarding.step.ai.description' }
+};
+
+const statusKeys: Record<string, TranslationKey> = {
+  'not started': 'onboarding.status.notStarted',
+  'in progress': 'onboarding.status.inProgress',
+  completed: 'onboarding.status.completed',
+  locked: 'onboarding.status.locked'
+};
+
 export default function StartChecklistScreen() {
-  const [saveMessage, setSaveMessage] = useState('Checklist is ready to sync when secure persistence is available.');
+  const { t } = useI18n();
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   async function continueRequiredFlow() {
     const result = await saveOnboardingChecklist({
@@ -23,18 +41,18 @@ export default function StartChecklistScreen() {
       aiProfileGenerated: false
     });
 
-    setSaveMessage(result.message);
+    setSaveMessage(translatePersistenceMessage(result.message, t));
     router.push('/onboarding/blood-upload');
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Start Checklist</AppText>
-      <AppText variant="body">Complete these steps to generate your personalized Health Profile.</AppText>
+      <AppText variant="title">{t('onboarding.checklist.title')}</AppText>
+      <AppText variant="body">{t('onboarding.checklist.subtitle')}</AppText>
 
       <StateNotice
-        title={getAccessProgressLabel('startChecklist')}
-        message={`${getAccessStageDescription('startChecklist')} ${saveMessage}`}
+        title={t('onboarding.checklist.title')}
+        message={saveMessage ?? t('onboarding.checklist.initialSave')}
         variant="info"
       />
 
@@ -50,10 +68,10 @@ export default function StartChecklistScreen() {
                 </View>
                 <View style={styles.stepText}>
                   <View style={styles.titleRow}>
-                    <AppText style={styles.title}>{step.title}</AppText>
-                    <AppText style={[styles.status, locked && styles.lockedText]}>{step.status}</AppText>
+                    <AppText style={styles.title}>{t(stepKeys[step.id].title)}</AppText>
+                    <AppText style={[styles.status, locked && styles.lockedText]}>{t(statusKeys[step.status])}</AppText>
                   </View>
-                  <AppText variant="caption">{step.description}</AppText>
+                  <AppText variant="caption">{t(stepKeys[step.id].description)}</AppText>
                 </View>
               </View>
             </SectionCard>
@@ -61,8 +79,8 @@ export default function StartChecklistScreen() {
         );
       })}
 
-      <PrimaryButton label="Continue Required Flow" onPress={continueRequiredFlow} />
-      <PrimaryButton label="Preview Demo Dashboard" variant="secondary" onPress={() => router.replace('/(tabs)/today')} />
+      <PrimaryButton label={t('onboarding.checklist.continue')} onPress={continueRequiredFlow} />
+      <PrimaryButton label={t('onboarding.checklist.preview')} variant="secondary" onPress={() => router.replace('/(tabs)/today')} />
     </ScreenContainer>
   );
 }

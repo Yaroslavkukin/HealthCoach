@@ -10,12 +10,35 @@ import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
 import { notificationPlaceholders, partialDataStatuses } from '@/data/mock/testingReadiness';
+import { useI18n } from '@/i18n';
+import { translateHealthStatus, translateNotificationTiming, translatePersistenceMessage, translateSimpleLabel } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
+import type { TranslationKey } from '@/i18n/translations/en';
+
+const notificationTitleKeys: Record<string, TranslationKey> = {
+  'morning-plan': 'readiness.notification.morningPlan',
+  'supplement-window': 'readiness.notification.supplementWindow',
+  'fourteen-day-review': 'readiness.notification.review'
+};
+
+const notificationStatusKeys: Record<string, TranslationKey> = {
+  ready: 'readiness.status.ready',
+  planned: 'readiness.status.planned',
+  disabled: 'readiness.status.disabled'
+};
+
+const partialDataKeys: Record<string, { label: TranslationKey; detail: TranslationKey }> = {
+  profile: { label: 'readiness.partial.profile', detail: 'readiness.partial.profileDetail' },
+  bloodwork: { label: 'readiness.partial.bloodwork', detail: 'readiness.partial.bloodworkDetail' },
+  notifications: { label: 'readiness.partial.notifications', detail: 'readiness.partial.notificationsDetail' },
+  'device-push': { label: 'readiness.partial.devicePush', detail: 'readiness.partial.devicePushDetail' }
+};
 
 export default function TodayScreen() {
+  const { t } = useI18n();
   const [tasks, setTasks] = useState(demoTasks);
-  const [taskSaveMessage, setTaskSaveMessage] = useState('Task changes will use mock fallback unless Supabase auth is configured.');
+  const [taskSaveMessage, setTaskSaveMessage] = useState<string | null>(null);
   const completed = tasks.filter((task) => task.completed).length;
   const progress = Math.round((completed / tasks.length) * 100);
 
@@ -34,24 +57,24 @@ export default function TodayScreen() {
 
     if (currentTask) {
       void saveDailyTaskStatus({ ...currentTask, completed: !currentTask.completed }).then((result) => {
-        setTaskSaveMessage(result.message);
+        setTaskSaveMessage(translatePersistenceMessage(result.message, t));
       });
     }
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Today</AppText>
-      <AppText variant="body">Good morning, {demoUser.firstName}. Here is what matters today.</AppText>
+      <AppText variant="title">{t('common.today')}</AppText>
+      <AppText variant="body">{t('today.greeting', { name: demoUser.firstName })}</AppText>
 
       <SectionCard style={styles.heroCard}>
-        <AppText variant="caption">Overall Health Score</AppText>
+        <AppText variant="caption">{t('today.overallScore')}</AppText>
         <AppText variant="metric">{demoUser.healthScore}</AppText>
-        <AppText variant="body">{demoUser.healthStatus}</AppText>
+        <AppText variant="body">{translateHealthStatus(demoUser.healthStatus, t)}</AppText>
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${progress}%` }]} />
         </View>
-        <AppText variant="caption">Completed: {completed} of {tasks.length}</AppText>
+        <AppText variant="caption">{t('today.completedCount', { completed, total: tasks.length })}</AppText>
       </SectionCard>
 
       <View style={styles.scoreRow}>
@@ -59,34 +82,34 @@ export default function TodayScreen() {
       </View>
 
       <SectionCard>
-        <AppText variant="subtitle">Today’s Plan</AppText>
-        <StateNotice title="Daily task storage" message={taskSaveMessage} variant="info" />
+        <AppText variant="subtitle">{t('today.plan')}</AppText>
+        <StateNotice title={t('today.taskStorage')} message={taskSaveMessage ?? t('today.mockTaskStorage')} variant="info" />
         {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">AI Insight</AppText>
-        <AppText variant="body">Today, your main focus is recovery. Magnesium and walking may help reduce stress and improve tomorrow’s energy.</AppText>
+        <AppText variant="subtitle">{t('today.aiInsight')}</AppText>
+        <AppText variant="body">{t('today.aiInsightBody')}</AppText>
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Upcoming Reminders</AppText>
+        <AppText variant="subtitle">{t('today.upcomingReminders')}</AppText>
         {notificationPlaceholders.map((item) => (
-          <AppText key={item.id} variant="body">- {item.title}: {item.timing} ({item.status})</AppText>
+          <AppText key={item.id} variant="body">- {t(notificationTitleKeys[item.id])}: {translateNotificationTiming(item.timing, t)} ({t(notificationStatusKeys[item.status])})</AppText>
         ))}
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Data Readiness</AppText>
+        <AppText variant="subtitle">{t('today.dataReadiness')}</AppText>
         {partialDataStatuses.map((item) => (
-          <AppText key={item.id} variant="body">- {item.label} ({item.status}): {item.detail}</AppText>
+          <AppText key={item.id} variant="body">- {t(partialDataKeys[item.id].label)} ({translateSimpleLabel(item.status, t)}): {t(partialDataKeys[item.id].detail)}</AppText>
         ))}
       </SectionCard>
 
-      <PrimaryButton label="Open Weekly Plan" onPress={() => router.push('/weekly-plan')} />
-      <PrimaryButton label="Ask AI" variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
-      <PrimaryButton label="Open Supplement Schedule" variant="secondary" onPress={() => router.push('/supplements')} />
-      <PrimaryButton label="Open Nutrition" variant="secondary" onPress={() => router.push('/nutrition')} />
+      <PrimaryButton label={t('today.openWeeklyPlan')} onPress={() => router.push('/weekly-plan')} />
+      <PrimaryButton label={t('common.askAi')} variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
+      <PrimaryButton label={t('today.openSupplements')} variant="secondary" onPress={() => router.push('/supplements')} />
+      <PrimaryButton label={t('today.openNutrition')} variant="secondary" onPress={() => router.push('/nutrition')} />
     </ScreenContainer>
   );
 }

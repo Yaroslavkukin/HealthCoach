@@ -4,10 +4,22 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { useI18n } from '@/i18n';
+import type { TranslationKey } from '@/i18n/translations/en';
 import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
+const nutritionPlaceholders = [
+  'onboarding.nutrition.breakfast',
+  'onboarding.nutrition.pattern',
+  'onboarding.nutrition.sugar',
+  'onboarding.nutrition.water',
+  'onboarding.nutrition.fastFood'
+] as const satisfies readonly TranslationKey[];
+
 export default function NutritionAssessmentScreen() {
+  const { t } = useI18n();
+
   async function saveNutritionAndContinue() {
     await saveOnboardingChecklist({ nutritionCompleted: true });
     router.push('/onboarding/ai-processing');
@@ -15,13 +27,13 @@ export default function NutritionAssessmentScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Nutrition Description</AppText>
-      <AppText variant="body">Describe what you usually eat so Nutrition AI can personalize your plan later.</AppText>
+      <AppText variant="title">{t('onboarding.nutrition.title')}</AppText>
+      <AppText variant="body">{t('onboarding.nutrition.subtitle')}</AppText>
       <SectionCard>
-        {['Typical breakfast', 'Lunch and dinner pattern', 'Sugar and processed food', 'Water intake', 'Restaurant or fast food habits'].map((placeholder) => (
-          <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
+        {nutritionPlaceholders.map((placeholder) => (
+          <TextInput key={placeholder} placeholder={t(placeholder)} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
         ))}
-        <PrimaryButton label="Generate Mock AI Health Profile" onPress={saveNutritionAndContinue} />
+        <PrimaryButton label={t('onboarding.nutrition.generate')} onPress={saveNutritionAndContinue} />
       </SectionCard>
     </ScreenContainer>
   );

@@ -6,43 +6,46 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoUser } from '@/data/mock/healthProfile';
+import { useI18n } from '@/i18n';
+import { translateArchetype, translatePersistenceMessage } from '@/i18n/mockContent';
 import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 
 export default function BravermanScreen() {
+  const { t } = useI18n();
   const [showResult, setShowResult] = useState(false);
-  const [saveMessage, setSaveMessage] = useState('Braverman status has not been saved yet.');
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   async function completeAssessment() {
     setShowResult(true);
     const result = await saveOnboardingChecklist({ bravermanCompleted: true });
-    setSaveMessage(result.message);
+    setSaveMessage(translatePersistenceMessage(result.message, t));
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Braverman Assessment</AppText>
-      <AppText variant="body">Identify neurotransmitter tendencies and your Motivation Archetype.</AppText>
+      <AppText variant="title">{t('onboarding.braverman.title')}</AppText>
+      <AppText variant="body">{t('onboarding.braverman.subtitle')}</AppText>
 
       <SectionCard>
-        <AppText variant="subtitle">Sample Questions</AppText>
-        <AppText variant="body">- I am motivated by clear progress and measurable goals.</AppText>
-        <AppText variant="body">- I lose energy when routines become chaotic.</AppText>
-        <AppText variant="body">- I prefer direct, practical coaching.</AppText>
+        <AppText variant="subtitle">{t('onboarding.braverman.questions')}</AppText>
+        <AppText variant="body">- {t('onboarding.braverman.q1')}</AppText>
+        <AppText variant="body">- {t('onboarding.braverman.q2')}</AppText>
+        <AppText variant="body">- {t('onboarding.braverman.q3')}</AppText>
       </SectionCard>
 
       {showResult ? (
         <SectionCard>
-          <AppText variant="subtitle">Your Demo Archetype: {demoUser.archetype}</AppText>
-          <AppText variant="body">Driven by progress, achievement, and clear goals.</AppText>
-          <AppText variant="caption">Raw technical scores stay behind the scenes in this UX.</AppText>
+          <AppText variant="subtitle">{t('onboarding.braverman.resultTitle', { archetype: translateArchetype(demoUser.archetype, t) })}</AppText>
+          <AppText variant="body">{t('onboarding.braverman.resultBody')}</AppText>
+          <AppText variant="caption">{t('onboarding.braverman.resultCaption')}</AppText>
         </SectionCard>
       ) : (
-        <StateNotice title="Assessment not completed" message="Tap the mock action to reveal the demo archetype result." variant="empty" />
+        <StateNotice title={t('onboarding.braverman.emptyTitle')} message={t('onboarding.braverman.emptyMessage')} variant="empty" />
       )}
 
-      <StateNotice title="Checklist persistence" message={saveMessage} variant="info" />
-      <PrimaryButton label="Complete Mock Assessment" onPress={completeAssessment} />
-      <PrimaryButton label="Continue to Lifestyle" variant="secondary" onPress={() => router.push('/onboarding/lifestyle')} />
+      <StateNotice title={t('onboarding.braverman.persistence')} message={saveMessage ?? t('onboarding.braverman.initialSave')} variant="info" />
+      <PrimaryButton label={t('onboarding.braverman.complete')} onPress={completeAssessment} />
+      <PrimaryButton label={t('onboarding.braverman.continue')} variant="secondary" onPress={() => router.push('/onboarding/lifestyle')} />
     </ScreenContainer>
   );
 }

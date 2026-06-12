@@ -6,13 +6,17 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { demoBiomarkers, demoSystemScores } from '@/data/mock/healthProfile';
+import { useI18n } from '@/i18n';
+import { translateBiomarker, translateSimpleLabel } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 
 export default function BodyScreen() {
+  const { t } = useI18n();
+
   return (
     <ScreenContainer>
-      <AppText variant="title">My Body</AppText>
-      <AppText variant="body">Health systems, not isolated numbers.</AppText>
+      <AppText variant="title">{t('body.title')}</AppText>
+      <AppText variant="body">{t('body.subtitle')}</AppText>
 
       <SectionCard style={styles.bodyVisual}>
         <View style={styles.figure}>
@@ -20,23 +24,27 @@ export default function BodyScreen() {
           <View style={styles.torso} />
           <View style={styles.legs} />
         </View>
-        <AppText variant="subtitle">System Map</AppText>
-        <AppText variant="caption">Demo visualization for biological systems. Detailed diagrams can come later.</AppText>
+        <AppText variant="subtitle">{t('body.systemMap')}</AppText>
+        <AppText variant="caption">{t('body.systemMapCaption')}</AppText>
       </SectionCard>
 
       {demoSystemScores.map((score) => <HealthSystemCard key={score.label} score={score} />)}
 
       <SectionCard>
-        <AppText variant="subtitle">Key Biomarkers</AppText>
-        {demoBiomarkers.map((marker) => (
+        <AppText variant="subtitle">{t('body.keyBiomarkers')}</AppText>
+        {demoBiomarkers.map((item) => {
+          const marker = translateBiomarker(item, t);
+
+          return (
           <AppText key={marker.id} variant="body" onPress={() => router.push(`/biomarker/${marker.id}`)}>
-            {marker.name}: {marker.value} {marker.unit} - {marker.status}
+            {marker.name}: {marker.value} {marker.unit} - {translateSimpleLabel(marker.status, t)}
           </AppText>
-        ))}
+          );
+        })}
       </SectionCard>
 
-      <PrimaryButton label="Ask AI about my body" onPress={() => router.push('/(tabs)/ai')} />
-      <PrimaryButton label="Open Cortisol Detail" variant="secondary" onPress={() => router.push('/biomarker/cortisol')} />
+      <PrimaryButton label={t('body.askAi')} onPress={() => router.push('/(tabs)/ai')} />
+      <PrimaryButton label={t('body.openCortisol')} variant="secondary" onPress={() => router.push('/biomarker/cortisol')} />
     </ScreenContainer>
   );
 }

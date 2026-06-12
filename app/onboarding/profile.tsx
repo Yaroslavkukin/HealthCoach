@@ -6,12 +6,31 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
+import { accessRoutes } from '@/features/access/accessModel';
+import { useI18n } from '@/i18n';
+import { translatePersistenceMessage } from '@/i18n/mockContent';
+import type { TranslationKey } from '@/i18n/translations/en';
 import { upsertProfileDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
+const profilePlaceholders = [
+  'onboarding.profile.firstName',
+  'onboarding.profile.lastName',
+  'onboarding.profile.age',
+  'onboarding.profile.gender',
+  'onboarding.profile.height',
+  'onboarding.profile.weight',
+  'onboarding.profile.mainGoal',
+  'onboarding.profile.workType',
+  'onboarding.profile.activity',
+  'onboarding.profile.sleep',
+  'onboarding.profile.stress',
+  'onboarding.profile.symptoms'
+] as const satisfies readonly TranslationKey[];
+
 export default function ProfileSetupScreen() {
-  const [saveMessage, setSaveMessage] = useState('Profile will use mock fallback unless Supabase auth is configured.');
+  const { t } = useI18n();
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   async function saveProfile() {
     const result = await upsertProfileDraft({
@@ -26,20 +45,20 @@ export default function ProfileSetupScreen() {
       city: 'Moscow'
     });
 
-    setSaveMessage(result.message);
+    setSaveMessage(translatePersistenceMessage(result.message, t));
     router.push(accessRoutes.delivery);
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Personal Profile</AppText>
-      <AppText variant="body">Enter your data once. Health Coach will reuse it across recommendations and future delivery flows.</AppText>
-      <StateNotice title={getAccessProgressLabel('profileSetup')} message={`${getAccessStageDescription('profileSetup')} ${saveMessage}`} variant="info" />
+      <AppText variant="title">{t('onboarding.profile.title')}</AppText>
+      <AppText variant="body">{t('onboarding.profile.subtitle')}</AppText>
+      <StateNotice title={t('onboarding.profile.title')} message={saveMessage ?? t('onboarding.profile.initialSave')} variant="info" />
       <SectionCard>
-        {['First name', 'Last name', 'Age', 'Gender', 'Height cm', 'Weight kg', 'Main goal', 'Work type', 'Activity level', 'Sleep schedule', 'Stress level', 'Current symptoms'].map((placeholder) => (
-          <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} style={styles.input} />
+        {profilePlaceholders.map((placeholder) => (
+          <TextInput key={placeholder} placeholder={t(placeholder)} placeholderTextColor={colors.textMuted} style={styles.input} />
         ))}
-        <PrimaryButton label="Continue to Delivery" onPress={saveProfile} />
+        <PrimaryButton label={t('onboarding.profile.continue')} onPress={saveProfile} />
       </SectionCard>
     </ScreenContainer>
   );

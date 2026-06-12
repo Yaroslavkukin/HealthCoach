@@ -4,55 +4,58 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
+import { accessRoutes } from '@/features/access/accessModel';
+import { useI18n } from '@/i18n';
 
-const benefits = [
-  'Personalized AI recommendations',
-  'Blood analysis interpretation',
-  'Braverman assessment analysis',
-  'Supplement and bee product plans',
-  'Nutrition plans and AI assistant',
-  'Progress tracking and 14-day reviews'
-];
+const benefitKeys = [
+  'subscription.benefit.personalizedAi',
+  'subscription.benefit.blood',
+  'subscription.benefit.braverman',
+  'subscription.benefit.supplements',
+  'subscription.benefit.nutrition',
+  'subscription.benefit.progress'
+] as const;
 
 export default function SubscriptionScreen() {
+  const { t } = useI18n();
+
   function continueWithMockSubscription() {
     router.push(accessRoutes.createAccount);
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Health Coach</AppText>
-      <AppText variant="body">Your personal AI health coach based on blood analysis, nutrition, lifestyle, and progress.</AppText>
+      <AppText variant="title">{t('app.name')}</AppText>
+      <AppText variant="body">{t('subscription.subtitle')}</AppText>
 
       <StateNotice
-        title={getAccessProgressLabel('subscription')}
-        message={`${getAccessStageDescription('subscription')} This is a mock subscription flow. No payment will be charged.`}
+        title={t('subscription.noticeTitle')}
+        message={t('subscription.noticeMessage')}
         variant="info"
       />
 
       <SectionCard>
-        <AppText variant="subtitle">What full access includes</AppText>
-        {benefits.map((benefit) => (
-          <AppText key={benefit} variant="body">- {benefit}</AppText>
+        <AppText variant="subtitle">{t('subscription.includes')}</AppText>
+        {benefitKeys.map((benefitKey) => (
+          <AppText key={benefitKey} variant="body">- {t(benefitKey)}</AppText>
         ))}
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Monthly Membership</AppText>
+        <AppText variant="subtitle">{t('subscription.monthly')}</AppText>
         <AppText variant="metric">3000 ₽</AppText>
-        <AppText variant="caption">per month</AppText>
-        <PrimaryButton label="Subscribe for 3000 RUB / month" onPress={continueWithMockSubscription} />
+        <AppText variant="caption">{t('common.month')}</AppText>
+        <PrimaryButton label={t('subscription.monthlyButton')} onPress={continueWithMockSubscription} />
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">6-Month Membership</AppText>
+        <AppText variant="subtitle">{t('subscription.sixMonth')}</AppText>
         <AppText variant="metric">15000 ₽</AppText>
-        <AppText variant="caption">2500 ₽ per month equivalent</AppText>
-        <PrimaryButton label="Subscribe for 15000 RUB / 6 months" onPress={continueWithMockSubscription} />
+        <AppText variant="caption">{t('subscription.sixMonthCaption')}</AppText>
+        <PrimaryButton label={t('subscription.sixMonthButton')} onPress={continueWithMockSubscription} />
       </SectionCard>
 
-      <PrimaryButton label="Back to Preview" variant="secondary" onPress={() => router.push(accessRoutes.preview)} />
+      <PrimaryButton label={t('subscription.backToPreview')} variant="secondary" onPress={() => router.push(accessRoutes.preview)} />
     </ScreenContainer>
   );
 }

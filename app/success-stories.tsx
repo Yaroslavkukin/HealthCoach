@@ -4,23 +4,31 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { demoSuccessStories } from '@/data/mock/healthProfile';
+import { useI18n } from '@/i18n';
+import { translateSuccessStory } from '@/i18n/mockContent';
 
 export default function SuccessStoriesScreen() {
+  const { t } = useI18n();
+
   return (
     <ScreenContainer>
-      <AppText variant="title">Success Stories</AppText>
-      <AppText variant="body">Preview stories use fictional demo data for trust-building only.</AppText>
+      <AppText variant="title">{t('success.title')}</AppText>
+      <AppText variant="body">{t('success.subtitle')}</AppText>
 
-      {demoSuccessStories.map((story) => (
+      {demoSuccessStories.map((item) => {
+        const story = translateSuccessStory(item, t);
+
+        return (
         <SectionCard key={story.id}>
           <AppText variant="subtitle">{story.title}</AppText>
           <AppText variant="caption">{story.person}</AppText>
           <AppText variant="body">{story.result}</AppText>
         </SectionCard>
-      ))}
+        );
+      })}
 
-      <PrimaryButton label="Start Your Health Journey" onPress={() => router.push('/subscription')} />
-      <PrimaryButton label="Back to Preview" variant="secondary" onPress={() => router.push('/preview')} />
+      <PrimaryButton label={t('preview.startJourney')} onPress={() => router.push('/subscription')} />
+      <PrimaryButton label={t('subscription.backToPreview')} variant="secondary" onPress={() => router.push('/preview')} />
     </ScreenContainer>
   );
 }

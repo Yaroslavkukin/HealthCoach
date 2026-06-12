@@ -6,14 +6,18 @@ import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoWeeklyPlan } from '@/data/mock/healthProfile';
+import { useI18n } from '@/i18n';
+import { translatePersistenceMessage, translateWeeklyDay } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function WeeklyPlanScreen() {
+  const { t } = useI18n();
   const [selectedDayId, setSelectedDayId] = useState(demoWeeklyPlan[0].id);
   const [completedOverrides, setCompletedOverrides] = useState<Record<string, boolean>>({});
-  const [taskSaveMessage, setTaskSaveMessage] = useState('Weekly task changes will use mock fallback unless Supabase auth is configured.');
+  const [taskSaveMessage, setTaskSaveMessage] = useState<string | null>(null);
   const selectedDay = demoWeeklyPlan.find((day) => day.id === selectedDayId) ?? demoWeeklyPlan[0];
+  const selectedDayText = translateWeeklyDay(selectedDay, t);
   const tasks = selectedDay.tasks.map((task) => ({ ...task, completed: completedOverrides[task.id] ?? task.completed }));
   const completed = tasks.filter((task) => task.completed).length;
 
@@ -28,29 +32,29 @@ export default function WeeklyPlanScreen() {
 
     if (currentTask) {
       void saveDailyTaskStatus({ ...currentTask, completed: nextCompleted }).then((result) => {
-        setTaskSaveMessage(result.message);
+        setTaskSaveMessage(translatePersistenceMessage(result.message, t));
       });
     }
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">7-Day Plan</AppText>
-      <AppText variant="body">This week is focused on recovery, movement consistency, and nutrition cleanup.</AppText>
+      <AppText variant="title">{t('weekly.title')}</AppText>
+      <AppText variant="body">{t('weekly.subtitle')}</AppText>
 
       <View style={styles.dayRow}>
         {demoWeeklyPlan.map((day) => (
           <Pressable key={day.id} onPress={() => setSelectedDayId(day.id)} style={[styles.dayChip, selectedDayId === day.id && styles.dayChipActive]}>
-            <AppText style={[styles.dayText, selectedDayId === day.id && styles.dayTextActive]}>{day.day.slice(0, 3)}</AppText>
+            <AppText style={[styles.dayText, selectedDayId === day.id && styles.dayTextActive]}>{translateWeeklyDay(day, t).shortDay}</AppText>
           </Pressable>
         ))}
       </View>
 
       <SectionCard>
-        <AppText variant="subtitle">{selectedDay.day}</AppText>
-        <AppText variant="body">Focus: {selectedDay.focus}</AppText>
-        <AppText variant="caption">Progress: {completed} of {tasks.length} completed</AppText>
-        <StateNotice title="Daily task storage" message={taskSaveMessage} variant="info" />
+        <AppText variant="subtitle">{selectedDayText.day}</AppText>
+        <AppText variant="body">{t('weekly.focus', { focus: selectedDayText.focus })}</AppText>
+        <AppText variant="caption">{t('weekly.progress', { completed, total: tasks.length })}</AppText>
+        <StateNotice title={t('today.taskStorage')} message={taskSaveMessage ?? t('weekly.mockTaskStorage')} variant="info" />
         {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
       </SectionCard>
     </ScreenContainer>

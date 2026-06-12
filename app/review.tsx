@@ -7,37 +7,41 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { reviewFollowUps } from '@/data/mock/testingReadiness';
+import { useI18n } from '@/i18n';
+import { translateReviewFollowUp } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
+import type { TranslationKey } from '@/i18n/translations/en';
 
-const reviewQuestions = ['Energy', 'Mood', 'Motivation', 'Productivity', 'Sleep', 'Plan follow-through'];
-const answers = ['Better', 'Same', 'Worse'];
+const reviewQuestions = ['review.energy', 'review.mood', 'review.motivation', 'review.productivity', 'review.sleep', 'review.followThrough'] as const satisfies readonly TranslationKey[];
+const answers = ['review.better', 'review.same', 'review.worse'] as const satisfies readonly TranslationKey[];
 
 export default function FourteenDayReviewScreen() {
+  const { t } = useI18n();
   const [selected, setSelected] = useState<Record<string, string>>({});
   const answered = Object.keys(selected).length;
   const isEmpty = answered === 0;
   const isComplete = answered === reviewQuestions.length;
   const reviewState = isEmpty ? 'empty' : 'info';
   const reviewMessage = isEmpty
-    ? 'Start with one area to preview the check-in flow.'
+    ? t('review.emptyMessage')
     : isComplete
-      ? 'All review areas are answered. Saving returns testers to Today.'
-      : `${answered} of ${reviewQuestions.length} areas are answered. Continue when ready.`;
+      ? t('review.completeMessage')
+      : t('review.partialMessage', { answered, total: reviewQuestions.length });
 
   return (
     <ScreenContainer>
-      <AppText variant="title">14-Day Review</AppText>
-      <AppText variant="body">A coaching check-in, not a medical form.</AppText>
+      <AppText variant="title">{t('review.title')}</AppText>
+      <AppText variant="body">{t('review.subtitle')}</AppText>
 
-      <StateNotice title={isComplete ? 'Review ready' : 'Review in progress'} message={reviewMessage} variant={reviewState} />
+      <StateNotice title={isComplete ? t('review.ready') : t('review.inProgress')} message={reviewMessage} variant={reviewState} />
 
       {reviewQuestions.map((question) => (
         <SectionCard key={question}>
-          <AppText variant="subtitle">How is your {question.toLowerCase()}?</AppText>
+          <AppText variant="subtitle">{t('review.question', { area: t(question) })}</AppText>
           <View style={styles.answerRow}>
             {answers.map((answer) => (
               <Pressable key={answer} onPress={() => setSelected((current) => ({ ...current, [question]: answer }))} style={[styles.answer, selected[question] === answer && styles.answerActive]}>
-                <AppText style={[styles.answerText, selected[question] === answer && styles.answerTextActive]}>{answer}</AppText>
+                <AppText style={[styles.answerText, selected[question] === answer && styles.answerTextActive]}>{t(answer)}</AppText>
               </Pressable>
             ))}
           </View>
@@ -45,18 +49,20 @@ export default function FourteenDayReviewScreen() {
       ))}
 
       <SectionCard>
-        <AppText variant="subtitle">Review Progress</AppText>
-        <AppText variant="body">{answered} of {reviewQuestions.length} answered</AppText>
+        <AppText variant="subtitle">{t('review.progressTitle')}</AppText>
+        <AppText variant="body">{t('review.progressBody', { answered, total: reviewQuestions.length })}</AppText>
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">After This Check-In</AppText>
-        {reviewFollowUps.map((item) => (
-          <AppText key={item.id} variant="body">- {item.title}: {item.detail}</AppText>
-        ))}
+        <AppText variant="subtitle">{t('review.after')}</AppText>
+        {reviewFollowUps.map((item) => {
+          const displayItem = translateReviewFollowUp(item, t);
+
+          return <AppText key={item.id} variant="body">- {displayItem.title}: {displayItem.detail}</AppText>;
+        })}
       </SectionCard>
 
-      <PrimaryButton label="Save Mock Review" onPress={() => router.push('/(tabs)/today')} />
+      <PrimaryButton label={t('review.save')} onPress={() => router.push('/(tabs)/today')} />
     </ScreenContainer>
   );
 }

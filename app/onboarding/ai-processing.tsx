@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
+import { useI18n } from '@/i18n';
+import { translatePersistenceMessage } from '@/i18n/mockContent';
 import { generateHealthProfile } from '@/lib/aiClient';
 import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function AIProcessingScreen() {
-  const [statusMessage, setStatusMessage] = useState('Preparing a secure health profile request.');
+  const { t } = useI18n();
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -20,12 +23,13 @@ export default function AIProcessingScreen() {
         return;
       }
 
-      setStatusMessage(result.message);
+      const translatedMessage = translatePersistenceMessage(result.message, t);
+      setStatusMessage(translatedMessage);
 
       try {
         await saveOnboardingChecklist({ aiProfileGenerated: true });
       } catch {
-        setStatusMessage(`${result.message} Checklist sync will retry when secure persistence is available.`);
+        setStatusMessage(t('onboarding.processing.retry', { message: translatedMessage }));
       }
 
       routeTimer = setTimeout(() => {
@@ -41,14 +45,14 @@ export default function AIProcessingScreen() {
         clearTimeout(routeTimer);
       }
     };
-  }, []);
+  }, [t]);
 
   return (
     <View style={styles.root}>
       <ActivityIndicator color={colors.accent} size="large" />
-      <AppText variant="subtitle">Building your Health Profile...</AppText>
-      <AppText variant="caption">Reading blood analysis, evaluating biomarkers, reviewing lifestyle, and generating recommendations.</AppText>
-      <AppText variant="caption">{statusMessage}</AppText>
+      <AppText variant="subtitle">{t('onboarding.processing.title')}</AppText>
+      <AppText variant="caption">{t('onboarding.processing.subtitle')}</AppText>
+      <AppText variant="caption">{statusMessage ?? t('onboarding.processing.initial')}</AppText>
     </View>
   );
 }

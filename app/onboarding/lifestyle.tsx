@@ -4,10 +4,22 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { useI18n } from '@/i18n';
+import type { TranslationKey } from '@/i18n/translations/en';
 import { saveOnboardingChecklist } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
+const lifestylePlaceholders = [
+  'onboarding.lifestyle.typicalDay',
+  'onboarding.lifestyle.sleepHabits',
+  'onboarding.lifestyle.work',
+  'onboarding.lifestyle.activity',
+  'onboarding.lifestyle.stress'
+] as const satisfies readonly TranslationKey[];
+
 export default function LifestyleScreen() {
+  const { t } = useI18n();
+
   async function saveLifestyle() {
     await saveOnboardingChecklist({ lifestyleCompleted: true });
     router.push('/onboarding/nutrition');
@@ -15,13 +27,13 @@ export default function LifestyleScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Lifestyle</AppText>
-      <AppText variant="body">Describe your typical day, sleep, stress, work, and physical activity.</AppText>
+      <AppText variant="title">{t('onboarding.lifestyle.title')}</AppText>
+      <AppText variant="body">{t('onboarding.lifestyle.subtitle')}</AppText>
       <SectionCard>
-        {['Typical day', 'Sleep habits', 'Work schedule', 'Physical activity', 'Stress level'].map((placeholder) => (
-          <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
+        {lifestylePlaceholders.map((placeholder) => (
+          <TextInput key={placeholder} placeholder={t(placeholder)} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
         ))}
-        <PrimaryButton label="Save Mock Lifestyle" onPress={saveLifestyle} />
+        <PrimaryButton label={t('onboarding.lifestyle.save')} onPress={saveLifestyle} />
       </SectionCard>
     </ScreenContainer>
   );

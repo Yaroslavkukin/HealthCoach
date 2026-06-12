@@ -6,12 +6,27 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
+import { accessRoutes } from '@/features/access/accessModel';
+import { useI18n } from '@/i18n';
+import { translatePersistenceMessage } from '@/i18n/mockContent';
+import type { TranslationKey } from '@/i18n/translations/en';
 import { upsertDeliveryDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
+const deliveryPlaceholders = [
+  'onboarding.delivery.country',
+  'onboarding.delivery.city',
+  'onboarding.delivery.address',
+  'onboarding.delivery.postal',
+  'onboarding.delivery.method',
+  'onboarding.delivery.cdek',
+  'onboarding.delivery.post',
+  'onboarding.delivery.comments'
+] as const satisfies readonly TranslationKey[];
+
 export default function DeliverySetupScreen() {
-  const [saveMessage, setSaveMessage] = useState('Delivery data will use mock fallback unless Supabase auth is configured.');
+  const { t } = useI18n();
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   async function saveDelivery() {
     const result = await upsertDeliveryDraft({
@@ -25,23 +40,21 @@ export default function DeliverySetupScreen() {
       deliveryNotes: 'Mock delivery notes'
     });
 
-    setSaveMessage(result.message);
+    setSaveMessage(translatePersistenceMessage(result.message, t));
     router.push(accessRoutes.startChecklist);
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Delivery Information</AppText>
-      <AppText variant="body">
-        Placeholder setup for future supplement and bee product delivery preferences.
-      </AppText>
-      <StateNotice title={getAccessProgressLabel('deliverySetup')} message={`${getAccessStageDescription('deliverySetup')} ${saveMessage}`} variant="info" />
+      <AppText variant="title">{t('onboarding.delivery.title')}</AppText>
+      <AppText variant="body">{t('onboarding.delivery.subtitle')}</AppText>
+      <StateNotice title={t('onboarding.delivery.title')} message={saveMessage ?? t('onboarding.delivery.initialSave')} variant="info" />
 
       <SectionCard>
-        {['Country', 'City', 'Address', 'Postal code', 'Preferred delivery method', 'CDEK pickup point', 'Russian Post office', 'Delivery comments'].map((placeholder) => (
-          <TextInput key={placeholder} placeholder={placeholder} placeholderTextColor={colors.textMuted} style={styles.input} />
+        {deliveryPlaceholders.map((placeholder) => (
+          <TextInput key={placeholder} placeholder={t(placeholder)} placeholderTextColor={colors.textMuted} style={styles.input} />
         ))}
-        <PrimaryButton label="Continue to Start Checklist" onPress={saveDelivery} />
+        <PrimaryButton label={t('onboarding.delivery.continue')} onPress={saveDelivery} />
       </SectionCard>
     </ScreenContainer>
   );

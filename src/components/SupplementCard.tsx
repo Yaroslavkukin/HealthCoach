@@ -1,25 +1,30 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
+import { useI18n } from '@/i18n';
+import { translateSimpleLabel, translateSupplement } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 import type { SupplementRecommendation } from '@/types';
 
 export function SupplementCard({ supplement }: { supplement: SupplementRecommendation }) {
+  const { t } = useI18n();
+  const displaySupplement = translateSupplement(supplement, t);
+
   return (
     <View style={styles.root}>
       <View style={styles.header}>
-        <AppText style={styles.title}>{supplement.name}</AppText>
-        <AppText style={styles.badge}>{supplement.stackType}</AppText>
+        <AppText style={styles.title}>{displaySupplement.name}</AppText>
+        <AppText style={styles.badge}>{t(displaySupplement.stackType === 'essential' ? 'common.essential' : 'common.complete')}</AppText>
       </View>
-      <AppText variant="caption">{supplement.reason}</AppText>
+      <AppText variant="caption">{displaySupplement.reason}</AppText>
       <View style={styles.metaRow}>
-        <AppText variant="caption">{supplement.dosage}</AppText>
-        <AppText variant="caption">Next: {supplement.nextIntake ?? supplement.schedule}</AppText>
+        <AppText variant="caption">{displaySupplement.dosage}</AppText>
+        <AppText variant="caption">{t('component.next', { next: displaySupplement.nextIntake ?? displaySupplement.schedule })}</AppText>
       </View>
       <View style={styles.metaRow}>
-        <AppText variant="caption">Today: {supplement.takenToday ? 'Accepted' : 'Pending'}</AppText>
-        <AppText variant="caption">Confidence: {supplement.confidence}</AppText>
+        <AppText variant="caption">{t('component.supplementToday', { status: displaySupplement.takenToday ? t('common.completed') : t('common.pending') })}</AppText>
+        <AppText variant="caption">{t('component.confidence', { confidence: translateSimpleLabel(displaySupplement.confidence, t) })}</AppText>
       </View>
-      {supplement.courseDuration ? <AppText variant="caption">Course: {supplement.courseDuration}</AppText> : null}
+      {displaySupplement.courseDuration ? <AppText variant="caption">{t('component.course', { course: displaySupplement.courseDuration })}</AppText> : null}
     </View>
   );
 }

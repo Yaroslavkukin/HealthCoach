@@ -6,23 +6,27 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { SupplementCard } from '@/components/SupplementCard';
-import { demoSupplements, supplementSafetyNote } from '@/data/mock/healthProfile';
+import { demoSupplements } from '@/data/mock/healthProfile';
+import { useI18n } from '@/i18n';
+import { translateSupplement } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 import type { SupplementStackType } from '@/types';
 
 export default function SupplementsScreen() {
+  const { t } = useI18n();
   const [stack, setStack] = useState<SupplementStackType>('essential');
   const visibleSupplements = demoSupplements.filter((supplement) => stack === 'complete' || supplement.stackType === 'essential');
+  const displaySupplements = visibleSupplements.map((supplement) => translateSupplement(supplement, t));
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Supplements</AppText>
-      <AppText variant="body">Essential stack first. Complete stack is optional.</AppText>
+      <AppText variant="title">{t('supplements.title')}</AppText>
+      <AppText variant="body">{t('supplements.subtitle')}</AppText>
 
       <View style={styles.segment}>
         {(['essential', 'complete'] as SupplementStackType[]).map((item) => (
           <Pressable key={item} onPress={() => setStack(item)} style={[styles.segmentButton, stack === item && styles.segmentButtonActive]}>
-            <AppText style={[styles.segmentText, stack === item && styles.segmentTextActive]}>{item}</AppText>
+            <AppText style={[styles.segmentText, stack === item && styles.segmentTextActive]}>{t(item === 'essential' ? 'common.essential' : 'common.complete')}</AppText>
           </Pressable>
         ))}
       </View>
@@ -32,8 +36,8 @@ export default function SupplementsScreen() {
       ))}
 
       <SectionCard>
-        <AppText variant="subtitle">Schedule Notes</AppText>
-        {visibleSupplements.map((supplement) => (
+        <AppText variant="subtitle">{t('supplements.scheduleNotes')}</AppText>
+        {displaySupplements.map((supplement) => (
           <AppText key={`${supplement.id}-schedule`} variant="caption">
             {supplement.name}: {supplement.foodInstruction}. {supplement.compatibilityNotes}
           </AppText>
@@ -41,11 +45,11 @@ export default function SupplementsScreen() {
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="caption">{supplementSafetyNote}</AppText>
+        <AppText variant="caption">{t('mock.supplement.safety')}</AppText>
       </SectionCard>
 
-      <PrimaryButton label="Bee Product Optimization" onPress={() => router.push('/bee-products')} />
-      <PrimaryButton label="Back to Today" variant="secondary" onPress={() => router.push('/(tabs)/today')} />
+      <PrimaryButton label={t('supplements.beeProducts')} onPress={() => router.push('/bee-products')} />
+      <PrimaryButton label={t('supplements.backToday')} variant="secondary" onPress={() => router.push('/(tabs)/today')} />
     </ScreenContainer>
   );
 }

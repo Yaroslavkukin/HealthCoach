@@ -3,45 +3,49 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { useI18n } from '@/i18n';
+import { translateAISummary, translateHealthStatus, translateSimpleLabel } from '@/i18n/mockContent';
 import { getLatestGeneratedHealthProfile } from '@/lib/aiClient';
 
 export default function AISummaryScreen() {
+  const { t } = useI18n();
   const profile = getLatestGeneratedHealthProfile();
-  const summary = profile.summary;
+  const summary = profile.source === 'mock' ? translateAISummary(profile.summary, t) : profile.summary;
+  const healthStatus = profile.source === 'mock' ? translateHealthStatus(profile.healthStatus, t) : profile.healthStatus;
 
   return (
     <ScreenContainer>
-      <AppText variant="title">AI Summary</AppText>
-      <AppText variant="body">Why do I feel this way right now?</AppText>
+      <AppText variant="title">{t('onboarding.summary.title')}</AppText>
+      <AppText variant="body">{t('onboarding.summary.question')}</AppText>
 
       <SectionCard>
-        <AppText variant="subtitle">Generated Health Profile</AppText>
-        <AppText variant="body">Health Score: {profile.healthScore} - {profile.healthStatus}</AppText>
-        <AppText variant="caption">Confidence: {profile.confidence}</AppText>
-        <AppText variant="caption">Outputs ready: health scores, supplement stack, bee products, nutrition plan, and 7-day plan.</AppText>
+        <AppText variant="subtitle">{t('onboarding.summary.generated')}</AppText>
+        <AppText variant="body">{t('onboarding.summary.healthScore', { score: profile.healthScore, status: healthStatus })}</AppText>
+        <AppText variant="caption">{t('component.confidence', { confidence: translateSimpleLabel(profile.confidence, t) })}</AppText>
+        <AppText variant="caption">{t('onboarding.summary.outputs')}</AppText>
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Current Limiting Factors</AppText>
+        <AppText variant="subtitle">{t('onboarding.summary.limiting')}</AppText>
         {summary.limitingFactors.map((item, index) => (
           <AppText key={item} variant="body">{index + 1}. {item}</AppText>
         ))}
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">What Will Create the Biggest Result</AppText>
+        <AppText variant="subtitle">{t('onboarding.summary.biggest')}</AppText>
         {summary.biggestResult.map((item, index) => (
           <AppText key={item} variant="body">{index + 1}. {item}</AppText>
         ))}
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Expected Effect</AppText>
+        <AppText variant="subtitle">{t('onboarding.summary.expected')}</AppText>
         <AppText variant="body">{summary.expectedEffect}</AppText>
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Recommended Next Step</AppText>
+        <AppText variant="subtitle">{t('onboarding.summary.next')}</AppText>
         <AppText variant="body">{summary.nextStep}</AppText>
       </SectionCard>
 
@@ -49,9 +53,9 @@ export default function AISummaryScreen() {
         <AppText variant="caption">{summary.safetyNote}</AppText>
       </SectionCard>
 
-      <PrimaryButton label="View Today’s Plan" onPress={() => router.replace('/(tabs)/today')} />
-      <PrimaryButton label="View Supplement Stack" variant="secondary" onPress={() => router.push('/supplements')} />
-      <PrimaryButton label="Ask AI" variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
+      <PrimaryButton label={t('onboarding.summary.today')} onPress={() => router.replace('/(tabs)/today')} />
+      <PrimaryButton label={t('onboarding.summary.supplements')} variant="secondary" onPress={() => router.push('/supplements')} />
+      <PrimaryButton label={t('common.askAi')} variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
     </ScreenContainer>
   );
 }

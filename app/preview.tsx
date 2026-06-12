@@ -7,33 +7,40 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoAISummary, demoCoreScores, demoNutritionMeals, demoSupplements, demoUser } from '@/data/mock/healthProfile';
-import { accessRoutes, founderAccessRule, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
+import { accessRoutes } from '@/features/access/accessModel';
+import { useI18n } from '@/i18n';
+import { translateAISummary, translateHealthStatus, translateNutritionMeal, translateSupplement, translateArchetype } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 
 export default function PreviewScreen() {
+  const { t } = useI18n();
+  const summary = translateAISummary(demoAISummary, t);
+  const previewMeal = translateNutritionMeal(demoNutritionMeals[0], t);
+  const previewSupplements = demoSupplements.slice(0, 2).map((item) => translateSupplement(item, t));
+
   return (
     <ScreenContainer>
       <View style={styles.headerRow}>
         <View>
-          <AppText variant="title">Health Coach</AppText>
-          <AppText variant="body">Explore the product before registration.</AppText>
+          <AppText variant="title">{t('app.name')}</AppText>
+          <AppText variant="body">{t('preview.subtitle')}</AppText>
         </View>
         <View style={styles.demoBadge}>
-          <AppText style={styles.demoBadgeText}>Demo Mode</AppText>
+          <AppText style={styles.demoBadgeText}>{t('preview.demoMode')}</AppText>
         </View>
       </View>
 
       <StateNotice
-        title={getAccessProgressLabel('preview')}
-        message={`${getAccessStageDescription('preview')} ${founderAccessRule} No personal health data is stored in this mock prototype.`}
+        title={t('preview.noticeTitle')}
+        message={t('preview.noticeMessage')}
         variant="info"
       />
 
       <SectionCard style={styles.heroCard}>
-        <AppText variant="caption">Demo Health Score</AppText>
+        <AppText variant="caption">{t('preview.demoHealthScore')}</AppText>
         <AppText variant="metric">{demoUser.healthScore}</AppText>
-        <AppText variant="body">{demoUser.healthStatus}</AppText>
-        <AppText variant="caption">Archetype: {demoUser.archetype}</AppText>
+        <AppText variant="body">{translateHealthStatus(demoUser.healthStatus, t)}</AppText>
+        <AppText variant="caption">{t('preview.archetype', { archetype: translateArchetype(demoUser.archetype, t) })}</AppText>
       </SectionCard>
 
       <View style={styles.row}>
@@ -43,34 +50,34 @@ export default function PreviewScreen() {
       </View>
 
       <SectionCard>
-        <AppText variant="subtitle">Example AI Summary</AppText>
-        <AppText variant="body">{demoAISummary.expectedEffect}</AppText>
-        <PrimaryButton label="Open Demo AI Summary" variant="secondary" onPress={() => router.push('/onboarding/ai-summary')} />
+        <AppText variant="subtitle">{t('preview.exampleSummary')}</AppText>
+        <AppText variant="body">{summary.expectedEffect}</AppText>
+        <PrimaryButton label={t('preview.openSummary')} variant="secondary" onPress={() => router.push('/onboarding/ai-summary')} />
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Demo Stack</AppText>
-        {demoSupplements.slice(0, 2).map((item) => (
+        <AppText variant="subtitle">{t('preview.demoStack')}</AppText>
+        {previewSupplements.map((item) => (
           <AppText key={item.id} variant="body">{item.name}: {item.dosage}</AppText>
         ))}
-        <PrimaryButton label="View Demo Supplements" variant="secondary" onPress={() => router.push('/supplements')} />
+        <PrimaryButton label={t('preview.viewSupplements')} variant="secondary" onPress={() => router.push('/supplements')} />
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Demo Nutrition</AppText>
-        <AppText variant="body">{demoNutritionMeals[0].title}</AppText>
-        <AppText variant="caption">{demoNutritionMeals[0].description}</AppText>
-        <PrimaryButton label="View Demo Nutrition" variant="secondary" onPress={() => router.push('/nutrition')} />
+        <AppText variant="subtitle">{t('preview.demoNutrition')}</AppText>
+        <AppText variant="body">{previewMeal.title}</AppText>
+        <AppText variant="caption">{previewMeal.description}</AppText>
+        <PrimaryButton label={t('preview.viewNutrition')} variant="secondary" onPress={() => router.push('/nutrition')} />
       </SectionCard>
 
       <View style={styles.linkGrid}>
-        <PrimaryButton label="Demo Today" variant="secondary" onPress={() => router.push('/(tabs)/today')} />
-        <PrimaryButton label="Demo My Body" variant="secondary" onPress={() => router.push('/(tabs)/body')} />
-        <PrimaryButton label="Success Stories" variant="secondary" onPress={() => router.push('/success-stories')} />
+        <PrimaryButton label={t('preview.demoToday')} variant="secondary" onPress={() => router.push('/(tabs)/today')} />
+        <PrimaryButton label={t('preview.demoBody')} variant="secondary" onPress={() => router.push('/(tabs)/body')} />
+        <PrimaryButton label={t('preview.successStories')} variant="secondary" onPress={() => router.push('/success-stories')} />
       </View>
 
-      <PrimaryButton label="Start Your Health Journey" onPress={() => router.push(accessRoutes.subscription)} />
-      <PrimaryButton label="View Subscription" variant="secondary" onPress={() => router.push(accessRoutes.subscription)} />
+      <PrimaryButton label={t('preview.startJourney')} onPress={() => router.push(accessRoutes.subscription)} />
+      <PrimaryButton label={t('preview.viewSubscription')} variant="secondary" onPress={() => router.push(accessRoutes.subscription)} />
     </ScreenContainer>
   );
 }

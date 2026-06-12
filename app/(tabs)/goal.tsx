@@ -4,46 +4,50 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { useI18n } from '@/i18n';
 import { colors } from '@/theme/colors';
+import type { TranslationKey } from '@/i18n/translations/en';
 
 const milestones = [
-  { label: 'Blood analysis uploaded', status: 'Completed' },
-  { label: 'Braverman assessment', status: 'Completed' },
-  { label: '7-day plan execution', status: 'In progress' },
-  { label: '14-day review', status: 'Pending' },
-  { label: 'Control blood analysis', status: 'Future' }
-];
+  { labelKey: 'goal.milestone.blood', statusKey: 'goal.status.completed' },
+  { labelKey: 'goal.milestone.braverman', statusKey: 'goal.status.completed' },
+  { labelKey: 'goal.milestone.plan', statusKey: 'goal.status.inProgress' },
+  { labelKey: 'goal.milestone.review', statusKey: 'goal.status.pending' },
+  { labelKey: 'goal.milestone.controlBlood', statusKey: 'goal.status.future' }
+] as const satisfies readonly { labelKey: TranslationKey; statusKey: TranslationKey }[];
 
 export default function GoalScreen() {
+  const { t } = useI18n();
+
   return (
     <ScreenContainer>
-      <AppText variant="title">Goal Journey</AppText>
+      <AppText variant="title">{t('goal.title')}</AppText>
       <SectionCard>
-        <AppText variant="caption">90-Day Goal</AppText>
-        <AppText variant="subtitle">Increase Energy and Recovery</AppText>
+        <AppText variant="caption">{t('goal.ninetyDay')}</AppText>
+        <AppText variant="subtitle">{t('goal.energyRecovery')}</AppText>
         <View style={styles.progressTrack}>
           <View style={styles.progressFill} />
         </View>
-        <AppText variant="body">Progress: 56%</AppText>
-        <AppText variant="caption">Magnesium, walking, protein breakfast, and sleep timing all support this goal.</AppText>
+        <AppText variant="body">{t('goal.progress', { percent: 56 })}</AppText>
+        <AppText variant="caption">{t('goal.supportingActions')}</AppText>
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Milestone Timeline</AppText>
+        <AppText variant="subtitle">{t('goal.timeline')}</AppText>
         {milestones.map((milestone, index) => (
-          <View key={milestone.label} style={styles.milestone}>
+          <View key={milestone.labelKey} style={styles.milestone}>
             <View style={styles.dot}><AppText style={styles.dotText}>{index + 1}</AppText></View>
             <View style={styles.milestoneText}>
-              <AppText style={styles.milestoneTitle}>{milestone.label}</AppText>
-              <AppText variant="caption">{milestone.status}</AppText>
+              <AppText style={styles.milestoneTitle}>{t(milestone.labelKey)}</AppText>
+              <AppText variant="caption">{t(milestone.statusKey)}</AppText>
             </View>
           </View>
         ))}
       </SectionCard>
 
-      <PrimaryButton label="View Related Plan" onPress={() => router.push('/weekly-plan')} />
-      <PrimaryButton label="Ask AI about Goal" variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
-      <PrimaryButton label="Open 14-Day Review" variant="secondary" onPress={() => router.push('/review')} />
+      <PrimaryButton label={t('goal.viewPlan')} onPress={() => router.push('/weekly-plan')} />
+      <PrimaryButton label={t('goal.askAi')} variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
+      <PrimaryButton label={t('goal.openReview')} variant="secondary" onPress={() => router.push('/review')} />
     </ScreenContainer>
   );
 }

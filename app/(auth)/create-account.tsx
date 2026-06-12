@@ -6,39 +6,42 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { accessRoutes, getAccessProgressLabel, getAccessStageDescription } from '@/features/access/accessModel';
+import { accessRoutes } from '@/features/access/accessModel';
+import { useI18n } from '@/i18n';
 import { registerPlaceholderAccount } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function CreateAccountScreen() {
-  const [persistenceMessage, setPersistenceMessage] = useState('Auth placeholder has not been checked yet.');
+  const { t } = useI18n();
+  const [persistenceMessage, setPersistenceMessage] = useState<string | null>(null);
 
   async function continueWithPlaceholderAccount() {
-    const result = await registerPlaceholderAccount('demo@healthcoach.local');
-    setPersistenceMessage(result.message);
+    const email = 'demo@healthcoach.local';
+    const result = await registerPlaceholderAccount(email);
+    setPersistenceMessage(result.mode === 'supabase' ? t('account.supabaseSession') : t('account.mockAuth', { email }));
     router.push(accessRoutes.profile);
   }
 
   return (
     <ScreenContainer>
-      <AppText variant="title">Create Account</AppText>
-      <AppText variant="body">Registration starts after mock subscription so users can explore the app first.</AppText>
+      <AppText variant="title">{t('account.title')}</AppText>
+      <AppText variant="body">{t('account.subtitle')}</AppText>
 
       <StateNotice
-        title={getAccessProgressLabel('accountCreation')}
-        message={`${getAccessStageDescription('accountCreation')} ${persistenceMessage}`}
+        title={t('account.noticeTitle')}
+        message={`${t('account.noticeMessage')} ${persistenceMessage ?? t('account.initialPersistence')}`}
         variant="info"
       />
 
       <SectionCard>
-        <TextInput placeholder="Email" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" style={styles.input} />
-        <TextInput placeholder="Password" placeholderTextColor={colors.textMuted} secureTextEntry style={styles.input} />
-        <PrimaryButton label="Create Mock Account" onPress={continueWithPlaceholderAccount} />
+        <TextInput placeholder={t('account.emailPlaceholder')} placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" style={styles.input} />
+        <TextInput placeholder={t('account.passwordPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry style={styles.input} />
+        <PrimaryButton label={t('account.createButton')} onPress={continueWithPlaceholderAccount} />
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">Future Login Options</AppText>
-        <AppText variant="body">Apple Login and Google Login are planned options for a future release.</AppText>
+        <AppText variant="subtitle">{t('account.futureOptions')}</AppText>
+        <AppText variant="body">{t('account.futureOptionsBody')}</AppText>
       </SectionCard>
     </ScreenContainer>
   );

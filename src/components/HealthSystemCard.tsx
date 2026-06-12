@@ -1,21 +1,25 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
+import { useI18n } from '@/i18n';
+import { translateHealthScore, translateSimpleLabel } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 import type { HealthScore } from '@/types';
 
 export function HealthSystemCard({ score }: { score: HealthScore }) {
+  const { t } = useI18n();
+  const displayScore = translateHealthScore(score, t);
   const statusColor = score.status === 'good' ? colors.success : score.status === 'poor' ? colors.danger : colors.warning;
 
   return (
     <View style={styles.root}>
       <View>
-        <AppText style={styles.title}>{score.label}</AppText>
-        <AppText variant="caption">Status: {score.status}</AppText>
-        {score.limitingFactor ? <AppText variant="caption">Limit: {score.limitingFactor}</AppText> : null}
-        {score.action ? <AppText variant="caption">Action: {score.action}</AppText> : null}
+        <AppText style={styles.title}>{displayScore.label}</AppText>
+        <AppText variant="caption">{t('component.status', { status: translateSimpleLabel(displayScore.status, t) })}</AppText>
+        {displayScore.limitingFactor ? <AppText variant="caption">{t('component.limit', { limit: displayScore.limitingFactor })}</AppText> : null}
+        {displayScore.action ? <AppText variant="caption">{t('component.action', { action: displayScore.action })}</AppText> : null}
       </View>
       <View style={[styles.badge, { borderColor: statusColor }]}>
-        <AppText style={[styles.value, { color: statusColor }]}>{score.value}</AppText>
+        <AppText style={[styles.value, { color: statusColor }]}>{displayScore.value}</AppText>
       </View>
     </View>
   );
