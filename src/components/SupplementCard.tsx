@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { useI18n } from '@/i18n';
-import { translateSimpleLabel, translateSupplement } from '@/i18n/mockContent';
+import { translateSupplement } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 import type { SupplementRecommendation } from '@/types';
 
@@ -11,19 +11,15 @@ export function SupplementCard({ supplement }: { supplement: SupplementRecommend
 
   return (
     <View style={styles.root}>
-      <View style={styles.header}>
-        <AppText style={styles.title}>{displaySupplement.name}</AppText>
-        <AppText style={styles.badge}>{t(displaySupplement.stackType === 'essential' ? 'common.essential' : 'common.complete')}</AppText>
-      </View>
+      <AppText style={styles.title}>{displaySupplement.name}</AppText>
       <AppText variant="caption">{displaySupplement.reason}</AppText>
       <View style={styles.metaRow}>
         <AppText variant="caption">{displaySupplement.dosage}</AppText>
         <AppText variant="caption">{t('component.next', { next: displaySupplement.nextIntake ?? displaySupplement.schedule })}</AppText>
       </View>
-      <View style={styles.metaRow}>
-        <AppText variant="caption">{t('component.supplementToday', { status: displaySupplement.takenToday ? t('common.completed') : t('common.pending') })}</AppText>
-        <AppText variant="caption">{t('component.confidence', { confidence: translateSimpleLabel(displaySupplement.confidence, t) })}</AppText>
-      </View>
+      <AppText style={styles.statusText} variant="caption">
+        {t('component.supplementToday', { status: displaySupplement.takenToday ? t('common.completed') : t('common.pending') })}
+      </AppText>
       {displaySupplement.courseDuration ? <AppText variant="caption">{t('component.course', { course: displaySupplement.courseDuration })}</AppText> : null}
     </View>
   );
@@ -38,25 +34,17 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     marginBottom: 12
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 8
-  },
   title: {
-    flex: 1,
     fontWeight: '800',
-    fontSize: 16
-  },
-  badge: {
-    color: colors.accent,
-    fontWeight: '800',
-    textTransform: 'capitalize'
+    fontSize: 16,
+    marginBottom: 8
   },
   metaRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 12
+  },
+  statusText: {
     marginTop: 12
   }
 });

@@ -217,7 +217,8 @@ export const ru: Record<TranslationKey, string> = {
   'settings.savedLocallyBody': 'Синхронизация языка с сервером не включена в этой версии.',
 
   'supplements.title': 'Добавки',
-  'supplements.subtitle': 'Сначала базовый стек. Полный стек опционален.',
+  'supplements.subtitle': 'Ваши текущие персональные рекомендации по добавкам.',
+  'supplements.stackTitle': 'Стек добавок',
   'supplements.scheduleNotes': 'Заметки по графику',
   'supplements.beeProducts': 'Оптимизация пчелопродуктов',
   'supplements.backToday': 'Назад к Сегодня',

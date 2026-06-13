@@ -215,7 +215,8 @@ export const en = {
   'settings.savedLocallyBody': 'Language sync with the backend is not enabled in this MVP.',
 
   'supplements.title': 'Supplements',
-  'supplements.subtitle': 'Essential stack first. Complete stack is optional.',
+  'supplements.subtitle': 'Your current personalized supplement recommendations.',
+  'supplements.stackTitle': 'Supplement stack',
   'supplements.scheduleNotes': 'Schedule Notes',
   'supplements.beeProducts': 'Bee Product Optimization',
   'supplements.backToday': 'Back to Today',
