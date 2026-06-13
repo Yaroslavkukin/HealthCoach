@@ -8,14 +8,15 @@ import type { SupplementRecommendation } from '@/types';
 export function SupplementCard({ supplement }: { supplement: SupplementRecommendation }) {
   const { t } = useI18n();
   const displaySupplement = translateSupplement(supplement, t);
+  const intakeTime = formatIntakeTime(displaySupplement.nextIntake ?? displaySupplement.schedule, t('common.today'));
 
   return (
     <View style={styles.root}>
       <AppText style={styles.title}>{displaySupplement.name}</AppText>
       <AppText variant="caption">{displaySupplement.reason}</AppText>
       <View style={styles.metaRow}>
-        <AppText variant="caption">{displaySupplement.dosage}</AppText>
-        <AppText variant="caption">{t('component.next', { next: displaySupplement.nextIntake ?? displaySupplement.schedule })}</AppText>
+        <AppText variant="caption">{displaySupplement.capsuleDosage ?? displaySupplement.dosage}</AppText>
+        <AppText variant="caption">{t('component.next', { next: intakeTime })}</AppText>
       </View>
       <AppText style={styles.statusText} variant="caption">
         {t('component.supplementToday', { status: displaySupplement.takenToday ? t('common.completed') : t('common.pending') })}
@@ -23,6 +24,10 @@ export function SupplementCard({ supplement }: { supplement: SupplementRecommend
       {displaySupplement.courseDuration ? <AppText variant="caption">{t('component.course', { course: displaySupplement.courseDuration })}</AppText> : null}
     </View>
   );
+}
+
+function formatIntakeTime(value: string, todayLabel: string) {
+  return /^\d{1,2}:\d{2}$/.test(value) ? `${todayLabel} ${value}` : value;
 }
 
 const styles = StyleSheet.create({

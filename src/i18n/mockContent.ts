@@ -96,10 +96,11 @@ const taskInstructionKeys: Record<string, TranslationKey> = {
   'Keep intensity conversational.': 'mock.task.zone2.instruction'
 };
 
-const supplementKeys: Record<string, { name: TranslationKey; reason: TranslationKey; food: TranslationKey; compatibility?: TranslationKey; course?: TranslationKey }> = {
+const supplementKeys: Record<string, { name: TranslationKey; reason: TranslationKey; capsules: TranslationKey; food: TranslationKey; compatibility?: TranslationKey; course?: TranslationKey }> = {
   'sup-1': {
     name: 'mock.supplement.magnesium.name',
     reason: 'mock.supplement.magnesium.reason',
+    capsules: 'mock.supplement.magnesium.capsules',
     food: 'mock.supplement.magnesium.food',
     compatibility: 'mock.supplement.magnesium.compatibility',
     course: 'mock.supplement.magnesium.course'
@@ -107,6 +108,7 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
   'sup-2': {
     name: 'mock.supplement.omega.name',
     reason: 'mock.supplement.omega.reason',
+    capsules: 'mock.supplement.omega.capsules',
     food: 'mock.supplement.omega.food',
     compatibility: 'mock.supplement.omega.compatibility',
     course: 'mock.supplement.omega.course'
@@ -114,6 +116,7 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
   'sup-3': {
     name: 'mock.supplement.vitaminD.name',
     reason: 'mock.supplement.vitaminD.reason',
+    capsules: 'mock.supplement.vitaminD.capsules',
     food: 'mock.supplement.vitaminD.food',
     compatibility: 'mock.supplement.vitaminD.compatibility',
     course: 'mock.supplement.vitaminD.course'
@@ -121,6 +124,7 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
   'sup-4': {
     name: 'mock.supplement.theanine.name',
     reason: 'mock.supplement.theanine.reason',
+    capsules: 'mock.supplement.theanine.capsules',
     food: 'mock.supplement.theanine.food',
     compatibility: 'mock.supplement.theanine.compatibility',
     course: 'mock.supplement.theanine.course'
@@ -255,6 +259,7 @@ export function translateSupplement(supplement: SupplementRecommendation, t: Tra
     ...supplement,
     name: t(keys.name),
     reason: t(keys.reason),
+    capsuleDosage: t(keys.capsules),
     schedule: translateTimeText(supplement.schedule, t),
     foodInstruction: t(keys.food),
     compatibilityNotes: keys.compatibility ? t(keys.compatibility) : supplement.compatibilityNotes,
