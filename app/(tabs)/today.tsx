@@ -45,9 +45,9 @@ export default function TodayScreen() {
         <AppText variant="body">{t('today.greeting', { name: demoUser.firstName })}</AppText>
       </ScreenHeader>
 
-      <SectionCard style={styles.heroCard}>
+      <SectionCard tone="primary" style={styles.heroCard}>
         <AppText variant="caption">{t('today.overallScore')}</AppText>
-        <AppText variant="metric">{demoUser.healthScore}</AppText>
+        <AppText variant="metric" style={styles.heroScore}>{demoUser.healthScore}</AppText>
         <AppText variant="body">{translateHealthStatus(demoUser.healthStatus, t)}</AppText>
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${progress}%` }]} />
@@ -56,7 +56,7 @@ export default function TodayScreen() {
       </SectionCard>
 
       <View style={styles.scoreRow}>
-        {demoCoreScores.map((score) => <ScorePill key={score.label} score={score} />)}
+        {demoCoreScores.map((score) => <ScorePill key={score.label} score={score} variant="primary" />)}
       </View>
 
       <SectionCard>
@@ -78,7 +78,11 @@ export default function TodayScreen() {
 const styles = StyleSheet.create({
   heroCard: {
     alignItems: 'center',
-    backgroundColor: colors.surface
+    backgroundColor: colors.primary,
+    borderColor: colors.accent
+  },
+  heroScore: {
+    color: colors.accent
   },
   scoreRow: {
     flexDirection: 'row',
@@ -88,7 +92,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     width: '100%',
     height: 8,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: colors.textOnPrimaryMuted,
     borderRadius: 999,
     overflow: 'hidden',
     marginTop: 12,
@@ -96,6 +100,6 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: colors.primary
+    backgroundColor: colors.accent
   }
 });
