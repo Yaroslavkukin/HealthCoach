@@ -4,6 +4,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { useI18n } from '@/i18n';
@@ -68,15 +69,17 @@ export default function NutritionAssessmentScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.nutrition.title')}</AppText>
-      <AppText variant="body">{t('onboarding.nutrition.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.nutrition.title')}</AppText>
+        <AppText variant="body">{t('onboarding.nutrition.subtitle')}</AppText>
+      </ScreenHeader>
       <StateNotice title={t('onboarding.nutrition.title')} message={saveMessage ?? t('onboarding.nutrition.initialSave')} variant={noticeVariant} />
       <SectionCard>
         {nutritionFields.map((field) => (
           <TextInput
             key={field.key}
             placeholder={t(field.placeholder)}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textSoft}
             value={form[field.key]}
             onChangeText={(value) => updateField(field.key, value)}
             multiline
@@ -92,14 +95,14 @@ export default function NutritionAssessmentScreen() {
 const styles = StyleSheet.create({
   input: {
     minHeight: 72,
-    backgroundColor: colors.cardElevated,
-    color: colors.textPrimary,
+    backgroundColor: colors.surfaceMuted,
+    color: colors.text,
     borderRadius: 14,
     padding: 14,
     marginBottom: 12,
     textAlignVertical: 'top',
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   }
 });
 

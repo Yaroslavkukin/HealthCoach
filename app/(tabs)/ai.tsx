@@ -3,6 +3,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoAssistantQuestions } from '@/data/mock/healthProfile';
@@ -16,8 +17,10 @@ export default function AIScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('ai.title')}</AppText>
-      <AppText variant="body">{t('ai.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('ai.title')}</AppText>
+        <AppText variant="body">{t('ai.subtitle')}</AppText>
+      </ScreenHeader>
 
       <StateNotice
         title={t('ai.mockTitle')}
@@ -36,7 +39,7 @@ export default function AIScreen() {
         })}
       </SectionCard>
 
-      <TextInput placeholder={t('ai.placeholder')} placeholderTextColor={colors.textMuted} multiline style={styles.input} />
+      <TextInput placeholder={t('ai.placeholder')} placeholderTextColor={colors.textSoft} multiline style={styles.input} />
       <PrimaryButton label={t('ai.sendMock')} onPress={() => setAnswer(t('ai.demoAnswer'))} />
 
       {answer ? (
@@ -55,13 +58,13 @@ export default function AIScreen() {
 const styles = StyleSheet.create({
   input: {
     minHeight: 120,
-    backgroundColor: colors.card,
-    color: colors.textPrimary,
+    backgroundColor: colors.surface,
+    color: colors.text,
     borderRadius: 18,
     padding: 16,
     textAlignVertical: 'top',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderSoft,
     marginBottom: 12
   }
 });

@@ -5,12 +5,12 @@
     "scheme": "healthcoach",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/health-coach-icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/health-coach-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#061B13"
+      "backgroundColor": "#0E2A21"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -21,8 +21,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#061B13"
+        "foregroundImage": "./assets/images/health-coach-icon.png",
+        "backgroundColor": "#0E2A21"
       },
       "package": "com.healthcoach.app"
     },

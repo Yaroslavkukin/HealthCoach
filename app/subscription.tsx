@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { accessRoutes } from '@/features/access/accessModel';
@@ -33,8 +34,10 @@ export default function SubscriptionScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('app.name')}</AppText>
-      <AppText variant="body">{t('subscription.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('app.name')}</AppText>
+        <AppText variant="body">{t('subscription.subtitle')}</AppText>
+      </ScreenHeader>
 
       <StateNotice
         title={t('nav.subscription')}

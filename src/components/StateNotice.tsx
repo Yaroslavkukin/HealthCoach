@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, View } from 'react-native';
-import { AppText } from '@/components/AppText';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { AppText, TextToneProvider } from '@/components/AppText';
 import { colors } from '@/theme/colors';
 
 type StateNoticeVariant = 'empty' | 'loading' | 'error' | 'info';
@@ -12,17 +12,47 @@ const iconByVariant: Record<StateNoticeVariant, keyof typeof Ionicons.glyphMap> 
   info: 'information-circle-outline'
 };
 
-export function StateNotice({ title, message, variant = 'info' }: { title: string; message: string; variant?: StateNoticeVariant }) {
-  const color = variant === 'error' ? colors.warning : variant === 'loading' ? colors.info : colors.accent;
+export function StateNotice({
+  title,
+  message,
+  variant = 'info',
+  iconColor,
+  backgroundColor,
+  titleColor,
+  messageColor,
+  style
+}: {
+  title: string;
+  message: string;
+  variant?: StateNoticeVariant;
+  iconColor?: string;
+  backgroundColor?: string;
+  titleColor?: string;
+  messageColor?: string;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const color = variant === 'error' ? colors.danger : variant === 'loading' ? colors.info : colors.accent;
+  const displayIconColor = iconColor ?? color;
 
   return (
-    <View style={[styles.root, { borderColor: color }]}>
-      <Ionicons name={iconByVariant[variant]} size={20} color={color} />
-      <View style={styles.text}>
-        <AppText style={styles.title}>{title}</AppText>
-        <AppText variant="caption">{message}</AppText>
+    <TextToneProvider tone="surface">
+      <View
+        style={[
+          styles.root,
+          { borderColor: color },
+          style,
+          backgroundColor && { backgroundColor }
+        ]}
+      >
+        <Ionicons name={iconByVariant[variant]} size={20} color={displayIconColor} />
+        <View style={styles.text}>
+          <AppText style={[styles.title, titleColor && { color: titleColor }]}>{title}</AppText>
+          <AppText variant="caption" style={messageColor && { color: messageColor }}>
+            {message}
+          </AppText>
+        </View>
       </View>
-    </View>
+    </TextToneProvider>
   );
 }
 
@@ -31,17 +61,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderRadius: 18,
     padding: 14,
-    marginBottom: 16
+    marginBottom: 16,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 14,
+    elevation: 2
   },
   text: {
     flex: 1
   },
   title: {
-    color: colors.textPrimary,
+    color: colors.text,
     fontWeight: '800'
   }
 });

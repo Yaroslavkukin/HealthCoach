@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { useI18n } from '@/i18n';
 import { translateAISummary, translateHealthStatus, translateSimpleLabel } from '@/i18n/mockContent';
@@ -15,8 +16,10 @@ export default function AISummaryScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.summary.title')}</AppText>
-      <AppText variant="body">{t('onboarding.summary.question')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.summary.title')}</AppText>
+        <AppText variant="body">{t('onboarding.summary.question')}</AppText>
+      </ScreenHeader>
 
       <SectionCard>
         <AppText variant="subtitle">{t('onboarding.summary.generated')}</AppText>

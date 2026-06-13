@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { languageOptions, useI18n } from '@/i18n';
@@ -12,8 +13,10 @@ export default function SettingsScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('settings.title')}</AppText>
-      <AppText variant="body">{t('settings.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('settings.title')}</AppText>
+        <AppText variant="body">{t('settings.subtitle')}</AppText>
+      </ScreenHeader>
 
       <SectionCard>
         <AppText variant="subtitle">{t('settings.languageTitle')}</AppText>
@@ -51,18 +54,18 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     alignItems: 'center',
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.surfaceMuted,
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   },
   languageButtonActive: {
-    backgroundColor: colors.accent
+    backgroundColor: colors.primary
   },
   languageText: {
-    color: colors.textSecondary,
+    color: colors.textMuted,
     fontWeight: '800'
   },
   languageTextActive: {
-    color: colors.background
+    color: colors.textOnPrimary
   }
 });

@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { useI18n } from '@/i18n';
 import { colors } from '@/theme/colors';
@@ -21,7 +22,9 @@ export default function GoalScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('goal.title')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('goal.title')}</AppText>
+      </ScreenHeader>
       <SectionCard>
         <AppText variant="caption">{t('goal.ninetyDay')}</AppText>
         <AppText variant="subtitle">{t('goal.energyRecovery')}</AppText>
@@ -55,7 +58,7 @@ export default function GoalScreen() {
 const styles = StyleSheet.create({
   progressTrack: {
     height: 10,
-    backgroundColor: colors.backgroundSecondary,
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 999,
     overflow: 'hidden',
     marginVertical: 12
@@ -63,20 +66,20 @@ const styles = StyleSheet.create({
   progressFill: {
     width: '56%',
     height: '100%',
-    backgroundColor: colors.accent
+    backgroundColor: colors.primary
   },
   milestone: {
     flexDirection: 'row',
     gap: 12,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border
+    borderBottomColor: colors.borderSoft
   },
   dot: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.surfaceMuted,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   milestoneTitle: {
-    color: colors.textPrimary,
+    color: colors.text,
     fontWeight: '800'
   }
 });

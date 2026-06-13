@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { onboardingSteps } from '@/features/onboarding/onboardingSteps';
@@ -47,8 +48,10 @@ export default function StartChecklistScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.checklist.title')}</AppText>
-      <AppText variant="body">{t('onboarding.checklist.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.checklist.title')}</AppText>
+        <AppText variant="body">{t('onboarding.checklist.subtitle')}</AppText>
+      </ScreenHeader>
 
       <StateNotice
         title={t('onboarding.checklist.title')}
@@ -100,10 +103,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   numberLocked: {
-    backgroundColor: colors.textMuted
+    backgroundColor: colors.surfaceMuted
   },
   numberText: {
-    color: colors.background,
+    color: colors.text,
     fontWeight: '900'
   },
   stepText: {
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     opacity: 0.62
   },
   lockedText: {
-    color: colors.textMuted
+    color: colors.textSoft
   },
   pressed: {
     opacity: 0.78

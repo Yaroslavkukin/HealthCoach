@@ -4,6 +4,7 @@ import { Pressable, TextInput, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { accessRoutes } from '@/features/access/accessModel';
@@ -84,15 +85,17 @@ export default function ProfileSetupScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.profile.title')}</AppText>
-      <AppText variant="body">{t('onboarding.profile.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.profile.title')}</AppText>
+        <AppText variant="body">{t('onboarding.profile.subtitle')}</AppText>
+      </ScreenHeader>
       <StateNotice title={t('onboarding.profile.title')} message={saveMessage ?? t('onboarding.profile.initialSave')} variant={noticeVariant} />
       <SectionCard>
         {profileFieldsBeforeGender.map((field) => (
           <TextInput
             key={field.key}
             placeholder={t(field.placeholder)}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textSoft}
             keyboardType={field.keyboardType}
             value={form[field.key]}
             onChangeText={(value) => updateField(field.key, value)}
@@ -115,7 +118,7 @@ export default function ProfileSetupScreen() {
           <TextInput
             key={field.key}
             placeholder={t(field.placeholder)}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textSoft}
             keyboardType={field.keyboardType}
             value={form[field.key]}
             onChangeText={(value) => updateField(field.key, value)}
@@ -130,16 +133,16 @@ export default function ProfileSetupScreen() {
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: colors.cardElevated,
-    color: colors.textPrimary,
+    backgroundColor: colors.surfaceMuted,
+    color: colors.text,
     borderRadius: 14,
     padding: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   },
   fieldLabel: {
-    color: colors.textSecondary,
+    color: colors.textMuted,
     fontWeight: '800',
     marginBottom: 8
   },
@@ -150,23 +153,23 @@ const styles = StyleSheet.create({
   },
   genderButton: {
     flex: 1,
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 14,
     padding: 14,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   },
   genderButtonActive: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
     borderColor: colors.accent
   },
   genderText: {
-    color: colors.textSecondary,
+    color: colors.textMuted,
     fontWeight: '800'
   },
   genderTextActive: {
-    color: colors.background
+    color: colors.textOnPrimary
   }
 });
 

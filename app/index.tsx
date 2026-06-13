@@ -1,14 +1,10 @@
 import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { AppText } from '@/components/AppText';
-import { useI18n } from '@/i18n';
 import { getCurrentAuthSession } from '@/services/authService';
 import { colors } from '@/theme/colors';
 
 export default function SplashScreen() {
-  const { t } = useI18n();
-
   useEffect(() => {
     let active = true;
 
@@ -24,7 +20,7 @@ export default function SplashScreen() {
       }
 
       void routeFromSession();
-    }, 1800);
+    }, 1500);
 
     return () => {
       active = false;
@@ -34,9 +30,7 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.root}>
-      <Image source={require('../assets/images/icon.png')} style={styles.logo} />
-      <AppText variant="title">{t('app.name')}</AppText>
-      <AppText variant="caption">{t('splash.subtitle')}</AppText>
+      <Image source={require('../assets/images/health-coach-splash.png')} style={styles.logo} resizeMode="contain" />
     </View>
   );
 }
@@ -46,12 +40,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.background,
-    gap: 12
+    backgroundColor: colors.primary
   },
   logo: {
-    width: 120,
-    height: 120,
-    borderRadius: 32
+    width: '82%',
+    maxWidth: 420,
+    aspectRatio: 1
   }
 });

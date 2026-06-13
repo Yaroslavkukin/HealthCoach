@@ -4,6 +4,7 @@ import { AppText } from '@/components/AppText';
 import { HealthSystemCard } from '@/components/HealthSystemCard';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { demoBiomarkers, demoSystemScores } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
@@ -15,8 +16,10 @@ export default function BodyScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('body.title')}</AppText>
-      <AppText variant="body">{t('body.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('body.title')}</AppText>
+        <AppText variant="body">{t('body.subtitle')}</AppText>
+      </ScreenHeader>
 
       <SectionCard style={styles.bodyVisual}>
         <View style={styles.figure}>
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
     width: 86,
     height: 120,
     borderRadius: 42,
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.primary,
     borderWidth: 2,
     borderColor: colors.accent,
     marginTop: 8

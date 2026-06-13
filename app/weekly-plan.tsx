@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { TaskItem } from '@/components/TaskItem';
 import { demoWeeklyPlan } from '@/data/mock/healthProfile';
@@ -35,8 +36,10 @@ export default function WeeklyPlanScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('weekly.title')}</AppText>
-      <AppText variant="body">{t('weekly.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('weekly.title')}</AppText>
+        <AppText variant="body">{t('weekly.subtitle')}</AppText>
+      </ScreenHeader>
 
       <View style={styles.dayRow}>
         {demoWeeklyPlan.map((day) => (
@@ -68,18 +71,18 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   },
   dayChipActive: {
-    backgroundColor: colors.accent
+    backgroundColor: colors.primary
   },
   dayText: {
-    color: colors.textSecondary,
+    color: colors.textMuted,
     fontWeight: '800'
   },
   dayTextActive: {
-    color: colors.background
+    color: colors.textOnPrimary
   }
 });

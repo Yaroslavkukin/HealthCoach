@@ -4,6 +4,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { accessRoutes } from '@/features/access/accessModel';
@@ -69,8 +70,10 @@ export default function CreateAccountScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('account.title')}</AppText>
-      <AppText variant="body">{t('account.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('account.title')}</AppText>
+        <AppText variant="body">{t('account.subtitle')}</AppText>
+      </ScreenHeader>
 
       <StateNotice
         title={t('account.noticeTitle')}
@@ -81,7 +84,7 @@ export default function CreateAccountScreen() {
       <SectionCard>
         <TextInput
           placeholder={t('account.emailPlaceholder')}
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={colors.textSoft}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
@@ -91,7 +94,7 @@ export default function CreateAccountScreen() {
         />
         <TextInput
           placeholder={t('account.passwordPlaceholder')}
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={colors.textSoft}
           secureTextEntry
           autoComplete="password"
           value={password}
@@ -119,12 +122,12 @@ export default function CreateAccountScreen() {
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: colors.cardElevated,
-    color: colors.textPrimary,
+    backgroundColor: colors.surfaceMuted,
+    color: colors.text,
     borderRadius: 14,
     padding: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   }
 });

@@ -2,6 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { demoBiomarkers } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
@@ -14,7 +15,9 @@ export default function BiomarkerDetailScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{marker.name}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{marker.name}</AppText>
+      </ScreenHeader>
       <SectionCard>
         <AppText variant="metric">{marker.value}</AppText>
         <AppText variant="body">{marker.unit}</AppText>

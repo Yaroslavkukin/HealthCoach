@@ -1,6 +1,7 @@
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { demoBeeProducts } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
@@ -12,8 +13,10 @@ export default function BeeProductsScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('bee.title')}</AppText>
-      <AppText variant="body">{t('bee.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('bee.title')}</AppText>
+        <AppText variant="body">{t('bee.subtitle')}</AppText>
+      </ScreenHeader>
 
       {demoBeeProducts.map((item, index) => {
         const product = translateBeeProduct(item, t);

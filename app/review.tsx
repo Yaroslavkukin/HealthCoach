@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { reviewFollowUps } from '@/data/mock/testingReadiness';
@@ -30,8 +31,10 @@ export default function FourteenDayReviewScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('review.title')}</AppText>
-      <AppText variant="body">{t('review.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('review.title')}</AppText>
+        <AppText variant="body">{t('review.subtitle')}</AppText>
+      </ScreenHeader>
 
       <StateNotice title={isComplete ? t('review.ready') : t('review.inProgress')} message={reviewMessage} variant={reviewState} />
 
@@ -78,18 +81,18 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 10,
     alignItems: 'center',
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.surfaceMuted,
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   },
   answerActive: {
-    backgroundColor: colors.accent
+    backgroundColor: colors.primary
   },
   answerText: {
-    color: colors.textSecondary,
+    color: colors.textMuted,
     fontWeight: '800'
   },
   answerTextActive: {
-    color: colors.background
+    color: colors.textOnPrimary
   }
 });

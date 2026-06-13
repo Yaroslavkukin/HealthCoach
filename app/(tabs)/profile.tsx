@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoUser } from '@/data/mock/healthProfile';
@@ -79,7 +80,9 @@ export default function ProfileScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('common.profile')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('common.profile')}</AppText>
+      </ScreenHeader>
 
       {signOutMessage ? <StateNotice title={t('profile.signOut')} message={signOutMessage} variant="error" /> : null}
 

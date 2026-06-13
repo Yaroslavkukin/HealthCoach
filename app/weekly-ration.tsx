@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { useI18n } from '@/i18n';
 import { colors } from '@/theme/colors';
@@ -28,8 +29,10 @@ export default function WeeklyRationScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('weeklyRation.title')}</AppText>
-      <AppText variant="body">{t('weeklyRation.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('weeklyRation.title')}</AppText>
+        <AppText variant="body">{t('weeklyRation.subtitle')}</AppText>
+      </ScreenHeader>
 
       {dayKeys.map((dayKey) => (
         <SectionCard key={dayKey}>
@@ -64,8 +67,8 @@ const styles = StyleSheet.create({
     gap: 12,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.backgroundSecondary,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.surfaceMuted,
     padding: 12
   },
   placeholderIcon: {
@@ -74,9 +77,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.accentSoft
+    borderColor: colors.accent
   },
   placeholderIconText: {
     color: colors.accent,
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   slotTitle: {
-    color: colors.textPrimary,
+    color: colors.text,
     fontSize: 15,
     fontWeight: '800',
     marginBottom: 2

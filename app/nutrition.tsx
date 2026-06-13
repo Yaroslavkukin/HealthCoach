@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { demoNutritionMeals } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
@@ -13,8 +14,10 @@ export default function NutritionScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('nutrition.title')}</AppText>
-      <AppText variant="body">{t('nutrition.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('nutrition.title')}</AppText>
+        <AppText variant="body">{t('nutrition.subtitle')}</AppText>
+      </ScreenHeader>
 
       {meals.map((meal) => (
         <SectionCard key={meal.id}>

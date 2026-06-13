@@ -5,6 +5,7 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScorePill } from '@/components/ScorePill';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
@@ -39,8 +40,10 @@ export default function TodayScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('common.today')}</AppText>
-      <AppText variant="body">{t('today.greeting', { name: demoUser.firstName })}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('common.today')}</AppText>
+        <AppText variant="body">{t('today.greeting', { name: demoUser.firstName })}</AppText>
+      </ScreenHeader>
 
       <SectionCard style={styles.heroCard}>
         <AppText variant="caption">{t('today.overallScore')}</AppText>
@@ -75,7 +78,7 @@ export default function TodayScreen() {
 const styles = StyleSheet.create({
   heroCard: {
     alignItems: 'center',
-    backgroundColor: colors.cardElevated
+    backgroundColor: colors.surface
   },
   scoreRow: {
     flexDirection: 'row',
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     width: '100%',
     height: 8,
-    backgroundColor: colors.backgroundSecondary,
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 999,
     overflow: 'hidden',
     marginTop: 12,
@@ -93,6 +96,6 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: colors.accent
+    backgroundColor: colors.primary
   }
 });

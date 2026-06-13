@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoUser } from '@/data/mock/healthProfile';
@@ -37,8 +38,10 @@ export default function BravermanScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.braverman.title')}</AppText>
-      <AppText variant="body">{t('onboarding.braverman.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.braverman.title')}</AppText>
+        <AppText variant="body">{t('onboarding.braverman.subtitle')}</AppText>
+      </ScreenHeader>
 
       <SectionCard>
         <AppText variant="subtitle">{t('onboarding.braverman.questions')}</AppText>

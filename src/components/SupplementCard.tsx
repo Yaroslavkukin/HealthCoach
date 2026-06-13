@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { AppText } from '@/components/AppText';
+import { AppText, TextToneProvider } from '@/components/AppText';
 import { useI18n } from '@/i18n';
 import { translateSupplement } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
@@ -11,18 +11,20 @@ export function SupplementCard({ supplement }: { supplement: SupplementRecommend
   const intakeTime = formatIntakeTime(displaySupplement.nextIntake ?? displaySupplement.schedule, t('common.today'));
 
   return (
-    <View style={styles.root}>
-      <AppText style={styles.title}>{displaySupplement.name}</AppText>
-      <AppText variant="caption">{displaySupplement.reason}</AppText>
-      <View style={styles.metaRow}>
-        <AppText variant="caption">{displaySupplement.teaspoonDosage ?? displaySupplement.dosage}</AppText>
-        <AppText variant="caption">{t('component.next', { next: intakeTime })}</AppText>
+    <TextToneProvider tone="surface">
+      <View style={styles.root}>
+        <AppText style={styles.title}>{displaySupplement.name}</AppText>
+        <AppText variant="caption">{displaySupplement.reason}</AppText>
+        <View style={styles.metaRow}>
+          <AppText variant="caption">{displaySupplement.teaspoonDosage ?? displaySupplement.dosage}</AppText>
+          <AppText variant="caption">{t('component.next', { next: intakeTime })}</AppText>
+        </View>
+        <AppText style={styles.statusText} variant="caption">
+          {t('component.supplementToday', { status: displaySupplement.takenToday ? t('common.completed') : t('common.pending') })}
+        </AppText>
+        {displaySupplement.courseDuration ? <AppText variant="caption">{t('component.course', { course: displaySupplement.courseDuration })}</AppText> : null}
       </View>
-      <AppText style={styles.statusText} variant="caption">
-        {t('component.supplementToday', { status: displaySupplement.takenToday ? t('common.completed') : t('common.pending') })}
-      </AppText>
-      {displaySupplement.courseDuration ? <AppText variant="caption">{t('component.course', { course: displaySupplement.courseDuration })}</AppText> : null}
-    </View>
+    </TextToneProvider>
   );
 }
 
@@ -32,12 +34,17 @@ function formatIntakeTime(value: string, todayLabel: string) {
 
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    padding: 16,
+    backgroundColor: colors.surface,
+    borderRadius: 22,
+    padding: 18,
     borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: 12
+    borderColor: colors.borderSoft,
+    marginBottom: 12,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 14,
+    elevation: 2
   },
   title: {
     fontWeight: '800',

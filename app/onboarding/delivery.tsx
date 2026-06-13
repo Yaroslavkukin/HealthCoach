@@ -4,6 +4,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { accessRoutes } from '@/features/access/accessModel';
@@ -78,8 +79,10 @@ export default function DeliverySetupScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.delivery.title')}</AppText>
-      <AppText variant="body">{t('onboarding.delivery.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.delivery.title')}</AppText>
+        <AppText variant="body">{t('onboarding.delivery.subtitle')}</AppText>
+      </ScreenHeader>
       <StateNotice title={t('onboarding.delivery.title')} message={saveMessage ?? t('onboarding.delivery.initialSave')} variant={noticeVariant} />
 
       <SectionCard>
@@ -87,7 +90,7 @@ export default function DeliverySetupScreen() {
           <TextInput
             key={field.key}
             placeholder={t(field.placeholder)}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textSoft}
             value={form[field.key]}
             onChangeText={(value) => updateField(field.key, value)}
             style={styles.input}
@@ -101,13 +104,13 @@ export default function DeliverySetupScreen() {
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: colors.cardElevated,
-    color: colors.textPrimary,
+    backgroundColor: colors.surfaceMuted,
+    color: colors.text,
     borderRadius: 14,
     padding: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: colors.border
+    borderColor: colors.borderSoft
   }
 });
 

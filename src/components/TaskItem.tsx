@@ -27,7 +27,7 @@ export function TaskItem({ task, onToggle }: { task: DailyTask; onToggle?: () =>
   return (
     <Pressable onPress={onToggle} style={({ pressed }) => [styles.root, pressed && styles.pressed]}>
       <View style={[styles.checkbox, task.completed && styles.checkboxDone]}>
-        {task.completed ? <Ionicons name="checkmark" size={16} color={colors.background} /> : null}
+        {task.completed ? <Ionicons name="checkmark" size={16} color={colors.text} /> : null}
       </View>
       <View style={styles.textWrap}>
         <View style={styles.titleRow}>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border
+    borderBottomColor: colors.borderSoft
   },
   pressed: {
     opacity: 0.75
@@ -75,6 +75,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '700',
-    color: colors.textPrimary
+    color: colors.text
   }
 });

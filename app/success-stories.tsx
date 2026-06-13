@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { demoSuccessStories } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
@@ -12,8 +13,10 @@ export default function SuccessStoriesScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('success.title')}</AppText>
-      <AppText variant="body">{t('success.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('success.title')}</AppText>
+        <AppText variant="body">{t('success.subtitle')}</AppText>
+      </ScreenHeader>
 
       {demoSuccessStories.map((item) => {
         const story = translateSuccessStory(item, t);

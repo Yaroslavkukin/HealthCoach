@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { demoBiomarkers } from '@/data/mock/healthProfile';
@@ -43,8 +44,10 @@ export default function BloodUploadScreen() {
 
   return (
     <ScreenContainer>
-      <AppText variant="title">{t('onboarding.blood.title')}</AppText>
-      <AppText variant="body">{t('onboarding.blood.subtitle')}</AppText>
+      <ScreenHeader>
+        <AppText variant="title">{t('onboarding.blood.title')}</AppText>
+        <AppText variant="body">{t('onboarding.blood.subtitle')}</AppText>
+      </ScreenHeader>
 
       <StateNotice {...notice} />
       <StateNotice title={t('onboarding.blood.metadata')} message={persistenceMessage ?? t('onboarding.blood.initialSave')} variant={uploadState === 'error' ? 'error' : 'info'} />
