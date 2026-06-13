@@ -3,11 +3,10 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
-import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoWeeklyPlan } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
-import { translatePersistenceMessage, translateWeeklyDay } from '@/i18n/mockContent';
+import { translateWeeklyDay } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
@@ -15,7 +14,6 @@ export default function WeeklyPlanScreen() {
   const { t } = useI18n();
   const [selectedDayId, setSelectedDayId] = useState(demoWeeklyPlan[0].id);
   const [completedOverrides, setCompletedOverrides] = useState<Record<string, boolean>>({});
-  const [taskSaveMessage, setTaskSaveMessage] = useState<string | null>(null);
   const selectedDay = demoWeeklyPlan.find((day) => day.id === selectedDayId) ?? demoWeeklyPlan[0];
   const selectedDayText = translateWeeklyDay(selectedDay, t);
   const tasks = selectedDay.tasks.map((task) => ({ ...task, completed: completedOverrides[task.id] ?? task.completed }));
@@ -31,9 +29,7 @@ export default function WeeklyPlanScreen() {
     }));
 
     if (currentTask) {
-      void saveDailyTaskStatus({ ...currentTask, completed: nextCompleted }).then((result) => {
-        setTaskSaveMessage(translatePersistenceMessage(result.message, t));
-      });
+      void saveDailyTaskStatus({ ...currentTask, completed: nextCompleted });
     }
   }
 
@@ -54,7 +50,6 @@ export default function WeeklyPlanScreen() {
         <AppText variant="subtitle">{selectedDayText.day}</AppText>
         <AppText variant="body">{t('weekly.focus', { focus: selectedDayText.focus })}</AppText>
         <AppText variant="caption">{t('weekly.progress', { completed, total: tasks.length })}</AppText>
-        <StateNotice title={t('today.taskStorage')} message={taskSaveMessage ?? t('weekly.mockTaskStorage')} variant="info" />
         {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
       </SectionCard>
     </ScreenContainer>
