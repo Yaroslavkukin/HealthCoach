@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -15,6 +15,11 @@ export default function PreviewScreen() {
   return (
     <ScreenContainer>
       <ScreenHeader style={styles.headerPanel}>
+        <Image
+          source={require('../assets/images/health-coach-leaf-transparent.png')}
+          style={styles.headerLeaf}
+          resizeMode="contain"
+        />
         <AppText variant="title">{t('app.name')}</AppText>
         <AppText variant="body">{t('preview.subtitle')}</AppText>
       </ScreenHeader>
@@ -55,7 +60,16 @@ const styles = StyleSheet.create({
   headerPanel: {
     borderWidth: 1,
     borderColor: colors.accent,
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
+    paddingRight: 120,
+    position: 'relative'
+  },
+  headerLeaf: {
+    position: 'absolute',
+    top: 20,
+    right: 24,
+    width: 72,
+    height: 72
   },
   greenElement: {
     borderWidth: 1,

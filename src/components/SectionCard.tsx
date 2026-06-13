@@ -3,9 +3,19 @@ import { StyleSheet, View, ViewStyle } from 'react-native';
 import { TextToneProvider } from '@/components/AppText';
 import { colors } from '@/theme/colors';
 
-export function SectionCard({ children, style }: { children: ReactNode; style?: ViewStyle }) {
+type SectionCardTone = 'background' | 'surface' | 'primary';
+
+export function SectionCard({
+  children,
+  style,
+  tone = 'surface'
+}: {
+  children: ReactNode;
+  style?: ViewStyle;
+  tone?: SectionCardTone;
+}) {
   return (
-    <TextToneProvider tone="surface">
+    <TextToneProvider tone={tone}>
       <View style={[styles.card, style]}>{children}</View>
     </TextToneProvider>
   );
