@@ -224,15 +224,7 @@ export const ru: Record<TranslationKey, string> = {
 
   'nutrition.title': 'Питание',
   'nutrition.subtitle': 'Еда ближе к натуральной, минимум обработки, без рафинированного сахара.',
-  'nutrition.mockTitle': 'Демо-план питания',
-  'nutrition.mockMessage': 'Изменения приемов пищи только визуальные в этом прототипе. Персональное питание работает через защищенный профильный поток, когда он доступен.',
   'nutrition.modify': 'Изменение: {modification}',
-  'nutrition.principles': 'Принципы питания',
-  'nutrition.principle.natural': 'Натуральные продукты',
-  'nutrition.principle.minimal': 'Минимально обработанные продукты',
-  'nutrition.principle.density': 'Питательная плотность',
-  'nutrition.principle.sugar': 'Избегать рафинированного сахара',
-  'nutrition.principle.bee': 'Пчелопродукты только при переносимости',
   'nutrition.askAi': 'Спросить ИИ по питанию',
 
   'weekly.title': 'План на 7 дней',

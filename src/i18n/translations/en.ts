@@ -222,15 +222,7 @@ export const en = {
 
   'nutrition.title': 'Nutrition',
   'nutrition.subtitle': 'Food close to nature, minimal processing, no refined sugar.',
-  'nutrition.mockTitle': 'Mock nutrition plan',
-  'nutrition.mockMessage': 'Meal changes are visual only in this prototype. Personalized nutrition runs through the secure profile flow when available.',
   'nutrition.modify': 'Modify: {modification}',
-  'nutrition.principles': 'Nutrition Principles',
-  'nutrition.principle.natural': 'Natural foods',
-  'nutrition.principle.minimal': 'Minimally processed foods',
-  'nutrition.principle.density': 'Nutrient density',
-  'nutrition.principle.sugar': 'Avoid refined sugar',
-  'nutrition.principle.bee': 'Bee products only when tolerated',
   'nutrition.askAi': 'Ask Nutrition AI',
 
   'weekly.title': '7-Day Plan',
