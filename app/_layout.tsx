@@ -28,6 +28,7 @@ function RootNavigator() {
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="preview" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="subscription" options={{ title: t('nav.subscription') }} />
         <Stack.Screen name="supplements" options={{ title: t('common.supplements') }} />
         <Stack.Screen name="bee-products" options={{ title: t('nav.beeProducts') }} />
