@@ -41,6 +41,7 @@ export const en = {
   'nav.subscriptionExpired': 'Subscription Expired',
   'nav.successStories': 'Success Stories',
   'nav.weeklyPlan': 'Weekly Plan',
+  'nav.weeklyRation': 'Weekly ration',
 
   'preview.subtitle': 'Explore the product before registration.',
   'preview.demoMode': 'Demo Mode',
@@ -224,12 +225,16 @@ export const en = {
   'nutrition.subtitle': 'Food close to nature, minimal processing, no refined sugar.',
   'nutrition.modify': 'Modify: {modification}',
   'nutrition.askAi': 'Ask Nutrition AI',
+  'nutrition.weeklyRation': 'Weekly ration',
 
   'weekly.title': '7-Day Plan',
   'weekly.subtitle': 'This week is focused on recovery, movement consistency, and nutrition cleanup.',
   'weekly.focus': 'Focus: {focus}',
   'weekly.progress': 'Progress: {completed} of {total} completed',
   'weekly.mockTaskStorage': 'Weekly task changes will use mock fallback unless Supabase auth is configured.',
+  'weeklyRation.title': 'Weekly ration',
+  'weeklyRation.subtitle': 'AI will later generate a weekly ration from individual preferences, goals, tolerances, and schedule. For now, these slots are ready to be filled.',
+  'weeklyRation.aiPlaceholder': 'AI will fill this',
 
   'review.title': '14-Day Review',
   'review.subtitle': 'A coaching check-in, not a medical form.',

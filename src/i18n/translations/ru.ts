@@ -43,6 +43,7 @@ export const ru: Record<TranslationKey, string> = {
   'nav.subscriptionExpired': 'Подписка истекла',
   'nav.successStories': 'Истории успеха',
   'nav.weeklyPlan': 'План на неделю',
+  'nav.weeklyRation': 'Рацион на неделю',
 
   'preview.subtitle': 'Посмотрите продукт до регистрации.',
   'preview.demoMode': 'Демо-режим',
@@ -226,12 +227,16 @@ export const ru: Record<TranslationKey, string> = {
   'nutrition.subtitle': 'Еда ближе к натуральной, минимум обработки, без рафинированного сахара.',
   'nutrition.modify': 'Изменение: {modification}',
   'nutrition.askAi': 'Спросить ИИ по питанию',
+  'nutrition.weeklyRation': 'Рацион на неделю',
 
   'weekly.title': 'План на 7 дней',
   'weekly.subtitle': 'На этой неделе фокус на восстановлении, регулярном движении и улучшении питания.',
   'weekly.focus': 'Фокус: {focus}',
   'weekly.progress': 'Прогресс: {completed} из {total} выполнено',
   'weekly.mockTaskStorage': 'Изменения недельных задач сохраняются в демо-режиме, если авторизация Supabase не настроена.',
+  'weeklyRation.title': 'Рацион на неделю',
+  'weeklyRation.subtitle': 'Позже ИИ будет составлять недельный рацион с учетом индивидуальных предпочтений, целей, переносимости и расписания. Сейчас эти слоты подготовлены для заполнения.',
+  'weeklyRation.aiPlaceholder': 'AI заполнит',
 
   'review.title': '14-дневный обзор',
   'review.subtitle': 'Коучинговая проверка, а не медицинская форма.',

@@ -34,6 +34,7 @@ function RootNavigator() {
         <Stack.Screen name="bee-products" options={{ title: t('nav.beeProducts') }} />
         <Stack.Screen name="nutrition" options={{ title: t('nav.nutrition') }} />
         <Stack.Screen name="weekly-plan" options={{ title: t('nav.weeklyPlan') }} />
+        <Stack.Screen name="weekly-ration" options={{ title: t('nav.weeklyRation') }} />
         <Stack.Screen name="review" options={{ title: t('nav.review') }} />
         <Stack.Screen name="subscription-expired" options={{ title: t('nav.subscriptionExpired') }} />
         <Stack.Screen name="clinic" options={{ title: t('common.clinic') }} />
