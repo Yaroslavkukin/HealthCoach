@@ -39,7 +39,6 @@ export default function SupplementsScreen() {
         <AppText variant="caption">{t('mock.supplement.safety')}</AppText>
       </SectionCard>
 
-      <PrimaryButton label={t('supplements.beeProducts')} onPress={() => router.push('/bee-products')} />
       <PrimaryButton label={t('supplements.backToday')} variant="secondary" onPress={() => router.push('/(tabs)/today')} />
     </ScreenContainer>
   );

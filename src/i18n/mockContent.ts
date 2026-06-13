@@ -96,11 +96,11 @@ const taskInstructionKeys: Record<string, TranslationKey> = {
   'Keep intensity conversational.': 'mock.task.zone2.instruction'
 };
 
-const supplementKeys: Record<string, { name: TranslationKey; reason: TranslationKey; capsules: TranslationKey; food: TranslationKey; compatibility?: TranslationKey; course?: TranslationKey }> = {
+const supplementKeys: Record<string, { name: TranslationKey; reason: TranslationKey; teaspoons: TranslationKey; food: TranslationKey; compatibility?: TranslationKey; course?: TranslationKey }> = {
   'sup-1': {
     name: 'mock.supplement.magnesium.name',
     reason: 'mock.supplement.magnesium.reason',
-    capsules: 'mock.supplement.magnesium.capsules',
+    teaspoons: 'mock.supplement.magnesium.teaspoons',
     food: 'mock.supplement.magnesium.food',
     compatibility: 'mock.supplement.magnesium.compatibility',
     course: 'mock.supplement.magnesium.course'
@@ -108,7 +108,7 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
   'sup-2': {
     name: 'mock.supplement.omega.name',
     reason: 'mock.supplement.omega.reason',
-    capsules: 'mock.supplement.omega.capsules',
+    teaspoons: 'mock.supplement.omega.teaspoons',
     food: 'mock.supplement.omega.food',
     compatibility: 'mock.supplement.omega.compatibility',
     course: 'mock.supplement.omega.course'
@@ -116,7 +116,7 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
   'sup-3': {
     name: 'mock.supplement.vitaminD.name',
     reason: 'mock.supplement.vitaminD.reason',
-    capsules: 'mock.supplement.vitaminD.capsules',
+    teaspoons: 'mock.supplement.vitaminD.teaspoons',
     food: 'mock.supplement.vitaminD.food',
     compatibility: 'mock.supplement.vitaminD.compatibility',
     course: 'mock.supplement.vitaminD.course'
@@ -124,10 +124,42 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
   'sup-4': {
     name: 'mock.supplement.theanine.name',
     reason: 'mock.supplement.theanine.reason',
-    capsules: 'mock.supplement.theanine.capsules',
+    teaspoons: 'mock.supplement.theanine.teaspoons',
     food: 'mock.supplement.theanine.food',
     compatibility: 'mock.supplement.theanine.compatibility',
     course: 'mock.supplement.theanine.course'
+  },
+  'sup-5': {
+    name: 'mock.supplement.honey.name',
+    reason: 'mock.supplement.honey.reason',
+    teaspoons: 'mock.supplement.honey.teaspoons',
+    food: 'mock.supplement.honey.food',
+    compatibility: 'mock.supplement.honey.compatibility',
+    course: 'mock.supplement.honey.course'
+  },
+  'sup-6': {
+    name: 'mock.supplement.propolis.name',
+    reason: 'mock.supplement.propolis.reason',
+    teaspoons: 'mock.supplement.propolis.teaspoons',
+    food: 'mock.supplement.propolis.food',
+    compatibility: 'mock.supplement.propolis.compatibility',
+    course: 'mock.supplement.propolis.course'
+  },
+  'sup-7': {
+    name: 'mock.supplement.royalJelly.name',
+    reason: 'mock.supplement.royalJelly.reason',
+    teaspoons: 'mock.supplement.royalJelly.teaspoons',
+    food: 'mock.supplement.royalJelly.food',
+    compatibility: 'mock.supplement.royalJelly.compatibility',
+    course: 'mock.supplement.royalJelly.course'
+  },
+  'sup-8': {
+    name: 'mock.supplement.beePollen.name',
+    reason: 'mock.supplement.beePollen.reason',
+    teaspoons: 'mock.supplement.beePollen.teaspoons',
+    food: 'mock.supplement.beePollen.food',
+    compatibility: 'mock.supplement.beePollen.compatibility',
+    course: 'mock.supplement.beePollen.course'
   }
 };
 
@@ -259,7 +291,7 @@ export function translateSupplement(supplement: SupplementRecommendation, t: Tra
     ...supplement,
     name: t(keys.name),
     reason: t(keys.reason),
-    capsuleDosage: t(keys.capsules),
+    teaspoonDosage: t(keys.teaspoons),
     schedule: translateTimeText(supplement.schedule, t),
     foodInstruction: t(keys.food),
     compatibilityNotes: keys.compatibility ? t(keys.compatibility) : supplement.compatibilityNotes,

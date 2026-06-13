@@ -10,7 +10,7 @@ import type {
 } from '@/types';
 
 export const supplementSafetyNote =
-  'Before starting any supplement protocol, consult a qualified healthcare professional, especially if you have medical conditions, take medication, are pregnant, breastfeeding, or have allergies.';
+  'Before starting any supplement or bee product protocol, consult a qualified healthcare professional, especially if you have medical conditions, take medication, are pregnant, breastfeeding, or have allergies. Avoid bee products if you are sensitive to honey, pollen, propolis, royal jelly, or other bee products.';
 
 export const demoUser = {
   firstName: 'Yaroslav',
@@ -136,7 +136,7 @@ export const demoSupplements: SupplementRecommendation[] = [
     id: 'sup-1',
     name: 'Magnesium Bisglycinate',
     dosage: '200-400 mg',
-    capsuleDosage: '2 capsules',
+    teaspoonDosage: '1 teaspoon',
     schedule: 'Evening',
     foodInstruction: 'After dinner or 1-2 hours before sleep',
     reason: 'Supports relaxation, recovery, and sleep quality.',
@@ -152,7 +152,7 @@ export const demoSupplements: SupplementRecommendation[] = [
     id: 'sup-2',
     name: 'Omega-3',
     dosage: '1000 mg',
-    capsuleDosage: '1 capsule',
+    teaspoonDosage: '1 teaspoon',
     schedule: 'Morning',
     foodInstruction: 'With food',
     reason: 'Supports nervous system, inflammation balance, and general recovery.',
@@ -168,7 +168,7 @@ export const demoSupplements: SupplementRecommendation[] = [
     id: 'sup-3',
     name: 'Vitamin D3',
     dosage: '1000-2000 IU',
-    capsuleDosage: '1 capsule',
+    teaspoonDosage: '1/2 teaspoon',
     schedule: 'Morning',
     foodInstruction: 'With breakfast',
     reason: 'Demo support for low-normal vitamin D status and mood/energy resilience.',
@@ -184,7 +184,7 @@ export const demoSupplements: SupplementRecommendation[] = [
     id: 'sup-4',
     name: 'L-Theanine',
     dosage: '100-200 mg',
-    capsuleDosage: '1 capsule',
+    teaspoonDosage: '1/2 teaspoon',
     schedule: 'Day or evening',
     foodInstruction: 'Can be taken with or without food',
     reason: 'Supports calm focus without sedation.',
@@ -194,6 +194,70 @@ export const demoSupplements: SupplementRecommendation[] = [
     takenToday: false,
     compatibilityNotes: 'Useful before focused work or evening wind-down.',
     courseDuration: 'As needed during high-stress weeks',
+    safetyNote: supplementSafetyNote
+  },
+  {
+    id: 'sup-5',
+    name: 'Honey',
+    dosage: '1 teaspoon',
+    teaspoonDosage: '1 teaspoon',
+    schedule: 'Morning',
+    foodInstruction: 'With breakfast or warm tea',
+    reason: 'Demo support for morning energy and routine consistency.',
+    confidence: 'medium',
+    stackType: 'essential',
+    nextIntake: 'Tomorrow 09:00',
+    takenToday: false,
+    compatibilityNotes: 'Avoid if allergic or sensitive to bee products; monitor personal tolerance.',
+    courseDuration: 'Use only when tolerated, then review',
+    safetyNote: supplementSafetyNote
+  },
+  {
+    id: 'sup-6',
+    name: 'Propolis',
+    dosage: '1/2 teaspoon',
+    teaspoonDosage: '1/2 teaspoon',
+    schedule: 'Evening',
+    foodInstruction: 'After food',
+    reason: 'Demo support for resilience during high-load weeks.',
+    confidence: 'medium',
+    stackType: 'complete',
+    nextIntake: '21:30',
+    takenToday: false,
+    compatibilityNotes: 'Avoid with bee product, pollen, or propolis sensitivity.',
+    courseDuration: '2-4 weeks, then review tolerance',
+    safetyNote: supplementSafetyNote
+  },
+  {
+    id: 'sup-7',
+    name: 'Royal Jelly',
+    dosage: '1/2 teaspoon',
+    teaspoonDosage: '1/2 teaspoon',
+    schedule: 'Morning',
+    foodInstruction: 'In the morning, with food',
+    reason: 'May support vitality and motivation under high cognitive load.',
+    confidence: 'medium',
+    stackType: 'complete',
+    nextIntake: 'Tomorrow 09:00',
+    takenToday: false,
+    compatibilityNotes: 'Avoid if allergic or sensitive to bee products.',
+    courseDuration: '2-4 weeks, then review',
+    safetyNote: supplementSafetyNote
+  },
+  {
+    id: 'sup-8',
+    name: 'Bee Pollen',
+    dosage: '1 teaspoon',
+    teaspoonDosage: '1 teaspoon',
+    schedule: 'Morning',
+    foodInstruction: 'Start with breakfast',
+    reason: 'Supportive nutrient-dense food for users who tolerate bee products.',
+    confidence: 'medium',
+    stackType: 'complete',
+    nextIntake: 'Tomorrow 09:00',
+    takenToday: false,
+    compatibilityNotes: 'Avoid with pollen allergy; start small and stop if sensitivity appears.',
+    courseDuration: '2 weeks, then review tolerance',
     safetyNote: supplementSafetyNote
   }
 ];

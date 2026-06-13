@@ -30,7 +30,7 @@ export type SupplementRecommendation = {
   id: string;
   name: string;
   dosage: string;
-  capsuleDosage?: string;
+  teaspoonDosage?: string;
   schedule: string;
   foodInstruction: string;
   reason: string;

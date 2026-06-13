@@ -15,7 +15,7 @@ export function SupplementCard({ supplement }: { supplement: SupplementRecommend
       <AppText style={styles.title}>{displaySupplement.name}</AppText>
       <AppText variant="caption">{displaySupplement.reason}</AppText>
       <View style={styles.metaRow}>
-        <AppText variant="caption">{displaySupplement.capsuleDosage ?? displaySupplement.dosage}</AppText>
+        <AppText variant="caption">{displaySupplement.teaspoonDosage ?? displaySupplement.dosage}</AppText>
         <AppText variant="caption">{t('component.next', { next: intakeTime })}</AppText>
       </View>
       <AppText style={styles.statusText} variant="caption">
