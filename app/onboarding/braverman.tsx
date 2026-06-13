@@ -8,7 +8,7 @@ import { StateNotice } from '@/components/StateNotice';
 import { demoUser } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
 import { translateArchetype, translatePersistenceMessage } from '@/i18n/mockContent';
-import { saveOnboardingChecklist } from '@/services/phase3Persistence';
+import { saveBravermanAssessment, saveOnboardingChecklist } from '@/services/phase3Persistence';
 
 export default function BravermanScreen() {
   const { t } = useI18n();
@@ -17,8 +17,22 @@ export default function BravermanScreen() {
 
   async function completeAssessment() {
     setShowResult(true);
-    const result = await saveOnboardingChecklist({ bravermanCompleted: true });
-    setSaveMessage(translatePersistenceMessage(result.message, t));
+    const assessmentResult = await saveBravermanAssessment({
+      dominantProfile: 'balanced',
+      motivationArchetype: demoUser.archetype,
+      rawScores: {
+        dopamine: 7,
+        acetylcholine: 6,
+        gaba: 5,
+        serotonin: 6
+      },
+      aiSummary: 'Demo Braverman assessment result.'
+    });
+    const checklistResult = assessmentResult.ok
+      ? await saveOnboardingChecklist({ bravermanCompleted: true })
+      : assessmentResult;
+
+    setSaveMessage(translatePersistenceMessage(checklistResult.message, t));
   }
 
   return (

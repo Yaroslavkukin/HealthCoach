@@ -1,13 +1,26 @@
+import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
+import { StateNotice } from '@/components/StateNotice';
 import { demoUser } from '@/data/mock/healthProfile';
 import { notificationPlaceholders, privacySafetyNotices } from '@/data/mock/testingReadiness';
 import { useI18n } from '@/i18n';
 import { translateArchetype, translateNotificationTiming, translateUserGoal } from '@/i18n/mockContent';
 import type { TranslationKey } from '@/i18n/translations/en';
+import { signOutCurrentUser } from '@/services/authService';
+import { fetchProfile } from '@/services/phase3Persistence';
+
+type StoredProfile = {
+  first_name?: unknown;
+  last_name?: unknown;
+  age?: unknown;
+  gender?: unknown;
+  main_goal?: unknown;
+  profile_completed?: unknown;
+};
 
 const notificationTitleKeys: Record<string, TranslationKey> = {
   'morning-plan': 'readiness.notification.morningPlan',
@@ -23,17 +36,60 @@ const privacyNoticeKeys: Record<string, { title: TranslationKey; message: Transl
 
 export default function ProfileScreen() {
   const { t } = useI18n();
+  const [storedProfile, setStoredProfile] = useState<StoredProfile | null>(null);
+  const [signOutMessage, setSignOutMessage] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadProfile() {
+      const result = await fetchProfile();
+
+      if (active && result.ok && result.data) {
+        setStoredProfile(result.data);
+      }
+    }
+
+    void loadProfile();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function signOut() {
+    setSigningOut(true);
+    const result = await signOutCurrentUser();
+    setSigningOut(false);
+
+    if (!result.ok) {
+      setSignOutMessage(t('profile.signOutError'));
+      return;
+    }
+
+    router.replace('/preview');
+  }
+
+  const storedName = [toDisplayText(storedProfile?.first_name), toDisplayText(storedProfile?.last_name)].filter(Boolean).join(' ');
+  const displayName = storedName || t('profile.demoUser');
+  const displayAge = toDisplayNumber(storedProfile?.age) ?? demoUser.age;
+  const displayGoal = toDisplayText(storedProfile?.main_goal) || translateUserGoal(demoUser.goal, t);
+  const displayCompletion = storedProfile?.profile_completed === true ? 100 : demoUser.profileCompletion;
 
   return (
     <ScreenContainer>
       <AppText variant="title">{t('common.profile')}</AppText>
 
+      {signOutMessage ? <StateNotice title={t('profile.signOut')} message={signOutMessage} variant="error" /> : null}
+
       <SectionCard>
-        <AppText variant="subtitle">{t('profile.demoUser')}</AppText>
-        <AppText variant="body">{t('profile.age', { age: demoUser.age })}</AppText>
-        <AppText variant="body">{t('profile.goal', { goal: translateUserGoal(demoUser.goal, t) })}</AppText>
+        <AppText variant="subtitle">{displayName}</AppText>
+        <AppText variant="body">{t('profile.age', { age: displayAge })}</AppText>
+        <AppText variant="body">{t('profile.goal', { goal: displayGoal })}</AppText>
+        {toDisplayText(storedProfile?.gender) ? <AppText variant="body">{t('profile.gender', { gender: toDisplayText(storedProfile?.gender) })}</AppText> : null}
         <AppText variant="body">{t('profile.archetype', { archetype: translateArchetype(demoUser.archetype, t) })}</AppText>
-        <AppText variant="body">{t('profile.completion', { percent: demoUser.profileCompletion })}</AppText>
+        <AppText variant="body">{t('profile.completion', { percent: displayCompletion })}</AppText>
       </SectionCard>
 
       <SectionCard>
@@ -62,6 +118,15 @@ export default function ProfileScreen() {
       <PrimaryButton label={t('profile.expired')} variant="secondary" onPress={() => router.push('/subscription-expired')} />
       <PrimaryButton label={t('common.clinic')} variant="secondary" onPress={() => router.push('/clinic')} />
       <PrimaryButton label={t('profile.successStories')} variant="secondary" onPress={() => router.push('/success-stories')} />
+      <PrimaryButton label={signingOut ? t('profile.signingOut') : t('profile.signOut')} variant="secondary" onPress={signingOut ? undefined : () => void signOut()} />
     </ScreenContainer>
   );
+}
+
+function toDisplayText(value: unknown) {
+  return typeof value === 'string' ? value : '';
+}
+
+function toDisplayNumber(value: unknown) {
+  return typeof value === 'number' ? value : undefined;
 }

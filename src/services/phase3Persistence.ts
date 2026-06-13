@@ -34,6 +34,12 @@ export type ProfileDraft = {
   weightKg?: number;
   country?: string;
   city?: string;
+  mainGoal?: string;
+  workType?: string;
+  activityLevel?: string;
+  sleepSchedule?: string;
+  stressLevel?: string;
+  symptoms?: string;
 };
 
 export type DeliveryDraft = {
@@ -60,6 +66,29 @@ export type OnboardingChecklistDraft = {
   lifestyleCompleted?: boolean;
   nutritionCompleted?: boolean;
   aiProfileGenerated?: boolean;
+};
+
+export type LifestyleAssessmentDraft = {
+  typicalDay?: string;
+  sleepHabits?: string;
+  workSchedule?: string;
+  activity?: string;
+  stress?: string;
+};
+
+export type NutritionAssessmentDraft = {
+  breakfast?: string;
+  lunchDinnerPattern?: string;
+  sugarProcessedFood?: string;
+  waterIntake?: string;
+  restaurantFastFood?: string;
+};
+
+export type BravermanAssessmentDraft = {
+  dominantProfile?: string;
+  motivationArchetype?: string;
+  rawScores?: Record<string, number>;
+  aiSummary?: string;
 };
 
 type OnboardingChecklistRow = {
@@ -129,7 +158,15 @@ export async function fetchProfile(): Promise<PersistenceResult<Record<string, u
     return { ok: false, mode: 'supabase', message: 'Unable to read Supabase profile.', error: error.message };
   }
 
-  return { ok: true, mode: 'supabase', message: 'Profile loaded from Supabase.', data };
+  const { data: goal } = await supabase
+    .from('user_goals')
+    .select('title')
+    .eq('user_id', context.userId)
+    .eq('goal_code', 'main_goal')
+    .eq('status', 'active')
+    .maybeSingle<{ title: string | null }>();
+
+  return { ok: true, mode: 'supabase', message: 'Profile loaded from Supabase.', data: data ? { ...data, main_goal: goal?.title ?? null } : null };
 }
 
 export async function upsertProfileDraft(profile: ProfileDraft): Promise<PersistenceResult<Record<string, unknown>>> {
@@ -160,6 +197,12 @@ export async function upsertProfileDraft(profile: ProfileDraft): Promise<Persist
 
   if (error) {
     return { ok: false, mode: 'supabase', message: 'Unable to save Supabase profile.', error: error.message };
+  }
+
+  const relatedDraftError = await saveProfileRelatedDrafts(context.userId, profile);
+
+  if (relatedDraftError) {
+    return { ok: false, mode: 'supabase', message: 'Unable to save Supabase profile.', error: relatedDraftError };
   }
 
   return { ok: true, mode: 'supabase', message: 'Profile saved to Supabase.', data };
@@ -292,6 +335,112 @@ export async function saveOnboardingChecklist(checklist: OnboardingChecklistDraf
   return { ok: true, mode: 'supabase', message: 'Onboarding checklist saved to Supabase.', data };
 }
 
+export async function saveLifestyleAssessment(draft: LifestyleAssessmentDraft): Promise<PersistenceResult<Record<string, unknown>>> {
+  const context = await getAuthPlaceholderContext();
+
+  if (context.mode === 'mock' || !supabase) {
+    return { ok: true, mode: 'mock', message: 'Lifestyle assessment saved to mock fallback.', data: { ...draft, user_id: context.userId } };
+  }
+
+  const { data, error } = await supabase
+    .from('lifestyle_assessments')
+    .insert({
+      user_id: context.userId,
+      sleep_schedule: draft.sleepHabits ? { description: draft.sleepHabits } : null,
+      activity_level: textOrNull(draft.activity),
+      stress_level: parseStressLevel(draft.stress),
+      work_type: textOrNull(draft.workSchedule),
+      symptoms: null,
+      free_text: buildFreeText([
+        ['Typical day', draft.typicalDay],
+        ['Sleep habits', draft.sleepHabits],
+        ['Work schedule', draft.workSchedule],
+        ['Activity', draft.activity],
+        ['Stress', draft.stress]
+      ])
+    })
+    .select()
+    .single();
+
+  if (error) {
+    return { ok: false, mode: 'supabase', message: 'Unable to save lifestyle assessment.', error: error.message };
+  }
+
+  return { ok: true, mode: 'supabase', message: 'Lifestyle assessment saved to Supabase.', data };
+}
+
+export async function saveNutritionAssessment(draft: NutritionAssessmentDraft): Promise<PersistenceResult<Record<string, unknown>>> {
+  const context = await getAuthPlaceholderContext();
+
+  if (context.mode === 'mock' || !supabase) {
+    return { ok: true, mode: 'mock', message: 'Nutrition assessment saved to mock fallback.', data: { ...draft, user_id: context.userId } };
+  }
+
+  const { data, error } = await supabase
+    .from('nutrition_assessments')
+    .insert({
+      user_id: context.userId,
+      typical_day_text: buildFreeText([
+        ['Breakfast', draft.breakfast],
+        ['Lunch and dinner', draft.lunchDinnerPattern]
+      ]),
+      sugar_intake: textOrNull(draft.sugarProcessedFood),
+      processed_food_intake: textOrNull(draft.restaurantFastFood),
+      water_intake: textOrNull(draft.waterIntake),
+      ai_nutrition_notes: null
+    })
+    .select()
+    .single();
+
+  if (error) {
+    return { ok: false, mode: 'supabase', message: 'Unable to save nutrition assessment.', error: error.message };
+  }
+
+  return { ok: true, mode: 'supabase', message: 'Nutrition assessment saved to Supabase.', data };
+}
+
+export async function saveBravermanAssessment(draft: BravermanAssessmentDraft): Promise<PersistenceResult<Record<string, unknown>>> {
+  const context = await getAuthPlaceholderContext();
+
+  if (context.mode === 'mock' || !supabase) {
+    return { ok: true, mode: 'mock', message: 'Braverman assessment saved to mock fallback.', data: { ...draft, user_id: context.userId } };
+  }
+
+  const { data: assessment, error: assessmentError } = await supabase
+    .from('braverman_assessments')
+    .insert({
+      user_id: context.userId,
+      status: 'completed',
+      completed_at: new Date().toISOString()
+    })
+    .select('id')
+    .single<{ id: string }>();
+
+  if (assessmentError) {
+    return { ok: false, mode: 'supabase', message: 'Unable to save Braverman assessment.', error: assessmentError.message };
+  }
+
+  const { data, error } = await supabase
+    .from('braverman_results')
+    .insert({
+      user_id: context.userId,
+      assessment_id: assessment.id,
+      dominant_profile: textOrNull(draft.dominantProfile),
+      possible_deficiencies: {},
+      motivation_archetype: textOrNull(draft.motivationArchetype),
+      raw_scores: draft.rawScores ?? {},
+      ai_summary: textOrNull(draft.aiSummary)
+    })
+    .select()
+    .single();
+
+  if (error) {
+    return { ok: false, mode: 'supabase', message: 'Unable to save Braverman assessment.', error: error.message };
+  }
+
+  return { ok: true, mode: 'supabase', message: 'Braverman assessment saved to Supabase.', data };
+}
+
 export async function saveDailyTaskStatus(task: DailyTask): Promise<PersistenceResult<Record<string, unknown>>> {
   const context = await getAuthPlaceholderContext();
 
@@ -319,6 +468,137 @@ export async function saveDailyTaskStatus(task: DailyTask): Promise<PersistenceR
   }
 
   return { ok: true, mode: 'supabase', message: 'Daily task status saved to Supabase.', data };
+}
+
+async function saveProfileRelatedDrafts(userId: string, profile: ProfileDraft): Promise<string | null> {
+  if (!supabase) {
+    return null;
+  }
+
+  if (textOrNull(profile.mainGoal)) {
+    const goalError = await upsertMainGoal(userId, profile.mainGoal);
+
+    if (goalError) {
+      return goalError;
+    }
+  }
+
+  if (hasProfileLifestyleAnswers(profile)) {
+    const { error } = await supabase
+      .from('lifestyle_assessments')
+      .insert({
+        user_id: userId,
+        sleep_schedule: profile.sleepSchedule ? { description: profile.sleepSchedule } : null,
+        activity_level: textOrNull(profile.activityLevel),
+        stress_level: parseStressLevel(profile.stressLevel),
+        work_type: textOrNull(profile.workType),
+        symptoms: profile.symptoms ? splitList(profile.symptoms) : null,
+        free_text: buildFreeText([
+          ['Main goal', profile.mainGoal],
+          ['Work type', profile.workType],
+          ['Activity level', profile.activityLevel],
+          ['Sleep schedule', profile.sleepSchedule],
+          ['Stress level', profile.stressLevel],
+          ['Symptoms', profile.symptoms]
+        ])
+      });
+
+    if (error) {
+      return error.message;
+    }
+  }
+
+  return null;
+}
+
+async function upsertMainGoal(userId: string, mainGoal?: string): Promise<string | null> {
+  if (!supabase) {
+    return null;
+  }
+
+  const goalTitle = textOrNull(mainGoal);
+
+  if (!goalTitle) {
+    return null;
+  }
+
+  const { data: existing, error: selectError } = await supabase
+    .from('user_goals')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('goal_code', 'main_goal')
+    .eq('status', 'active')
+    .maybeSingle<{ id: string }>();
+
+  if (selectError) {
+    return selectError.message;
+  }
+
+  const payload = {
+    user_id: userId,
+    goal_code: 'main_goal',
+    title: goalTitle,
+    description: goalTitle,
+    duration_days: 90,
+    status: 'active',
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = existing?.id
+    ? await supabase.from('user_goals').update(payload).eq('id', existing.id)
+    : await supabase.from('user_goals').insert(payload);
+
+  return error?.message ?? null;
+}
+
+function hasProfileLifestyleAnswers(profile: ProfileDraft) {
+  return Boolean(
+    textOrNull(profile.workType) ||
+      textOrNull(profile.activityLevel) ||
+      textOrNull(profile.sleepSchedule) ||
+      textOrNull(profile.stressLevel) ||
+      textOrNull(profile.symptoms)
+  );
+}
+
+function buildFreeText(items: [string, string | undefined][]) {
+  const text = items
+    .map(([label, value]) => {
+      const cleanValue = textOrNull(value);
+      return cleanValue ? `${label}: ${cleanValue}` : null;
+    })
+    .filter((item): item is string => Boolean(item))
+    .join('\n');
+
+  return text || null;
+}
+
+function textOrNull(value?: string) {
+  const text = value?.trim();
+  return text ? text : null;
+}
+
+function splitList(value: string) {
+  return value
+    .split(/[,;\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseStressLevel(value?: string) {
+  const text = textOrNull(value);
+
+  if (!text) {
+    return null;
+  }
+
+  const numericValue = Number(text.match(/\d+/)?.[0]);
+
+  if (Number.isFinite(numericValue)) {
+    return Math.min(10, Math.max(1, numericValue));
+  }
+
+  return null;
 }
 
 function mapTaskCategory(category: DailyTask['category']) {

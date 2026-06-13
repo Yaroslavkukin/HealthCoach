@@ -3,14 +3,33 @@ import { Image, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { useI18n } from '@/i18n';
+import { getCurrentAuthSession } from '@/services/authService';
 import { colors } from '@/theme/colors';
 
 export default function SplashScreen() {
   const { t } = useI18n();
 
   useEffect(() => {
-    const timer = setTimeout(() => router.replace('/preview'), 1800);
-    return () => clearTimeout(timer);
+    let active = true;
+
+    const timer = setTimeout(() => {
+      async function routeFromSession() {
+        const result = await getCurrentAuthSession();
+
+        if (!active) {
+          return;
+        }
+
+        router.replace(result.mode === 'supabase' && result.session ? '/(tabs)/today' : '/preview');
+      }
+
+      void routeFromSession();
+    }, 1800);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   return (

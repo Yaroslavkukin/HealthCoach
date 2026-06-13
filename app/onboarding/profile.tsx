@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { TextInput, StyleSheet } from 'react-native';
+import { Pressable, TextInput, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -13,50 +13,114 @@ import type { TranslationKey } from '@/i18n/translations/en';
 import { upsertProfileDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
-const profilePlaceholders = [
-  'onboarding.profile.firstName',
-  'onboarding.profile.lastName',
-  'onboarding.profile.age',
-  'onboarding.profile.gender',
-  'onboarding.profile.height',
-  'onboarding.profile.weight',
-  'onboarding.profile.mainGoal',
-  'onboarding.profile.workType',
-  'onboarding.profile.activity',
-  'onboarding.profile.sleep',
-  'onboarding.profile.stress',
-  'onboarding.profile.symptoms'
-] as const satisfies readonly TranslationKey[];
+type ProfileForm = {
+  name: string;
+  age: string;
+  gender: ProfileGender;
+  height: string;
+  weight: string;
+};
+
+type ProfileGender = 'male' | 'female' | '';
+type ProfileTextFieldKey = Exclude<keyof ProfileForm, 'gender'>;
+
+const initialProfileForm: ProfileForm = {
+  name: '',
+  age: '',
+  gender: '',
+  height: '',
+  weight: ''
+};
+
+type ProfileField = {
+  key: ProfileTextFieldKey;
+  placeholder: TranslationKey;
+  keyboardType?: 'numeric';
+};
+
+const profileFieldsBeforeGender: readonly ProfileField[] = [
+  { key: 'name', placeholder: 'onboarding.profile.name' },
+  { key: 'age', placeholder: 'onboarding.profile.age', keyboardType: 'numeric' }
+];
+
+const profileFieldsAfterGender: readonly ProfileField[] = [
+  { key: 'height', placeholder: 'onboarding.profile.height', keyboardType: 'numeric' },
+  { key: 'weight', placeholder: 'onboarding.profile.weight', keyboardType: 'numeric' }
+];
+
+const genderOptions = [
+  { value: 'male', label: 'onboarding.profile.male' },
+  { value: 'female', label: 'onboarding.profile.female' }
+] as const satisfies readonly { value: Exclude<ProfileGender, ''>; label: TranslationKey }[];
 
 export default function ProfileSetupScreen() {
   const { t } = useI18n();
+  const [form, setForm] = useState<ProfileForm>(initialProfileForm);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [noticeVariant, setNoticeVariant] = useState<'info' | 'error'>('info');
+
+  function updateField<Key extends keyof ProfileForm>(key: Key, value: ProfileForm[Key]) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
 
   async function saveProfile() {
+    const nameParts = splitName(form.name);
     const result = await upsertProfileDraft({
-      email: 'demo@healthcoach.local',
-      firstName: 'Yaroslav',
-      lastName: 'Demo',
-      age: 30,
-      gender: 'not_specified',
-      heightCm: 180,
-      weightKg: 78,
-      country: 'Russia',
-      city: 'Moscow'
+      firstName: nameParts.firstName,
+      lastName: nameParts.lastName,
+      age: parseOptionalNumber(form.age),
+      gender: form.gender || 'not_specified',
+      heightCm: parseOptionalNumber(form.height),
+      weightKg: parseOptionalNumber(form.weight)
     });
 
     setSaveMessage(translatePersistenceMessage(result.message, t));
-    router.push(accessRoutes.delivery);
+    setNoticeVariant(result.ok ? 'info' : 'error');
+
+    if (result.ok) {
+      router.push(accessRoutes.delivery);
+    }
   }
 
   return (
     <ScreenContainer>
       <AppText variant="title">{t('onboarding.profile.title')}</AppText>
       <AppText variant="body">{t('onboarding.profile.subtitle')}</AppText>
-      <StateNotice title={t('onboarding.profile.title')} message={saveMessage ?? t('onboarding.profile.initialSave')} variant="info" />
+      <StateNotice title={t('onboarding.profile.title')} message={saveMessage ?? t('onboarding.profile.initialSave')} variant={noticeVariant} />
       <SectionCard>
-        {profilePlaceholders.map((placeholder) => (
-          <TextInput key={placeholder} placeholder={t(placeholder)} placeholderTextColor={colors.textMuted} style={styles.input} />
+        {profileFieldsBeforeGender.map((field) => (
+          <TextInput
+            key={field.key}
+            placeholder={t(field.placeholder)}
+            placeholderTextColor={colors.textMuted}
+            keyboardType={field.keyboardType}
+            value={form[field.key]}
+            onChangeText={(value) => updateField(field.key, value)}
+            style={styles.input}
+          />
+        ))}
+        <AppText style={styles.fieldLabel}>{t('onboarding.profile.gender')}</AppText>
+        <View style={styles.genderRow}>
+          {genderOptions.map((option) => {
+            const selected = form.gender === option.value;
+
+            return (
+              <Pressable key={option.value} onPress={() => updateField('gender', option.value)} style={[styles.genderButton, selected && styles.genderButtonActive]}>
+                <AppText style={[styles.genderText, selected && styles.genderTextActive]}>{t(option.label)}</AppText>
+              </Pressable>
+            );
+          })}
+        </View>
+        {profileFieldsAfterGender.map((field) => (
+          <TextInput
+            key={field.key}
+            placeholder={t(field.placeholder)}
+            placeholderTextColor={colors.textMuted}
+            keyboardType={field.keyboardType}
+            value={form[field.key]}
+            onChangeText={(value) => updateField(field.key, value)}
+            style={styles.input}
+          />
         ))}
         <PrimaryButton label={t('onboarding.profile.continue')} onPress={saveProfile} />
       </SectionCard>
@@ -73,5 +137,49 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.border
+  },
+  fieldLabel: {
+    color: colors.textSecondary,
+    fontWeight: '800',
+    marginBottom: 8
+  },
+  genderRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 4
+  },
+  genderButton: {
+    flex: 1,
+    backgroundColor: colors.cardElevated,
+    borderRadius: 14,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  genderButtonActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent
+  },
+  genderText: {
+    color: colors.textSecondary,
+    fontWeight: '800'
+  },
+  genderTextActive: {
+    color: colors.background
   }
 });
+
+function parseOptionalNumber(value: string) {
+  const numericValue = Number(value.replace(',', '.').trim());
+  return Number.isFinite(numericValue) ? numericValue : undefined;
+}
+
+function splitName(value: string) {
+  const parts = value.trim().split(/\s+/).filter(Boolean);
+
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(' ') || undefined
+  };
+}

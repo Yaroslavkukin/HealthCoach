@@ -14,45 +14,84 @@ import { upsertDeliveryDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 const deliveryPlaceholders = [
-  'onboarding.delivery.country',
-  'onboarding.delivery.city',
-  'onboarding.delivery.address',
-  'onboarding.delivery.postal',
-  'onboarding.delivery.method',
-  'onboarding.delivery.cdek',
-  'onboarding.delivery.post',
-  'onboarding.delivery.comments'
-] as const satisfies readonly TranslationKey[];
+  { key: 'country', placeholder: 'onboarding.delivery.country' },
+  { key: 'city', placeholder: 'onboarding.delivery.city' },
+  { key: 'address', placeholder: 'onboarding.delivery.address' },
+  { key: 'postal', placeholder: 'onboarding.delivery.postal' },
+  { key: 'method', placeholder: 'onboarding.delivery.method' },
+  { key: 'cdek', placeholder: 'onboarding.delivery.cdek' },
+  { key: 'post', placeholder: 'onboarding.delivery.post' },
+  { key: 'comments', placeholder: 'onboarding.delivery.comments' }
+] as const satisfies readonly { key: keyof DeliveryForm; placeholder: TranslationKey }[];
+
+type DeliveryForm = {
+  country: string;
+  city: string;
+  address: string;
+  postal: string;
+  method: string;
+  cdek: string;
+  post: string;
+  comments: string;
+};
+
+const initialDeliveryForm: DeliveryForm = {
+  country: '',
+  city: '',
+  address: '',
+  postal: '',
+  method: '',
+  cdek: '',
+  post: '',
+  comments: ''
+};
 
 export default function DeliverySetupScreen() {
   const { t } = useI18n();
+  const [form, setForm] = useState<DeliveryForm>(initialDeliveryForm);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [noticeVariant, setNoticeVariant] = useState<'info' | 'error'>('info');
+
+  function updateField(key: keyof DeliveryForm, value: string) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
 
   async function saveDelivery() {
     const result = await upsertDeliveryDraft({
-      country: 'Russia',
-      city: 'Moscow',
-      addressLine1: 'Demo address',
-      postalCode: '000000',
-      preferredDeliveryProvider: 'CDEK',
-      cdekPickupPointAddress: 'Demo CDEK pickup point',
-      russianPostOfficeAddress: 'Demo Russian Post office',
-      deliveryNotes: 'Mock delivery notes'
+      country: textOrUndefined(form.country),
+      city: textOrUndefined(form.city),
+      addressLine1: textOrUndefined(form.address),
+      postalCode: textOrUndefined(form.postal),
+      preferredDeliveryProvider: textOrUndefined(form.method),
+      cdekPickupPointAddress: textOrUndefined(form.cdek),
+      russianPostOfficeAddress: textOrUndefined(form.post),
+      deliveryNotes: textOrUndefined(form.comments)
     });
 
     setSaveMessage(translatePersistenceMessage(result.message, t));
-    router.push(accessRoutes.startChecklist);
+    setNoticeVariant(result.ok ? 'info' : 'error');
+
+    if (result.ok) {
+      router.push(accessRoutes.startChecklist);
+    }
   }
 
   return (
     <ScreenContainer>
       <AppText variant="title">{t('onboarding.delivery.title')}</AppText>
       <AppText variant="body">{t('onboarding.delivery.subtitle')}</AppText>
-      <StateNotice title={t('onboarding.delivery.title')} message={saveMessage ?? t('onboarding.delivery.initialSave')} variant="info" />
+      <StateNotice title={t('onboarding.delivery.title')} message={saveMessage ?? t('onboarding.delivery.initialSave')} variant={noticeVariant} />
 
       <SectionCard>
-        {deliveryPlaceholders.map((placeholder) => (
-          <TextInput key={placeholder} placeholder={t(placeholder)} placeholderTextColor={colors.textMuted} style={styles.input} />
+        {deliveryPlaceholders.map((field) => (
+          <TextInput
+            key={field.key}
+            placeholder={t(field.placeholder)}
+            placeholderTextColor={colors.textMuted}
+            value={form[field.key]}
+            onChangeText={(value) => updateField(field.key, value)}
+            style={styles.input}
+          />
         ))}
         <PrimaryButton label={t('onboarding.delivery.continue')} onPress={saveDelivery} />
       </SectionCard>
@@ -71,3 +110,8 @@ const styles = StyleSheet.create({
     borderColor: colors.border
   }
 });
+
+function textOrUndefined(value: string) {
+  const text = value.trim();
+  return text || undefined;
+}
