@@ -6,18 +6,16 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScorePill } from '@/components/ScorePill';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
-import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
-import { translateHealthStatus, translatePersistenceMessage } from '@/i18n/mockContent';
+import { translateHealthStatus } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 export default function TodayScreen() {
   const { t } = useI18n();
   const [tasks, setTasks] = useState(demoTasks);
-  const [taskSaveMessage, setTaskSaveMessage] = useState<string | null>(null);
   const completed = tasks.filter((task) => task.completed).length;
   const progress = Math.round((completed / tasks.length) * 100);
 
@@ -35,9 +33,7 @@ export default function TodayScreen() {
     );
 
     if (currentTask) {
-      void saveDailyTaskStatus({ ...currentTask, completed: !currentTask.completed }).then((result) => {
-        setTaskSaveMessage(translatePersistenceMessage(result.message, t));
-      });
+      void saveDailyTaskStatus({ ...currentTask, completed: !currentTask.completed });
     }
   }
 
@@ -62,12 +58,10 @@ export default function TodayScreen() {
 
       <SectionCard>
         <AppText variant="subtitle">{t('today.plan')}</AppText>
-        <StateNotice title={t('today.taskStorage')} message={taskSaveMessage ?? t('today.mockTaskStorage')} variant="info" />
         {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
       </SectionCard>
 
       <SectionCard>
-        <AppText variant="subtitle">{t('today.aiInsight')}</AppText>
         <AppText variant="body">{t('today.aiInsightBody')}</AppText>
       </SectionCard>
 
