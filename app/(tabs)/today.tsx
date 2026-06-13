@@ -9,31 +9,10 @@ import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
-import { notificationPlaceholders, partialDataStatuses } from '@/data/mock/testingReadiness';
 import { useI18n } from '@/i18n';
-import { translateHealthStatus, translateNotificationTiming, translatePersistenceMessage, translateSimpleLabel } from '@/i18n/mockContent';
+import { translateHealthStatus, translatePersistenceMessage } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
-import type { TranslationKey } from '@/i18n/translations/en';
-
-const notificationTitleKeys: Record<string, TranslationKey> = {
-  'morning-plan': 'readiness.notification.morningPlan',
-  'supplement-window': 'readiness.notification.supplementWindow',
-  'fourteen-day-review': 'readiness.notification.review'
-};
-
-const notificationStatusKeys: Record<string, TranslationKey> = {
-  ready: 'readiness.status.ready',
-  planned: 'readiness.status.planned',
-  disabled: 'readiness.status.disabled'
-};
-
-const partialDataKeys: Record<string, { label: TranslationKey; detail: TranslationKey }> = {
-  profile: { label: 'readiness.partial.profile', detail: 'readiness.partial.profileDetail' },
-  bloodwork: { label: 'readiness.partial.bloodwork', detail: 'readiness.partial.bloodworkDetail' },
-  notifications: { label: 'readiness.partial.notifications', detail: 'readiness.partial.notificationsDetail' },
-  'device-push': { label: 'readiness.partial.devicePush', detail: 'readiness.partial.devicePushDetail' }
-};
 
 export default function TodayScreen() {
   const { t } = useI18n();
@@ -90,20 +69,6 @@ export default function TodayScreen() {
       <SectionCard>
         <AppText variant="subtitle">{t('today.aiInsight')}</AppText>
         <AppText variant="body">{t('today.aiInsightBody')}</AppText>
-      </SectionCard>
-
-      <SectionCard>
-        <AppText variant="subtitle">{t('today.upcomingReminders')}</AppText>
-        {notificationPlaceholders.map((item) => (
-          <AppText key={item.id} variant="body">- {t(notificationTitleKeys[item.id])}: {translateNotificationTiming(item.timing, t)} ({t(notificationStatusKeys[item.status])})</AppText>
-        ))}
-      </SectionCard>
-
-      <SectionCard>
-        <AppText variant="subtitle">{t('today.dataReadiness')}</AppText>
-        {partialDataStatuses.map((item) => (
-          <AppText key={item.id} variant="body">- {t(partialDataKeys[item.id].label)} ({translateSimpleLabel(item.status, t)}): {t(partialDataKeys[item.id].detail)}</AppText>
-        ))}
       </SectionCard>
 
       <PrimaryButton label={t('today.openWeeklyPlan')} onPress={() => router.push('/weekly-plan')} />
