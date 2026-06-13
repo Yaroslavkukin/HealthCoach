@@ -63,7 +63,6 @@ export const ru: Record<TranslationKey, string> = {
   'preview.demoAccess': 'Демо-доступ',
 
   'subscription.subtitle': 'Ваш персональный ИИ-коуч здоровья на основе анализов крови, питания, образа жизни и прогресса.',
-  'subscription.noticeTitle': 'Шаг доступа 2 из 6: Подписка',
   'subscription.noticeMessage': 'Выберите демо-план после знакомства с ценностью продукта. Это тестовый поток подписки. Оплата не будет списана.',
   'subscription.includes': 'Что входит в полный доступ',
   'subscription.benefit.personalizedAi': 'Персональные ИИ-рекомендации',

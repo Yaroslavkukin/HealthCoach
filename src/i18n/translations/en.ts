@@ -61,7 +61,6 @@ export const en = {
   'preview.demoAccess': 'Demo Access',
 
   'subscription.subtitle': 'Your personal AI health coach based on blood analysis, nutrition, lifestyle, and progress.',
-  'subscription.noticeTitle': 'Access step 2 of 6: Subscription',
   'subscription.noticeMessage': 'Choose a mocked plan after the product value is clear. This is a mock subscription flow. No payment will be charged.',
   'subscription.includes': 'What full access includes',
   'subscription.benefit.personalizedAi': 'Personalized AI recommendations',

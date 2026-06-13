@@ -37,7 +37,7 @@ export default function SubscriptionScreen() {
       <AppText variant="body">{t('subscription.subtitle')}</AppText>
 
       <StateNotice
-        title={t('subscription.noticeTitle')}
+        title={t('nav.subscription')}
         message={t('subscription.noticeMessage')}
         variant="info"
       />
