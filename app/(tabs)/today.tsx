@@ -66,7 +66,6 @@ export default function TodayScreen() {
       </SectionCard>
 
       <PrimaryButton label={t('today.openWeeklyPlan')} onPress={() => router.push('/weekly-plan')} />
-      <PrimaryButton label={t('common.askAi')} variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
       <PrimaryButton label={t('today.openSupplements')} variant="secondary" onPress={() => router.push('/supplements')} />
       <PrimaryButton label={t('today.openNutrition')} variant="secondary" onPress={() => router.push('/nutrition')} />
     </ScreenContainer>
