@@ -1,6 +1,7 @@
 export const accessRoutes = {
   preview: '/preview',
   subscription: '/subscription',
+  mainApp: '/(tabs)/today',
   createAccount: '/(auth)/create-account',
   profile: '/onboarding/profile',
   delivery: '/onboarding/delivery',
@@ -24,7 +25,7 @@ export type AccessFlowStep = {
   description: string;
 };
 
-export const founderAccessRule = 'Preview first. Account creation starts only after subscription intent.';
+export const founderAccessRule = 'Preview first. Subscription unlocks the full app; account setup is optional later.';
 
 export const accessFlowSteps = [
   {
@@ -41,9 +42,9 @@ export const accessFlowSteps = [
   },
   {
     id: 'accountCreation',
-    title: 'Account Creation',
+    title: 'Optional Account',
     route: accessRoutes.createAccount,
-    description: 'Create a mock account only after subscription intent.'
+    description: 'Create or sign in to an account later when the user wants saved profile access.'
   },
   {
     id: 'profileSetup',
