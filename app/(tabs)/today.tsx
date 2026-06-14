@@ -40,7 +40,7 @@ export default function TodayScreen() {
 
   return (
     <ScreenContainer>
-      <ScreenHeader>
+      <ScreenHeader style={styles.topHeaderGoldOutline}>
         <AppText variant="title">{t('common.today')}</AppText>
         <AppText variant="body">{t('today.greeting', { name: demoUser.firstName })}</AppText>
       </ScreenHeader>
@@ -103,6 +103,9 @@ export default function TodayScreen() {
 }
 
 const styles = StyleSheet.create({
+  topHeaderGoldOutline: {
+    borderColor: colors.accent
+  },
   heroCard: {
     alignItems: 'center',
     backgroundColor: colors.primary,
