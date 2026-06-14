@@ -222,9 +222,9 @@ export const en = {
   'supplements.backToday': 'Back to Today',
 
   'nutrition.title': 'Nutrition',
-  'nutrition.subtitle': 'Food close to nature, minimal processing, no refined sugar.',
+  'nutrition.subtitle': 'Healthy nutrition without extra complexity',
   'nutrition.modify': 'Modify: {modification}',
-  'nutrition.askAi': 'Ask Nutrition AI',
+  'nutrition.askAi': 'Nutrition AI',
   'nutrition.weeklyRation': 'Weekly ration',
 
   'weekly.title': '7-Day Plan',

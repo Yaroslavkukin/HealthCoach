@@ -224,9 +224,9 @@ export const ru: Record<TranslationKey, string> = {
   'supplements.backToday': 'Назад к Сегодня',
 
   'nutrition.title': 'Питание',
-  'nutrition.subtitle': 'Еда ближе к натуральной, минимум обработки, без рафинированного сахара.',
+  'nutrition.subtitle': 'Здоровый рацион без лишней сложности',
   'nutrition.modify': 'Изменение: {modification}',
-  'nutrition.askAi': 'Спросить ИИ по питанию',
+  'nutrition.askAi': 'AI по питанию',
   'nutrition.weeklyRation': 'Рацион на неделю',
 
   'weekly.title': 'План на 7 дней',
