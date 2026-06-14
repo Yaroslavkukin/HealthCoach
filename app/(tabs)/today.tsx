@@ -59,18 +59,45 @@ export default function TodayScreen() {
         {demoCoreScores.map((score) => <ScorePill key={score.label} score={score} variant="primary" />)}
       </View>
 
-      <SectionCard>
+      <SectionCard style={styles.goldOutlineCard}>
         <AppText variant="subtitle">{t('today.plan')}</AppText>
-        {tasks.map((task) => <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} />)}
+        {tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            dividerColor={colors.accent}
+            onToggle={() => toggleTask(task.id)}
+          />
+        ))}
       </SectionCard>
 
-      <SectionCard>
+      <SectionCard style={styles.goldOutlineCard}>
         <AppText variant="body">{t('today.aiInsightBody')}</AppText>
       </SectionCard>
 
-      <PrimaryButton label={t('today.openWeeklyPlan')} onPress={() => router.push('/weekly-plan')} />
-      <PrimaryButton label={t('today.openSupplements')} variant="secondary" onPress={() => router.push('/supplements')} />
-      <PrimaryButton label={t('today.openNutrition')} variant="secondary" onPress={() => router.push('/nutrition')} />
+      <PrimaryButton
+        label={t('today.openWeeklyPlan')}
+        onPress={() => router.push('/weekly-plan')}
+        backgroundColor={colors.primary}
+        textColor={colors.textOnPrimary}
+        style={styles.goldButton}
+      />
+      <PrimaryButton
+        label={t('today.openSupplements')}
+        variant="secondary"
+        onPress={() => router.push('/supplements')}
+        backgroundColor={colors.primary}
+        textColor={colors.textOnPrimary}
+        style={styles.goldButton}
+      />
+      <PrimaryButton
+        label={t('today.openNutrition')}
+        variant="secondary"
+        onPress={() => router.push('/nutrition')}
+        backgroundColor={colors.primary}
+        textColor={colors.textOnPrimary}
+        style={styles.goldButton}
+      />
     </ScreenContainer>
   );
 }
@@ -83,6 +110,14 @@ const styles = StyleSheet.create({
   },
   heroScore: {
     color: colors.accent
+  },
+  goldOutlineCard: {
+    borderWidth: 1,
+    borderColor: colors.accent
+  },
+  goldButton: {
+    borderWidth: 1,
+    borderColor: colors.accent
   },
   scoreRow: {
     flexDirection: 'row',

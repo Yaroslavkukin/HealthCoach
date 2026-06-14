@@ -218,7 +218,7 @@ export const ru: Record<TranslationKey, string> = {
   'settings.savedLocallyBody': 'Синхронизация языка с сервером не включена в этой версии.',
 
   'supplements.title': 'Добавки',
-  'supplements.subtitle': 'Ваши текущие персональные рекомендации по добавкам.',
+  'supplements.subtitle': 'Поддержка здоровья каждый день',
   'supplements.stackTitle': 'Стек добавок',
   'supplements.scheduleNotes': 'Заметки по графику',
   'supplements.backToday': 'Назад к Сегодня',
@@ -230,6 +230,8 @@ export const ru: Record<TranslationKey, string> = {
   'nutrition.weeklyRation': 'Рацион на неделю',
 
   'weekly.title': 'План на 7 дней',
+  'weekly.headerSubtitle': 'Шаг за шагом к лучшей версии себя',
+  'weekly.aiRecommendation': 'На этой неделе сфокусируйтесь на восстановлении, регулярном движении и стабильном режиме сна.',
   'weekly.subtitle': 'На этой неделе фокус на восстановлении, регулярном движении и улучшении питания.',
   'weekly.focus': 'Фокус: {focus}',
   'weekly.progress': 'Прогресс: {completed} из {total} выполнено',
@@ -361,7 +363,7 @@ export const ru: Record<TranslationKey, string> = {
   'mock.supplement.theanine.food': 'Можно принимать с едой или без',
   'mock.supplement.theanine.compatibility': 'Полезен перед фокусной работой или вечерним расслаблением.',
   'mock.supplement.theanine.course': 'По необходимости в недели высокого стресса',
-  'mock.supplement.honey.name': 'Мед',
+  'mock.supplement.honey.name': 'Мёд',
   'mock.supplement.honey.reason': 'Демо-поддержка утренней энергии и регулярности рутины.',
   'mock.supplement.honey.teaspoons': '1 чайная ложка',
   'mock.supplement.honey.food': 'С завтраком или теплым чаем',
@@ -385,7 +387,7 @@ export const ru: Record<TranslationKey, string> = {
   'mock.supplement.beePollen.food': 'Начать с завтраком',
   'mock.supplement.beePollen.compatibility': 'Избегайте при аллергии на пыльцу; начинайте с малого количества и прекращайте при чувствительности.',
   'mock.supplement.beePollen.course': '2 недели, затем оценить переносимость',
-  'mock.supplement.safety': 'Перед началом любого протокола добавок или пчелопродуктов проконсультируйтесь с квалифицированным специалистом, особенно при заболеваниях, приеме лекарств, беременности, грудном вскармливании или аллергиях. Избегайте пчелопродуктов при чувствительности к меду, пыльце, прополису, маточному молочку или другим пчелопродуктам.',
+  'mock.supplement.safety': 'Перед началом любого протокола добавок или пчелопродуктов проконсультируйтесь с квалифицированным специалистом, особенно при заболеваниях, приеме лекарств, беременности, грудном вскармливании или аллергиях. Избегайте пчелопродуктов при чувствительности к мёду, пыльце, прополису, маточному молочку или другим пчелопродуктам.',
 
   'mock.bee.perga.name': 'Перга',
   'mock.bee.perga.reason': 'Соответствует фокусу на энергии, концентрации, восстановлении и продуктивности.',

@@ -6,7 +6,15 @@ import { translateTask } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 import type { DailyTask } from '@/types';
 
-export function TaskItem({ task, onToggle }: { task: DailyTask; onToggle?: () => void }) {
+export function TaskItem({
+  task,
+  onToggle,
+  dividerColor
+}: {
+  task: DailyTask;
+  onToggle?: () => void;
+  dividerColor?: string;
+}) {
   const { t } = useI18n();
   const displayTask = translateTask(task, t);
   const iconName =
@@ -25,7 +33,14 @@ export function TaskItem({ task, onToggle }: { task: DailyTask; onToggle?: () =>
                 : 'walk-outline';
 
   return (
-    <Pressable onPress={onToggle} style={({ pressed }) => [styles.root, pressed && styles.pressed]}>
+    <Pressable
+      onPress={onToggle}
+      style={({ pressed }) => [
+        styles.root,
+        dividerColor && { borderBottomColor: dividerColor },
+        pressed && styles.pressed
+      ]}
+    >
       <View style={[styles.checkbox, task.completed && styles.checkboxDone]}>
         {task.completed ? <Ionicons name="checkmark" size={16} color={colors.text} /> : null}
       </View>

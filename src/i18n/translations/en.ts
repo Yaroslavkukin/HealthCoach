@@ -216,7 +216,7 @@ export const en = {
   'settings.savedLocallyBody': 'Language sync with the backend is not enabled in this MVP.',
 
   'supplements.title': 'Supplements',
-  'supplements.subtitle': 'Your current personalized supplement recommendations.',
+  'supplements.subtitle': 'Daily health support',
   'supplements.stackTitle': 'Supplement stack',
   'supplements.scheduleNotes': 'Schedule Notes',
   'supplements.backToday': 'Back to Today',
@@ -228,6 +228,8 @@ export const en = {
   'nutrition.weeklyRation': 'Weekly ration',
 
   'weekly.title': '7-Day Plan',
+  'weekly.headerSubtitle': 'Step by step toward your better self',
+  'weekly.aiRecommendation': 'This week, focus on recovery, regular movement, and a stable sleep routine.',
   'weekly.subtitle': 'This week is focused on recovery, movement consistency, and nutrition cleanup.',
   'weekly.focus': 'Focus: {focus}',
   'weekly.progress': 'Progress: {completed} of {total} completed',
