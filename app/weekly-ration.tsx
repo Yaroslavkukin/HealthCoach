@@ -29,13 +29,13 @@ export default function WeeklyRationScreen() {
 
   return (
     <ScreenContainer>
-      <ScreenHeader>
+      <ScreenHeader style={styles.header}>
         <AppText variant="title">{t('weeklyRation.title')}</AppText>
         <AppText variant="body">{t('weeklyRation.subtitle')}</AppText>
       </ScreenHeader>
 
       {dayKeys.map((dayKey) => (
-        <SectionCard key={dayKey}>
+        <SectionCard key={dayKey} style={styles.dayCard}>
           <AppText variant="subtitle">{t(dayKey)}</AppText>
           <View style={styles.slotList}>
             {mealSlotKeys.map((mealKey) => (
@@ -45,7 +45,7 @@ export default function WeeklyRationScreen() {
                 </View>
                 <View style={styles.slotText}>
                   <AppText style={styles.slotTitle}>{t(mealKey)}</AppText>
-                  <AppText variant="caption">{t('weeklyRation.aiPlaceholder')}</AppText>
+                  <AppText variant="caption" style={styles.slotCaption}>{t('weeklyRation.aiPlaceholder')}</AppText>
                 </View>
               </View>
             ))}
@@ -57,6 +57,12 @@ export default function WeeklyRationScreen() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    borderColor: colors.accent
+  },
+  dayCard: {
+    borderColor: colors.accent
+  },
   slotList: {
     gap: 10,
     marginTop: 14
@@ -67,8 +73,8 @@ const styles = StyleSheet.create({
     gap: 12,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.surfaceMuted,
+    borderColor: colors.accent,
+    backgroundColor: colors.primary,
     padding: 12
   },
   placeholderIcon: {
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.primaryDark,
     borderWidth: 1,
     borderColor: colors.accent
   },
@@ -90,9 +96,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   slotTitle: {
-    color: colors.text,
+    color: colors.textOnPrimary,
     fontSize: 15,
     fontWeight: '800',
     marginBottom: 2
+  },
+  slotCaption: {
+    color: colors.textOnPrimaryMuted
   }
 });
