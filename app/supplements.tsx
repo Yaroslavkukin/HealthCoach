@@ -83,7 +83,7 @@ function SupplementsHeader({ title, subtitle }: { title: string; subtitle: strin
       </Pressable>
 
       <View style={styles.headerText}>
-        <AppText numberOfLines={1} style={styles.headerTitle}>{title}</AppText>
+        <AppText adjustsFontSizeToFit minimumFontScale={0.88} numberOfLines={1} style={styles.headerTitle}>{title}</AppText>
         <AppText numberOfLines={1} style={styles.headerSubtitle}>{subtitle}</AppText>
       </View>
 
@@ -103,18 +103,14 @@ const styles = StyleSheet.create({
     paddingBottom: 120
   },
   headerCard: {
-    minHeight: 72,
+    minHeight: 74,
     width: '100%',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderSoft,
     backgroundColor: colors.background,
     paddingVertical: 8,
-    paddingLeft: 22,
-    paddingRight: 22,
+    paddingLeft: 26,
+    paddingRight: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -124,23 +120,23 @@ const styles = StyleSheet.create({
   },
   headerWave: {
     position: 'absolute',
-    width: 132,
-    height: 46,
-    borderRadius: 66,
-    right: -26,
-    bottom: -20,
+    width: 168,
+    height: 52,
+    borderRadius: 84,
+    right: -34,
+    bottom: -18,
     backgroundColor: '#DDE8CF',
-    opacity: 0.68,
+    opacity: 0.66,
     transform: [{ rotate: '-6deg' }],
     zIndex: 0
   },
   headerWaveSoft: {
     position: 'absolute',
-    width: 88,
-    height: 34,
-    borderRadius: 44,
+    width: 104,
+    height: 36,
+    borderRadius: 52,
     right: 28,
-    bottom: -14,
+    bottom: -12,
     backgroundColor: '#CAD8B8',
     opacity: 0.28,
     transform: [{ rotate: '10deg' }],
@@ -148,11 +144,11 @@ const styles = StyleSheet.create({
   },
   headerIllustrationWrapper: {
     position: 'absolute',
-    right: 10,
-    bottom: 2,
-    width: 92,
-    height: 62,
-    opacity: 0.72,
+    right: 12,
+    bottom: 4,
+    width: 86,
+    height: 64,
+    opacity: 0.94,
     zIndex: 0
   },
   headerIllustration: {
@@ -160,9 +156,9 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   headerAction: {
-    width: 40,
-    height: 40,
-    borderRadius: 14,
+    width: 48,
+    height: 48,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primary,
@@ -175,8 +171,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flex: 1,
-    marginLeft: 14,
-    marginRight: 10,
+    marginLeft: 12,
+    marginRight: 84,
     zIndex: 1
   },
   headerTitle: {
@@ -192,8 +188,8 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   headerActionSpacer: {
-    width: 40,
-    height: 40,
+    width: 0,
+    height: 48,
     zIndex: 1
   },
   greenElement: {
