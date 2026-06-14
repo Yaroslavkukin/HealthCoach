@@ -97,7 +97,7 @@ EXPO_PUBLIC_SUPABASE_URL=
 EXPO_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
-Do not expose OpenAI API keys inside the mobile app. AI calls should go through Supabase Edge Functions or a secure backend.
+Do not expose AI provider API keys inside the mobile app. AI calls should go through Supabase Edge Functions or a secure backend.
 
 ## Important Safety Principle
 

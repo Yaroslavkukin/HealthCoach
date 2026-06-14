@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,13 +9,24 @@ import { SectionCard } from '@/components/SectionCard';
 import { demoNutritionMeals } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
 import { translateNutritionMeal } from '@/i18n/mockContent';
+import { getLatestNutritionPlan, subscribeToLatestNutritionPlan } from '@/lib/aiClient';
 import { colors } from '@/theme/colors';
 
 const nutritionHeaderIllustration = require('../assets/images/nutrition-header-illustration.png');
 
 export default function NutritionScreen() {
   const { t } = useI18n();
-  const meals = demoNutritionMeals.map((meal) => translateNutritionMeal(meal, t));
+  const [nutritionPlan, setNutritionPlan] = useState(getLatestNutritionPlan);
+  const isAiGeneratedNutritionPlan = nutritionPlan.source === 'edge';
+  const meals = useMemo(() => {
+    if (isAiGeneratedNutritionPlan) {
+      return nutritionPlan.meals;
+    }
+
+    return demoNutritionMeals.map((meal) => translateNutritionMeal(meal, t));
+  }, [isAiGeneratedNutritionPlan, nutritionPlan.meals, t]);
+
+  useEffect(() => subscribeToLatestNutritionPlan(setNutritionPlan), []);
 
   return (
     <SafeAreaView style={styles.screenRoot}>
@@ -34,7 +46,7 @@ export default function NutritionScreen() {
 
         <PrimaryButton
           label={t('nutrition.askAi')}
-          onPress={() => router.push('/(tabs)/ai')}
+          onPress={() => router.push('/(tabs)/ai?context=nutrition')}
           style={styles.goldOutline}
         />
         <PrimaryButton

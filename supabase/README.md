@@ -9,4 +9,4 @@ Recommended order:
 3. Create Storage buckets listed in `/docs/DATABASE_SCHEMA.md`.
 4. Deploy Edge Functions after AI prompts are finalized.
 
-Do not call OpenAI directly from the mobile app.
+Do not call AI providers directly from the mobile app.

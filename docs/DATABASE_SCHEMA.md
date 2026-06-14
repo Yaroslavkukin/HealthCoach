@@ -37,7 +37,7 @@ Supabase Storage.
 
 - Supabase Edge Functions
 - Server-side API layer
-- OpenAI API integration
+- AI provider integration
 
 ## Mobile Client
 

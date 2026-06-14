@@ -39,7 +39,7 @@
 - Real payment provider
 - Real file upload
 - OCR / biomarker extraction
-- OpenAI integration
+- AI provider integration
 - AI-generated JSON validation
 - Real recommendation engine
 - Push notifications

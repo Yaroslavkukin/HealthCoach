@@ -181,77 +181,9 @@ Deno.serve(async (req) => {
 });
 
 async function generateStructuredProfile(input: unknown): Promise<AIHealthProfile | null> {
-  const apiKey = Deno.env.get('OPENAI_API_KEY') ?? '';
+  void input;
 
-  if (!apiKey) {
-    return null;
-  }
-
-  const model = Deno.env.get('OPENAI_MODEL') ?? 'gpt-4o-mini';
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model,
-      response_format: { type: 'json_object' },
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You generate Health Coach MVP outputs as strict JSON only. Do not diagnose disease. Do not recommend prescription drugs, controlled substances, peptides, SARMs, injectables, or experimental compounds. Include safety notes.'
-        },
-        {
-          role: 'user',
-          content: JSON.stringify({
-            task: 'generate_health_profile',
-            requiredShape: {
-              id: 'string',
-              generatedAt: 'ISO string',
-              source: 'edge',
-              healthScore: 'number',
-              healthStatus: 'string',
-              confidence: 'low | medium | high',
-              motivationArchetype: 'The Strategist | The Creator | The Guardian | The Explorer',
-              coreScores: 'HealthScore[]',
-              systemScores: 'HealthScore[]',
-              summary: 'AI Summary',
-              supplementStack: 'SupplementRecommendation[]',
-              beeProducts: 'BeeProductRecommendation[]',
-              nutritionPlan: 'NutritionMeal[]',
-              sevenDayPlan: 'WeeklyPlanDay[]'
-            },
-            input
-          })
-        }
-      ]
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error(`AI provider returned ${response.status}.`);
-  }
-
-  const payload = await response.json();
-  const content = payload?.choices?.[0]?.message?.content;
-
-  if (typeof content !== 'string') {
-    throw new Error('AI provider response did not include JSON content.');
-  }
-
-  const parsed = JSON.parse(content) as unknown;
-
-  if (!isRecord(parsed)) {
-    return null;
-  }
-
-  return {
-    ...parsed,
-    source: 'edge',
-    generatedAt: typeof parsed.generatedAt === 'string' ? parsed.generatedAt : new Date().toISOString()
-  } as AIHealthProfile;
+  return null;
 }
 
 async function saveValidatedProfile(client: SupabaseWriteClient, userId: string, profile: AIHealthProfile) {

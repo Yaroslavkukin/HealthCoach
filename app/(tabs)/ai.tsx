@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -9,11 +10,62 @@ import { StateNotice } from '@/components/StateNotice';
 import { demoAssistantQuestions } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
 import { translateAssistantQuestion } from '@/i18n/mockContent';
+import { callHealthCoachAI } from '@/lib/aiClient';
 import { colors } from '@/theme/colors';
 
 export default function AIScreen() {
   const { t } = useI18n();
+  const { context } = useLocalSearchParams<{ context?: string }>();
+  const isNutritionContext = context === 'nutrition';
+  const [message, setMessage] = useState(isNutritionContext ? t('ai.nutritionPrompt') : '');
   const [answer, setAnswer] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function submitMessage() {
+    const trimmedMessage = message.trim();
+
+    if (!trimmedMessage || isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+
+    const result = await callHealthCoachAI({
+      userId: 'local-user',
+      task: isNutritionContext ? 'nutrition_plan' : 'ai_chat',
+      input: {
+        message: trimmedMessage,
+        context: isNutritionContext ? 'nutrition' : 'general'
+      }
+    });
+
+    if ('answer' in result) {
+      setAnswer(result.answer);
+      if (result.ok) {
+        setError('');
+      } else {
+        const detail = result.error ?? result.message;
+        console.error('AI chat request failed in UI', {
+          context: isNutritionContext ? 'nutrition' : 'general',
+          task: isNutritionContext ? 'nutrition_plan' : 'ai_chat',
+          error: detail
+        });
+        setError(detail);
+      }
+    } else {
+      console.error('AI chat returned an unexpected client response', {
+        context: isNutritionContext ? 'nutrition' : 'general',
+        task: isNutritionContext ? 'nutrition_plan' : 'ai_chat',
+        result
+      });
+      setAnswer('');
+      setError(t('ai.unexpectedResponse'));
+    }
+
+    setIsSubmitting(false);
+  }
 
   return (
     <ScreenContainer>
@@ -23,8 +75,8 @@ export default function AIScreen() {
       </ScreenHeader>
 
       <StateNotice
-        title={t('ai.mockTitle')}
-        message={t('ai.mockMessage')}
+        title={isNutritionContext ? t('ai.nutritionContextTitle') : t('ai.assistantTitle')}
+        message={isNutritionContext ? t('ai.nutritionContextMessage') : t('ai.assistantMessage')}
         variant="info"
       />
 
@@ -34,18 +86,33 @@ export default function AIScreen() {
           const displayQuestion = translateAssistantQuestion(question, index, t);
 
           return (
-            <AppText key={question} variant="body" onPress={() => setAnswer(t('ai.demoAnswerFor', { question: displayQuestion }))}>{displayQuestion}</AppText>
+            <AppText key={question} variant="body" onPress={() => setMessage(displayQuestion)}>{displayQuestion}</AppText>
           );
         })}
       </SectionCard>
 
-      <TextInput placeholder={t('ai.placeholder')} placeholderTextColor={colors.textSoft} multiline style={styles.input} />
-      <PrimaryButton label={t('ai.sendMock')} onPress={() => setAnswer(t('ai.demoAnswer'))} />
+      <TextInput
+        placeholder={t('ai.placeholder')}
+        placeholderTextColor={colors.textSoft}
+        value={message}
+        onChangeText={setMessage}
+        multiline
+        style={styles.input}
+      />
+      <PrimaryButton
+        label={isSubmitting ? t('ai.generating') : t('ai.send')}
+        onPress={isSubmitting ? undefined : submitMessage}
+        style={isSubmitting ? styles.loadingButton : undefined}
+      />
+
+      {error ? <StateNotice title={t('ai.errorTitle')} message={error} variant="error" /> : null}
+      {isSubmitting ? <StateNotice title={t('ai.generating')} message={t('ai.generatingMessage')} variant="info" /> : null}
 
       {answer ? (
         <SectionCard>
           <AppText variant="subtitle">{t('ai.responseTitle')}</AppText>
           <AppText variant="body">{answer}</AppText>
+          {isNutritionContext ? <AppText variant="caption">{t('ai.nutritionPlanSaved')}</AppText> : null}
           <AppText variant="caption">{t('ai.safety')}</AppText>
         </SectionCard>
       ) : (
@@ -66,5 +133,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderSoft,
     marginBottom: 12
+  },
+  loadingButton: {
+    opacity: 0.62
   }
 });

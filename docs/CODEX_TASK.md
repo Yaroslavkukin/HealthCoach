@@ -104,7 +104,7 @@ Backend: Supabase
 Database: PostgreSQL via Supabase
 Authentication: Supabase Auth
 Storage: Supabase Storage
-AI: OpenAI API through backend/server functions
+AI: DeepSeek V4 Pro through backend/server functions
 Payments: payment provider abstraction for MVP
 Styling: React Native styling system or NativeWind/Tailwind-compatible approach
 ```
@@ -937,7 +937,9 @@ Create `.env.example` with placeholders:
 EXPO_PUBLIC_SUPABASE_URL=
 EXPO_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-OPENAI_API_KEY=
+DEEPSEEK_API_KEY=
+DEEPSEEK_BASE_URL=
+DEEPSEEK_MODEL=deepseek-v4-pro
 PAYMENT_PROVIDER_SECRET_KEY=
 PAYMENT_PROVIDER_PUBLIC_KEY=
 APP_ENV=development

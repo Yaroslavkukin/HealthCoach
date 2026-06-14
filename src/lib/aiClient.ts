@@ -9,9 +9,9 @@ import {
   demoWeeklyPlan,
   supplementSafetyNote
 } from '@/data/mock/healthProfile';
-import { supabase } from '@/lib/supabase';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import { getAuthPlaceholderContext } from '@/services/phase3Persistence';
-import type { AIHealthProfile } from '@/types';
+import type { AIHealthProfile, NutritionMeal } from '@/types';
 
 export type AIRequestPayload = {
   userId: string;
@@ -28,6 +28,21 @@ export type HealthProfileGenerationResult = {
   error?: string;
 };
 
+export type AIChatResult = {
+  ok: boolean;
+  mode: 'edge' | 'mock';
+  message: string;
+  answer: string;
+  nutritionPlan?: NutritionMeal[];
+  error?: string;
+};
+
+export type NutritionPlanState = {
+  source: AIHealthProfile['source'];
+  meals: NutritionMeal[];
+  generatedAt?: string;
+};
+
 type EdgeHealthProfileResponse = {
   status?: string;
   saved?: boolean;
@@ -36,7 +51,21 @@ type EdgeHealthProfileResponse = {
   profile?: unknown;
 };
 
+type EdgeChatResponse = {
+  ok?: boolean;
+  status?: string;
+  detail?: string;
+  message?: string;
+  answer?: string;
+  nutritionPlan?: unknown;
+  aiError?: string;
+  generatedAt?: string;
+};
+
 let latestGeneratedProfile: AIHealthProfile | null = null;
+let latestNutritionPlan: NutritionPlanState | null = null;
+const profileListeners = new Set<(profile: AIHealthProfile) => void>();
+const nutritionPlanListeners = new Set<(plan: NutritionPlanState) => void>();
 
 export function buildMockAIHealthProfile(): AIHealthProfile {
   return {
@@ -69,6 +98,33 @@ export function getLatestGeneratedHealthProfile(): AIHealthProfile {
   }
 
   return latestGeneratedProfile;
+}
+
+export function subscribeToLatestGeneratedHealthProfile(listener: (profile: AIHealthProfile) => void) {
+  profileListeners.add(listener);
+
+  return () => {
+    profileListeners.delete(listener);
+  };
+}
+
+export function getLatestNutritionPlan(): NutritionPlanState {
+  if (!latestNutritionPlan) {
+    latestNutritionPlan = {
+      source: 'mock',
+      meals: demoNutritionMeals
+    };
+  }
+
+  return latestNutritionPlan;
+}
+
+export function subscribeToLatestNutritionPlan(listener: (plan: NutritionPlanState) => void) {
+  nutritionPlanListeners.add(listener);
+
+  return () => {
+    nutritionPlanListeners.delete(listener);
+  };
 }
 
 export async function generateHealthProfile(): Promise<HealthProfileGenerationResult> {
@@ -124,13 +180,15 @@ export async function generateHealthProfile(): Promise<HealthProfileGenerationRe
     }
 
     latestGeneratedProfile = response.profile;
+    setLatestNutritionPlanFromAI(response.profile.nutritionPlan, response.profile.generatedAt);
+    emitProfileUpdate(latestGeneratedProfile);
 
     return {
       ok: true,
-      mode: response.profile.source,
+      mode: latestGeneratedProfile.source,
       saved: response.saved ?? false,
       message: response.message ?? 'Health profile generated through the secure backend.',
-      profile: response.profile
+      profile: latestGeneratedProfile
     };
   } catch (error) {
     latestGeneratedProfile = fallbackProfile;
@@ -151,10 +209,194 @@ export async function callHealthCoachAI(payload: AIRequestPayload) {
     return generateHealthProfile();
   }
 
+  if (payload.task === 'nutrition_plan') {
+    return generateNutritionPlanFromChat(readInputMessage(payload.input));
+  }
+
+  if (payload.task === 'ai_chat') {
+    return sendAIChatMessage(readInputMessage(payload.input), readInputContext(payload.input));
+  }
+
   return {
     status: 'mock',
     payload
   };
+}
+
+export async function generateNutritionPlanFromChat(message: string): Promise<AIChatResult> {
+  return sendAIChatMessage(message, 'nutrition');
+}
+
+async function sendAIChatMessage(message: string, context: string): Promise<AIChatResult> {
+  const trimmedMessage = message.trim();
+
+  if (!trimmedMessage) {
+    return {
+      ok: false,
+      mode: 'mock',
+      message: 'Enter a question for Health Coach AI.',
+      answer: '',
+      error: 'Empty AI chat message.'
+    };
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    const detail = buildMissingSupabaseConfigError();
+    console.error('AI chat configuration error', {
+      error: detail,
+      missing: getMissingSupabasePublicEnvKeys()
+    });
+
+    return {
+      ok: false,
+      mode: 'mock',
+      message: detail,
+      answer: '',
+      error: detail
+    };
+  }
+
+  try {
+    const { data, error, response: functionResponse } = await supabase.functions.invoke<EdgeChatResponse>('ai-chat', {
+      body: {
+        task: context === 'nutrition' ? 'nutrition_plan' : 'ai_chat',
+        message: trimmedMessage,
+        context
+      }
+    });
+
+    const response = normalizeEdgeChatResponse(data);
+
+    if (error) {
+      const errorResponse = normalizeEdgeChatResponse(await readFunctionErrorBody(functionResponse));
+      const detail =
+        errorResponse.aiError ??
+        errorResponse.detail ??
+        errorResponse.message ??
+        response.aiError ??
+        response.detail ??
+        response.message ??
+        error.message;
+
+      console.error('AI chat function invocation failed', {
+        task: context === 'nutrition' ? 'nutrition_plan' : 'ai_chat',
+        context,
+        error: detail
+      });
+
+      return {
+        ok: false,
+        mode: 'mock',
+        message: detail,
+        answer: '',
+        error: detail
+      };
+    }
+
+    if (!response.ok) {
+      const detail = response.aiError ?? response.detail ?? response.message ?? 'AI chat request failed.';
+
+      console.error('AI chat returned an error response', {
+        task: context === 'nutrition' ? 'nutrition_plan' : 'ai_chat',
+        context,
+        error: detail
+      });
+
+      return {
+        ok: false,
+        mode: 'mock',
+        message: detail,
+        answer: response.answer ?? '',
+        error: detail
+      };
+    }
+
+    if (context === 'nutrition') {
+      if (!isNutritionPlan(response.nutritionPlan)) {
+        return {
+          ok: false,
+          mode: 'mock',
+          message: 'AI chat returned an incomplete nutrition plan.',
+          answer: response.answer ?? '',
+          error: 'Invalid nutrition plan structure.'
+        };
+      }
+
+      const nutritionPlan = setLatestNutritionPlanFromAI(response.nutritionPlan, response.generatedAt);
+
+      return {
+        ok: true,
+        mode: 'edge',
+        message: response.message ?? 'Nutrition plan generated.',
+        answer: response.answer ?? 'Your nutrition plan is ready and saved to the Nutrition page.',
+        nutritionPlan: nutritionPlan.meals
+      };
+    }
+
+    return {
+      ok: true,
+      mode: 'edge',
+      message: response.message ?? 'AI response generated.',
+      answer: response.answer ?? ''
+    };
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error('AI chat request threw before completion', {
+      task: context === 'nutrition' ? 'nutrition_plan' : 'ai_chat',
+      context,
+      error: detail
+    });
+
+    return {
+      ok: false,
+      mode: 'mock',
+      message: detail,
+      answer: '',
+      error: detail
+    };
+  }
+}
+
+function buildMissingSupabaseConfigError() {
+  const missingKeys = getMissingSupabasePublicEnvKeys();
+
+  if (missingKeys.length === 0) {
+    return 'Secure AI chat is unavailable because Supabase is not configured.';
+  }
+
+  return `Secure AI chat is unavailable: missing ${missingKeys.join(', ')}.`;
+}
+
+function getMissingSupabasePublicEnvKeys() {
+  return [
+    process.env.EXPO_PUBLIC_SUPABASE_URL ? null : 'EXPO_PUBLIC_SUPABASE_URL',
+    process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ? null : 'EXPO_PUBLIC_SUPABASE_ANON_KEY'
+  ].filter((key): key is string => Boolean(key));
+}
+
+function setLatestNutritionPlanFromAI(meals: NutritionMeal[], generatedAt?: string) {
+  const nutritionPlan: NutritionPlanState = {
+    source: 'edge',
+    generatedAt,
+    meals
+  };
+
+  latestNutritionPlan = nutritionPlan;
+  emitNutritionPlanUpdate(nutritionPlan);
+
+  return nutritionPlan;
+}
+
+function emitProfileUpdate(profile: AIHealthProfile) {
+  profileListeners.forEach((listener) => {
+    listener(profile);
+  });
+}
+
+function emitNutritionPlanUpdate(plan: NutritionPlanState) {
+  nutritionPlanListeners.forEach((listener) => {
+    listener(plan);
+  });
 }
 
 export function validateAIHealthProfile(value: unknown): value is AIHealthProfile {
@@ -192,6 +434,52 @@ function normalizeEdgeResponse(value: unknown): EdgeHealthProfileResponse {
     warning: typeof value.warning === 'string' ? value.warning : undefined,
     profile: value.profile
   };
+}
+
+function normalizeEdgeChatResponse(value: unknown): EdgeChatResponse {
+  if (!isRecord(value)) {
+    return {};
+  }
+
+  return {
+    ok: typeof value.ok === 'boolean' ? value.ok : undefined,
+    status: typeof value.status === 'string' ? value.status : undefined,
+    detail: typeof value.detail === 'string' ? value.detail : undefined,
+    message: typeof value.message === 'string' ? value.message : undefined,
+    answer: typeof value.answer === 'string' ? value.answer : undefined,
+    nutritionPlan: value.nutritionPlan,
+    aiError: typeof value.aiError === 'string' ? value.aiError : undefined,
+    generatedAt: typeof value.generatedAt === 'string' ? value.generatedAt : undefined
+  };
+}
+
+async function readFunctionErrorBody(response?: Response): Promise<unknown> {
+  if (!response) {
+    return {};
+  }
+
+  try {
+    const responseForRead = response.clone();
+    const contentType = responseForRead.headers.get('Content-Type') ?? '';
+
+    if (contentType.includes('application/json')) {
+      return await responseForRead.json();
+    }
+
+    const detail = await responseForRead.text();
+
+    return detail ? { detail } : {};
+  } catch {
+    return {};
+  }
+}
+
+function readInputMessage(input: Record<string, unknown>) {
+  return typeof input.message === 'string' ? input.message : '';
+}
+
+function readInputContext(input: Record<string, unknown>) {
+  return typeof input.context === 'string' ? input.context : 'general';
 }
 
 function isSummary(value: unknown) {
@@ -246,7 +534,7 @@ function isBeeProductArray(value: unknown) {
   );
 }
 
-function isNutritionPlan(value: unknown) {
+function isNutritionPlan(value: unknown): value is NutritionMeal[] {
   return (
     Array.isArray(value) &&
     value.every(
