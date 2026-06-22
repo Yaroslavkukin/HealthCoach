@@ -168,7 +168,7 @@ export const ru: Record<TranslationKey, string> = {
   'ai.demoFallbackMessage': 'Сейчас показан демо-ответ на основе примера профиля. После подключения ИИ-провайдера ответы будут строиться на ваших данных.',
   'ai.examples': 'Что можно спросить',
   'ai.demoAnswerFor': 'Демо-ответ на вопрос: {question}',
-  'ai.placeholder': 'Задайте вопрос ИИ-коучу...',
+  'ai.placeholder': 'Задайте вопрос AI-ассистенту',
   'ai.send': 'Отправить вопрос',
   'ai.sendMock': 'Отправить демо-вопрос',
   'ai.generating': 'Готовим ответ...',

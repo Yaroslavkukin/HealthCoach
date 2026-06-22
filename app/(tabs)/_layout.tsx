@@ -40,7 +40,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen name="body" options={{ title: t('common.body'), tabBarIcon: ({ color, size }) => <Ionicons name="body-outline" color={color} size={size} /> }} />
-      <Tabs.Screen name="ai" options={{ title: t('common.ai'), tabBarIcon: ({ color, size }) => <Ionicons name="chatbubble-ellipses-outline" color={color} size={size} /> }} />
+      <Tabs.Screen name="ai" options={{ title: t('common.ai'), tabBarLabel: 'AI', tabBarIcon: ({ color, size }) => <Ionicons name="chatbubble-ellipses-outline" color={color} size={size} /> }} />
       <Tabs.Screen name="profile" options={{ title: t('common.profile'), tabBarIcon: ({ color, size }) => <Ionicons name="person-circle-outline" color={color} size={size} /> }} />
     </Tabs>
   );
