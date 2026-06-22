@@ -60,13 +60,15 @@ export type BloodUploadMetadata = {
   status?: 'uploaded' | 'processing' | 'extracted' | 'failed' | 'needs_review';
 };
 
-export type OnboardingChecklistDraft = {
-  bloodAnalysisCompleted?: boolean;
-  bravermanCompleted?: boolean;
-  lifestyleCompleted?: boolean;
-  nutritionCompleted?: boolean;
-  aiProfileGenerated?: boolean;
+export type OnboardingChecklistState = {
+  bloodAnalysisCompleted: boolean;
+  bravermanCompleted: boolean;
+  lifestyleCompleted: boolean;
+  nutritionCompleted: boolean;
+  aiProfileGenerated: boolean;
 };
+
+export type OnboardingChecklistDraft = Partial<OnboardingChecklistState>;
 
 export type LifestyleAssessmentDraft = {
   typicalDay?: string;
@@ -102,6 +104,14 @@ type OnboardingChecklistRow = {
 
 const mockUserId = '00000000-0000-4000-8000-000000000003';
 const mockEmail = 'demo@healthcoach.local';
+const emptyOnboardingChecklist: OnboardingChecklistState = {
+  bloodAnalysisCompleted: false,
+  bravermanCompleted: false,
+  lifestyleCompleted: false,
+  nutritionCompleted: false,
+  aiProfileGenerated: false
+};
+let mockOnboardingChecklist: OnboardingChecklistState = { ...emptyOnboardingChecklist };
 
 export async function getAuthPlaceholderContext(): Promise<AuthPlaceholderContext> {
   if (!isSupabaseConfigured || !supabase) {
@@ -295,11 +305,48 @@ export async function saveBloodUploadMetadata(metadata: BloodUploadMetadata): Pr
   return { ok: true, mode: 'supabase', message: 'Blood upload metadata saved to Supabase.', data };
 }
 
+export async function fetchOnboardingChecklist(): Promise<PersistenceResult<OnboardingChecklistState>> {
+  const context = await getAuthPlaceholderContext();
+
+  if (context.mode === 'mock' || !supabase) {
+    return {
+      ok: true,
+      mode: 'mock',
+      message: 'Onboarding checklist read from mock fallback.',
+      data: { ...mockOnboardingChecklist }
+    };
+  }
+
+  const { data, error } = await supabase
+    .from('onboarding_checklist')
+    .select('id,blood_analysis_completed,braverman_completed,lifestyle_completed,nutrition_completed,ai_profile_generated')
+    .eq('user_id', context.userId)
+    .maybeSingle<OnboardingChecklistRow>();
+
+  if (error) {
+    return { ok: false, mode: 'supabase', message: 'Unable to read onboarding checklist.', error: error.message };
+  }
+
+  return {
+    ok: true,
+    mode: 'supabase',
+    message: 'Onboarding checklist loaded from Supabase.',
+    data: normalizeOnboardingChecklist(data)
+  };
+}
+
 export async function saveOnboardingChecklist(checklist: OnboardingChecklistDraft): Promise<PersistenceResult<Record<string, unknown>>> {
   const context = await getAuthPlaceholderContext();
 
   if (context.mode === 'mock' || !supabase) {
-    return { ok: true, mode: 'mock', message: 'Onboarding checklist saved to mock fallback.', data: { ...checklist, user_id: context.userId } };
+    mockOnboardingChecklist = mergeOnboardingChecklist(mockOnboardingChecklist, checklist);
+
+    return {
+      ok: true,
+      mode: 'mock',
+      message: 'Onboarding checklist saved to mock fallback.',
+      data: { ...mockOnboardingChecklist, user_id: context.userId }
+    };
   }
 
   const { data: existing, error: selectError } = await supabase
@@ -333,6 +380,29 @@ export async function saveOnboardingChecklist(checklist: OnboardingChecklistDraf
   }
 
   return { ok: true, mode: 'supabase', message: 'Onboarding checklist saved to Supabase.', data };
+}
+
+function normalizeOnboardingChecklist(row?: OnboardingChecklistRow | null): OnboardingChecklistState {
+  return {
+    bloodAnalysisCompleted: row?.blood_analysis_completed === true,
+    bravermanCompleted: row?.braverman_completed === true,
+    lifestyleCompleted: row?.lifestyle_completed === true,
+    nutritionCompleted: row?.nutrition_completed === true,
+    aiProfileGenerated: row?.ai_profile_generated === true
+  };
+}
+
+function mergeOnboardingChecklist(
+  current: OnboardingChecklistState,
+  next: OnboardingChecklistDraft
+): OnboardingChecklistState {
+  return {
+    bloodAnalysisCompleted: next.bloodAnalysisCompleted ?? current.bloodAnalysisCompleted,
+    bravermanCompleted: next.bravermanCompleted ?? current.bravermanCompleted,
+    lifestyleCompleted: next.lifestyleCompleted ?? current.lifestyleCompleted,
+    nutritionCompleted: next.nutritionCompleted ?? current.nutritionCompleted,
+    aiProfileGenerated: next.aiProfileGenerated ?? current.aiProfileGenerated
+  };
 }
 
 export async function saveLifestyleAssessment(draft: LifestyleAssessmentDraft): Promise<PersistenceResult<Record<string, unknown>>> {

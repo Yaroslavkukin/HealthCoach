@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { router } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -7,14 +7,28 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { onboardingSteps } from '@/features/onboarding/onboardingSteps';
+import { onboardingSteps, type OnboardingStepId } from '@/features/onboarding/onboardingSteps';
 import { useI18n } from '@/i18n';
 import { translatePersistenceMessage } from '@/i18n/mockContent';
 import type { TranslationKey } from '@/i18n/translations/en';
-import { saveOnboardingChecklist } from '@/services/phase3Persistence';
+import {
+  fetchOnboardingChecklist,
+  saveOnboardingChecklist,
+  type OnboardingChecklistState
+} from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
-const stepKeys: Record<string, { title: TranslationKey; description: TranslationKey }> = {
+type OnboardingStepStatus = 'not started' | 'completed' | 'locked';
+
+const emptyChecklist: OnboardingChecklistState = {
+  bloodAnalysisCompleted: false,
+  bravermanCompleted: false,
+  lifestyleCompleted: false,
+  nutritionCompleted: false,
+  aiProfileGenerated: false
+};
+
+const stepKeys: Record<OnboardingStepId, { title: TranslationKey; description: TranslationKey }> = {
   'blood-analysis': { title: 'onboarding.step.blood.title', description: 'onboarding.step.blood.description' },
   braverman: { title: 'onboarding.step.braverman.title', description: 'onboarding.step.braverman.description' },
   lifestyle: { title: 'onboarding.step.lifestyle.title', description: 'onboarding.step.lifestyle.description' },
@@ -22,9 +36,8 @@ const stepKeys: Record<string, { title: TranslationKey; description: Translation
   'ai-profile': { title: 'onboarding.step.ai.title', description: 'onboarding.step.ai.description' }
 };
 
-const statusKeys: Record<string, TranslationKey> = {
+const statusKeys: Record<OnboardingStepStatus, TranslationKey> = {
   'not started': 'onboarding.status.notStarted',
-  'in progress': 'onboarding.status.inProgress',
   completed: 'onboarding.status.completed',
   locked: 'onboarding.status.locked'
 };
@@ -32,17 +45,51 @@ const statusKeys: Record<string, TranslationKey> = {
 export default function StartChecklistScreen() {
   const { t } = useI18n();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [checklist, setChecklist] = useState<OnboardingChecklistState>(emptyChecklist);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      fetchOnboardingChecklist()
+        .then((result) => {
+          if (!isActive) {
+            return;
+          }
+
+          if (result.ok) {
+            setChecklist(result.data ?? emptyChecklist);
+            return;
+          }
+
+          setSaveMessage(translatePersistenceMessage(result.message, t));
+        })
+        .catch(() => {
+          if (isActive) {
+            setChecklist(emptyChecklist);
+          }
+        });
+
+      return () => {
+        isActive = false;
+      };
+    }, [t])
+  );
 
   async function continueRequiredFlow() {
-    const result = await saveOnboardingChecklist({
+    const initialChecklist: OnboardingChecklistState = {
       bloodAnalysisCompleted: false,
       bravermanCompleted: false,
-      lifestyleCompleted: true,
+      lifestyleCompleted: false,
       nutritionCompleted: false,
       aiProfileGenerated: false
-    });
+    };
+    const result = await saveOnboardingChecklist(initialChecklist);
 
     setSaveMessage(translatePersistenceMessage(result.message, t));
+    if (result.ok) {
+      setChecklist(initialChecklist);
+    }
     router.push('/onboarding/blood-upload');
   }
 
@@ -60,7 +107,8 @@ export default function StartChecklistScreen() {
       />
 
       {onboardingSteps.map((step, index) => {
-        const locked = step.status === 'locked';
+        const status = getStepStatus(step.id, checklist);
+        const locked = status === 'locked';
 
         return (
           <Pressable key={step.id} disabled={locked} onPress={() => router.push(step.route)} style={({ pressed }) => pressed && styles.pressed}>
@@ -72,7 +120,7 @@ export default function StartChecklistScreen() {
                 <View style={styles.stepText}>
                   <View style={styles.titleRow}>
                     <AppText style={styles.title}>{t(stepKeys[step.id].title)}</AppText>
-                    <AppText style={[styles.status, locked && styles.lockedText]}>{t(statusKeys[step.status])}</AppText>
+                    <AppText style={[styles.status, locked && styles.lockedText]}>{t(statusKeys[status])}</AppText>
                   </View>
                   <AppText variant="caption">{t(stepKeys[step.id].description)}</AppText>
                 </View>
@@ -85,6 +133,39 @@ export default function StartChecklistScreen() {
       <PrimaryButton label={t('onboarding.checklist.continue')} onPress={continueRequiredFlow} />
       <PrimaryButton label={t('onboarding.checklist.preview')} variant="secondary" onPress={() => router.replace('/(tabs)/today')} />
     </ScreenContainer>
+  );
+}
+
+function getStepStatus(stepId: OnboardingStepId, checklist: OnboardingChecklistState): OnboardingStepStatus {
+  if (stepId === 'blood-analysis') {
+    return checklist.bloodAnalysisCompleted ? 'completed' : 'not started';
+  }
+
+  if (stepId === 'braverman') {
+    return checklist.bravermanCompleted ? 'completed' : 'not started';
+  }
+
+  if (stepId === 'lifestyle') {
+    return checklist.lifestyleCompleted ? 'completed' : 'not started';
+  }
+
+  if (stepId === 'nutrition') {
+    return checklist.nutritionCompleted ? 'completed' : 'not started';
+  }
+
+  if (checklist.aiProfileGenerated) {
+    return 'completed';
+  }
+
+  return isRequiredDataComplete(checklist) ? 'not started' : 'locked';
+}
+
+function isRequiredDataComplete(checklist: OnboardingChecklistState) {
+  return (
+    checklist.bloodAnalysisCompleted &&
+    checklist.bravermanCompleted &&
+    checklist.lifestyleCompleted &&
+    checklist.nutritionCompleted
   );
 }
 
