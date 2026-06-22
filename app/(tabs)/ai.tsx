@@ -21,6 +21,7 @@ export default function AIScreen() {
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState('');
   const [fallbackNotice, setFallbackNotice] = useState('');
+  const [nutritionPlanSaved, setNutritionPlanSaved] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function submitMessage(messageOverride?: string) {
@@ -38,6 +39,7 @@ export default function AIScreen() {
     setIsSubmitting(true);
     setError('');
     setFallbackNotice('');
+    setNutritionPlanSaved(false);
 
     const result = await callHealthCoachAI({
       userId: 'local-user',
@@ -59,6 +61,7 @@ export default function AIScreen() {
         });
 
       setAnswer(responseAnswer);
+      setNutritionPlanSaved(isNutritionContext && Boolean(result.nutritionPlan));
       if (result.ok) {
         setError('');
         setFallbackNotice('');
@@ -83,6 +86,7 @@ export default function AIScreen() {
         language,
         context: isNutritionContext ? 'nutrition' : 'general'
       }));
+      setNutritionPlanSaved(false);
       setError('');
       setFallbackNotice(t('ai.demoFallbackMessage'));
     }
@@ -154,7 +158,7 @@ export default function AIScreen() {
           <SectionCard>
             <AppText variant="subtitle">{t('ai.responseTitle')}</AppText>
             <AppText variant="body">{answer}</AppText>
-            {isNutritionContext ? <AppText variant="caption">{t('ai.nutritionPlanSaved')}</AppText> : null}
+            {nutritionPlanSaved ? <AppText variant="caption">{t('ai.nutritionPlanSaved')}</AppText> : null}
             <AppText variant="caption">{t('ai.safety')}</AppText>
           </SectionCard>
         ) : (

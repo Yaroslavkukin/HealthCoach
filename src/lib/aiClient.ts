@@ -34,9 +34,11 @@ export type HealthProfileGenerationResult = {
 export type AIChatResult = {
   ok: boolean;
   mode: 'edge' | 'mock';
+  responseType: 'text' | 'nutrition_plan';
   message: string;
   answer: string;
   nutritionPlan?: NutritionMeal[];
+  nutritionPlanSaved: boolean;
   error?: string;
   fallbackMode?: 'demo';
 };
@@ -242,8 +244,10 @@ async function sendAIChatMessage(message: string, context: string, language: Lan
     return {
       ok: false,
       mode: 'mock',
+      responseType: 'text',
       message: 'Enter a question for Health Coach AI.',
       answer: '',
+      nutritionPlanSaved: false,
       error: 'Empty AI chat message.'
     };
   }
@@ -314,8 +318,10 @@ async function sendAIChatMessage(message: string, context: string, language: Lan
       return {
         ok: true,
         mode: 'edge',
+        responseType: 'text',
         message: 'AI response generated.',
-        answer: providerAnswer
+        answer: providerAnswer,
+        nutritionPlanSaved: false
       };
     }
 
@@ -329,17 +335,21 @@ async function sendAIChatMessage(message: string, context: string, language: Lan
       return {
         ok: true,
         mode: 'edge',
+        responseType: 'nutrition_plan',
         message: response.message ?? 'Nutrition plan generated.',
         answer: response.answer ?? 'Your nutrition plan is ready and saved to the Nutrition page.',
-        nutritionPlan: nutritionPlan.meals
+        nutritionPlan: nutritionPlan.meals,
+        nutritionPlanSaved: true
       };
     }
 
     return {
       ok: true,
       mode: 'edge',
+      responseType: 'text',
       message: response.message ?? 'AI response generated.',
-      answer: response.answer ?? ''
+      answer: response.answer ?? '',
+      nutritionPlanSaved: false
     };
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
@@ -362,8 +372,10 @@ function buildDemoChatFallbackResult(message: string, context: string, language:
   const result: AIChatResult = {
     ok: false,
     mode: 'mock',
+    responseType: 'text',
     message: buildDemoAiCoachFallbackMessage(language),
     answer,
+    nutritionPlanSaved: false,
     error,
     fallbackMode: 'demo'
   };
@@ -377,7 +389,9 @@ function buildDemoChatFallbackResult(message: string, context: string, language:
 
     return {
       ...result,
-      nutritionPlan: demoNutritionMeals
+      responseType: 'nutrition_plan',
+      nutritionPlan: demoNutritionMeals,
+      nutritionPlanSaved: true
     };
   }
 
