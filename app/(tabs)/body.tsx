@@ -3,12 +3,7 @@ import { Image, ImageBackground, Pressable, StyleSheet, View } from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import {
-  demoBodyOverview,
-  demoBodySystems,
-  type BodySystemStatus,
-  type DemoBodySystem
-} from '@/data/demoBodyData';
+import { demoBodyOverview, type DemoBodySystem } from '@/data/demoBodyData';
 import { useI18n } from '@/i18n';
 import { colors } from '@/theme/colors';
 
@@ -55,12 +50,6 @@ const summarySections = [
   }
 ];
 
-const systemStateColors: Record<BodySystemStatus, string> = {
-  good: colors.success,
-  warning: colors.warning,
-  poor: colors.danger
-};
-
 export default function BodyScreen() {
   const { t } = useI18n();
 
@@ -70,7 +59,6 @@ export default function BodyScreen() {
 
       <View style={styles.contentBody}>
         <BodySystemsPanel />
-        <BodySystemsOverview />
         <View style={styles.actionButtons}>
           <BodyActionButton label={t('body.openAnalyses')} onPress={() => router.push('/analyses')} />
           <BodyActionButton label={t('body.openBraverman')} onPress={() => router.push('/braverman-test')} />
@@ -178,75 +166,6 @@ function BodyStateSummary() {
         ))}
       </View>
     </View>
-  );
-}
-
-function BodySystemsOverview() {
-  return (
-    <View style={styles.systemsOverview}>
-      <View style={styles.systemsOverviewHeader}>
-        <View>
-          <AppText style={styles.systemsOverviewTitle}>Системы тела</AppText>
-          <AppText style={styles.systemsOverviewSubtitle}>Пример на основе демо-данных</AppText>
-        </View>
-        <View style={styles.systemsOverviewPill}>
-          <AppText style={styles.systemsOverviewPillText}>{demoBodySystems.length} систем</AppText>
-        </View>
-      </View>
-
-      <View style={styles.systemCards}>
-        {demoBodySystems.map((system) => (
-          <BodySystemStatusCard key={system.id} system={system} />
-        ))}
-      </View>
-    </View>
-  );
-}
-
-function BodySystemStatusCard({ system }: { system: DemoBodySystem }) {
-  const stateColor = systemStateColors[system.state];
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={system.title}
-      onPress={() => router.push(`/body-system/${system.id}`)}
-      style={({ pressed }) => [styles.systemCard, pressed && styles.systemCardPressed]}
-    >
-      <View style={styles.systemCardTop}>
-        <View style={styles.systemCardTitleBlock}>
-          <AppText style={styles.systemCardTitle}>{system.title}</AppText>
-          <AppText style={styles.systemCardDescription}>{system.description}</AppText>
-        </View>
-        <View style={[styles.systemScoreBadge, { borderColor: stateColor }]}>
-          <AppText style={[styles.systemScoreValue, { color: stateColor }]}>{system.score}</AppText>
-        </View>
-      </View>
-
-      <View style={styles.systemMetaRow}>
-        <View style={[styles.systemStatusPill, { borderColor: stateColor }]}>
-          <AppText style={[styles.systemStatusText, { color: stateColor }]}>{system.statusLabel}</AppText>
-        </View>
-        <AppText style={styles.systemTrendText}>{system.trendLabel}</AppText>
-      </View>
-
-      <View style={styles.systemDetailRow}>
-        <AppText style={styles.systemDetailLabel}>Ограничивает</AppText>
-        <AppText style={styles.systemDetailText}>{system.limitingFactor}</AppText>
-      </View>
-      <View style={styles.systemDetailRow}>
-        <AppText style={styles.systemDetailLabel}>Следующий шаг</AppText>
-        <AppText style={styles.systemDetailText}>{system.recommendedAction}</AppText>
-      </View>
-
-      <View style={styles.signalRow}>
-        {system.relatedSignals.slice(0, 3).map((signal) => (
-          <View key={signal} style={styles.signalChip}>
-            <AppText style={styles.signalChipText}>{signal}</AppText>
-          </View>
-        ))}
-      </View>
-    </Pressable>
   );
 }
 
@@ -523,159 +442,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
     marginTop: 5
-  },
-  systemsOverview: {
-    width: '100%',
-    maxWidth: 430,
-    marginTop: 18
-  },
-  systemsOverviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 12
-  },
-  systemsOverviewTitle: {
-    color: colors.primary,
-    fontSize: 20,
-    lineHeight: 25,
-    fontWeight: '900'
-  },
-  systemsOverviewSubtitle: {
-    color: colors.textMuted,
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 2
-  },
-  systemsOverviewPill: {
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.accent,
-    backgroundColor: colors.accentSoft,
-    paddingHorizontal: 10,
-    paddingVertical: 5
-  },
-  systemsOverviewPillText: {
-    color: colors.primary,
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: '800'
-  },
-  systemCards: {
-    gap: 12
-  },
-  systemCard: {
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.surface,
-    padding: 15,
-    shadowColor: colors.primaryDark,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 2
-  },
-  systemCardPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.99 }]
-  },
-  systemCardTop: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12
-  },
-  systemCardTitleBlock: {
-    flex: 1,
-    minWidth: 0
-  },
-  systemCardTitle: {
-    color: colors.primary,
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: '900'
-  },
-  systemCardDescription: {
-    color: colors.textMuted,
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 5
-  },
-  systemScoreBadge: {
-    width: 54,
-    height: 54,
-    borderRadius: 18,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background
-  },
-  systemScoreValue: {
-    fontSize: 18,
-    lineHeight: 22,
-    fontWeight: '900'
-  },
-  systemMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 12
-  },
-  systemStatusPill: {
-    borderRadius: 999,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    backgroundColor: colors.background
-  },
-  systemStatusText: {
-    fontSize: 12,
-    lineHeight: 15,
-    fontWeight: '900'
-  },
-  systemTrendText: {
-    color: colors.textMuted,
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: '700'
-  },
-  systemDetailRow: {
-    marginTop: 10
-  },
-  systemDetailLabel: {
-    color: colors.textSoft,
-    fontSize: 11,
-    lineHeight: 14,
-    fontWeight: '900',
-    textTransform: 'uppercase'
-  },
-  systemDetailText: {
-    color: colors.text,
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 3
-  },
-  signalRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginTop: 12
-  },
-  signalChip: {
-    borderRadius: 999,
-    backgroundColor: colors.background,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    paddingHorizontal: 9,
-    paddingVertical: 4
-  },
-  signalChipText: {
-    color: colors.textMuted,
-    fontSize: 11,
-    lineHeight: 14,
-    fontWeight: '700'
   },
   systemsPanel: {
     width: '100%',
