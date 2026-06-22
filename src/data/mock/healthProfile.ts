@@ -447,7 +447,7 @@ export const demoSuccessStories: SuccessStory[] = [
     id: 'story-3',
     title: 'Motivation returned',
     person: 'Strategist archetype, 41',
-    result: 'Connected daily tasks to a 90-day goal and completed 78% of weekly actions.'
+    result: 'Connected daily tasks to the current health goal and completed 78% of weekly actions.'
   }
 ];
 

@@ -532,7 +532,7 @@ export const en = {
   'mock.story.sleep.result': 'Used a simpler evening protocol and moved bedtime earlier by 35 minutes.',
   'mock.story.motivation.title': 'Motivation returned',
   'mock.story.motivation.person': 'Strategist archetype, 41',
-  'mock.story.motivation.result': 'Connected daily tasks to a 90-day goal and completed 78% of weekly actions.',
+  'mock.story.motivation.result': 'Connected daily tasks to the current health goal and completed 78% of weekly actions.',
 
   'mock.assistant.q1': 'Why is my cortisol high?',
   'mock.assistant.q2': 'Can I take magnesium and zinc together?',

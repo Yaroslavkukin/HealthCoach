@@ -534,7 +534,7 @@ export const ru: Record<TranslationKey, string> = {
   'mock.story.sleep.result': 'Использовал более простую вечернюю рутину и сдвинул отход ко сну на 35 минут раньше.',
   'mock.story.motivation.title': 'Мотивация вернулась',
   'mock.story.motivation.person': 'Архетип Стратег, 41',
-  'mock.story.motivation.result': 'Связал ежедневные задачи с 90-дневной целью и выполнил 78% недельных действий.',
+  'mock.story.motivation.result': 'Связал ежедневные задачи с текущей целью здоровья и выполнил 78% недельных действий.',
 
   'mock.assistant.q1': 'Почему у меня высокий кортизол?',
   'mock.assistant.q2': 'Можно ли принимать магний и цинк вместе?',

@@ -614,7 +614,7 @@ async function upsertMainGoal(userId: string, mainGoal?: string): Promise<string
     goal_code: 'main_goal',
     title: goalTitle,
     description: goalTitle,
-    duration_days: 90,
+    duration_days: null,
     status: 'active',
     updated_at: new Date().toISOString()
   };
