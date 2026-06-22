@@ -1,5 +1,11 @@
 # BEE_PRODUCTS_ENGINE.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Purpose
 
 The Bee Products Engine is responsible for recommending bee-derived products when they may support energy, recovery, cognitive performance, immunity, stress adaptation, and overall well-being.
@@ -39,34 +45,34 @@ Priority order:
 
 ## Honey
 
-### Description
+### Honey — Description
 
 Natural source of carbohydrates, enzymes, antioxidants, and bioactive compounds.
 
-### Primary Benefits
+### Honey — Primary Benefits
 
 - Quick energy support
 - Recovery support
 - Immune support
 
-### AI Priority
+### Honey — AI Priority
 
 Medium
 
-### Recommended For
+### Honey — Recommended For
 
 - High physical activity
 - Low energy
 - Recovery periods
 - High cognitive workload
 
-### Suggested Pairings
+### Honey — Suggested Pairings
 
 - Magnesium
 - Omega-3
 - CoQ10
 
-### Avoid If
+### Honey — Avoid If
 
 - Allergy to bee products
 - Uncontrolled diabetes
@@ -75,37 +81,37 @@ Medium
 
 ## Bee Pollen
 
-### Description
+### Bee Pollen — Description
 
 Flower pollen collected by bees.
 
 Rich in amino acids, micronutrients, and biologically active compounds.
 
-### Primary Benefits
+### Bee Pollen — Primary Benefits
 
 - Energy support
 - Recovery support
 - Immune support
 
-### AI Priority
+### Bee Pollen — AI Priority
 
 Medium
 
-### Recommended For
+### Bee Pollen — Recommended For
 
 - Frequent fatigue
 - High training volume
 - Chronic stress
 - Nutritional support
 
-### Suggested Pairings
+### Bee Pollen — Suggested Pairings
 
 - Vitamin D
 - Magnesium
 - Zinc
 - Omega-3
 
-### Avoid If
+### Bee Pollen — Avoid If
 
 - Allergy to bee products
 - Pollen allergy
@@ -114,21 +120,21 @@ Medium
 
 ## Perga
 
-### Description
+### Perga — Description
 
 Fermented bee pollen with enhanced bioavailability.
 
-### Primary Benefits
+### Perga — Primary Benefits
 
 - Energy support
 - Cognitive support
 - Recovery support
 
-### AI Priority
+### Perga — AI Priority
 
 High
 
-### Recommended For
+### Perga — Recommended For
 
 - Chronic fatigue
 - Reduced productivity
@@ -137,14 +143,14 @@ High
 - Low energy
 - Reduced concentration
 
-### Suggested Pairings
+### Perga — Suggested Pairings
 
 - Magnesium
 - Omega-3
 - B Vitamins
 - CoQ10
 
-### Avoid If
+### Perga — Avoid If
 
 - Allergy to bee products
 
@@ -152,35 +158,35 @@ High
 
 ## Royal Jelly
 
-### Description
+### Royal Jelly — Description
 
 Nutrient-dense secretion produced by worker bees.
 
-### Primary Benefits
+### Royal Jelly — Primary Benefits
 
 - Vitality support
 - Cognitive support
 - Stress adaptation
 
-### AI Priority
+### Royal Jelly — AI Priority
 
 High
 
-### Recommended For
+### Royal Jelly — Recommended For
 
 - Persistent fatigue
 - Reduced motivation
 - High cognitive workload
 - Chronic stress
 
-### Suggested Pairings
+### Royal Jelly — Suggested Pairings
 
 - Magnesium
 - Omega-3
 - Vitamin D
 - Adaptogens
 
-### Avoid If
+### Royal Jelly — Avoid If
 
 - Allergy to bee products
 
@@ -188,30 +194,30 @@ High
 
 ## Zabrus
 
-### Description
+### Zabrus — Description
 
 Wax cappings from honeycomb containing traces of honey and propolis.
 
-### Primary Benefits
+### Zabrus — Primary Benefits
 
 - Oral hygiene support
 - Gum support
 - Breath freshness
 
-### AI Priority
+### Zabrus — AI Priority
 
 Low
 
-### Recommended For
+### Zabrus — Recommended For
 
 - Oral health support
 - General wellness
 
-### Suggested Pairings
+### Zabrus — Suggested Pairings
 
 No specific pairings required.
 
-### Avoid If
+### Zabrus — Avoid If
 
 - Allergy to bee products
 
@@ -351,3 +357,10 @@ The AI must remind users:
 - Users with medical conditions should consult a healthcare professional before use.
 
 The AI must never present bee products as medical treatment.
+
+
+---
+
+# Commerce Boundary
+
+Bee product recommendations are informational product guidance only. Marketplace checkout, order collection, and automatic delivery are not active product scope.

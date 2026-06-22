@@ -1,5 +1,11 @@
 # ANALYSIS_SYSTEM.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Purpose
 
 The blood analysis system is one of the core components of Health Coach.
@@ -38,7 +44,7 @@ Users may:
 
 # Male Packages
 
-## Foundation
+## Male Foundation
 
 Purpose:
 
@@ -68,7 +74,7 @@ Recommended for:
 
 ---
 
-## Advanced
+## Male Advanced
 
 Purpose:
 
@@ -98,7 +104,7 @@ Recommended for:
 
 ---
 
-## Complete
+## Male Complete
 
 Purpose:
 
@@ -133,7 +139,7 @@ Recommended for:
 
 # Female Packages
 
-## Foundation
+## Female Foundation
 
 Purpose:
 
@@ -170,7 +176,7 @@ Recommended for:
 
 ---
 
-## Complete
+## Female Complete
 
 Purpose:
 
@@ -391,6 +397,6 @@ Future versions may support:
 - Personalized retesting schedules
 - Biomarker trend forecasting
 - Health Optimization Score
-- AI Health Risk Detection
+- AI safety flag detection
 - AI-generated recovery plans
 - AI-generated supplement protocols

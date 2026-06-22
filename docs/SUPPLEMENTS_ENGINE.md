@@ -1,5 +1,11 @@
 # SUPPLEMENTS_ENGINE.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Purpose
 
 The Supplements Engine is responsible for selecting supplement recommendations based on the user's biomarkers, symptoms, goals, Braverman profile, lifestyle data, and progress history.
@@ -39,7 +45,7 @@ This stack includes only supplements that are considered highly relevant to the 
 
 Examples:
 
-- Clear biomarker deficiency
+- Clear biomarker gap or low-status signal
 - Strong symptom match
 - High-impact intervention
 - High confidence recommendation
@@ -165,7 +171,7 @@ Before starting any supplement protocol, consult a qualified healthcare professi
 
 The AI must avoid presenting supplement recommendations as medical treatment.
 
-For MVP, the system should not automatically recommend prescription medications, injectables, SARMs, peptides, experimental compounds, controlled substances, or other regulated substances as ordinary supplements.
+For the current active scope, the system should not automatically recommend prescription medications, injectables, SARMs, peptides, experimental compounds, controlled substances, or other regulated substances as ordinary supplements.
 
 ---
 
@@ -205,7 +211,7 @@ Each supplement recommendation should include:
 
 # Example Output
 
-## Essential Stack
+## Example Essential Stack
 
 ### Magnesium Bisglycinate
 
@@ -227,6 +233,13 @@ High, if user reports anxiety, poor sleep, muscle tension, or high stress.
 
 ---
 
-## Complete Stack
+## Example Complete Stack
 
 Includes Essential Stack plus additional supportive supplements selected according to user goals and current condition.
+
+
+---
+
+# Restricted Scope Boundary
+
+The Supplements Engine must not recommend prescription medications, restricted compounds, experimental compounds, controlled substances, SARMs, peptides, or clinician-only products as ordinary user-facing wellness recommendations. Any future restricted catalog concept requires separate owner approval and must remain hidden from ordinary user-facing recommendations unless an appropriate regulated workflow is explicitly added.

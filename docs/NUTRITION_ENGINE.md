@@ -1,5 +1,11 @@
 # NUTRITION_ENGINE.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Project
 
 Health Coach
@@ -85,7 +91,7 @@ It can:
 - Create food recommendations
 - Correct an existing meal plan
 - Suggest meals for today
-- Suggest what to order in restaurants or delivery apps
+- Suggest practical choices in restaurants or from takeout menus
 - Explain why specific foods are recommended or restricted
 - Adapt nutrition to biomarkers and symptoms
 - Adjust food recommendations after 14-day reviews
@@ -95,7 +101,7 @@ It can:
 The user may ask:
 
 - What should I eat for breakfast?
-- What should I order at KFC?
+- What is the safest practical option if I am eating at a fast-food restaurant?
 - Is this meal good for my current goal?
 - What should I eat if I feel tired?
 - What should I avoid with high insulin?
@@ -263,7 +269,9 @@ AI returns:
 - What should be added
 - A better version of the meal
 
-## 5.6 Restaurant / Delivery Guidance
+## 5.6 Restaurant / Takeout Guidance
+
+This means food-choice guidance only. No ordering, checkout, or delivery-address collection belongs in the active Nutrition Engine scope.
 
 The user may ask what to order from a specific place.
 
@@ -393,7 +401,7 @@ Better:
 
 The user should not receive an overwhelming diet.
 
-For MVP, the AI should recommend a small number of high-impact nutrition changes first.
+For the initial active scope, the AI should recommend a small number of high-impact nutrition changes first.
 
 Default:
 
@@ -518,7 +526,7 @@ If iron-related markers are low, AI may recommend:
 
 AI must not present iron correction as medical treatment.
 
-If deficiency appears significant, AI should recommend consulting a qualified healthcare professional.
+If a nutrient-related gap appears significant, AI should recommend consulting a qualified healthcare professional.
 
 ---
 
@@ -887,7 +895,7 @@ Example:
 
 User asks:
 
-> What should I order at KFC?
+> What is the safest practical option if I am eating at a fast-food restaurant?
 
 AI should respond with:
 
@@ -906,9 +914,9 @@ Example structure:
 
 ---
 
-# 16. Nutrition Screen UX
+# 16. Nutrition Guidance UX
 
-The Nutrition screen should have two main modes.
+The Nutrition Guidance screen should have two main modes.
 
 ## 16.1 What To Eat Today
 
@@ -950,7 +958,7 @@ Examples:
 
 - Eat protein breakfast
 - Replace sugar today
-- Drink 2 liters of water
+- Follow your personalized hydration target
 - Add berries instead of sweets
 - Use honey instead of refined sugar
 - Avoid caffeine after 14:00
@@ -1161,7 +1169,7 @@ function generateNutritionPlan(user):
 
 ---
 
-# 24. MVP Scope
+# 24. Initial Active Scope
 
 ## Must Have
 
@@ -1190,7 +1198,7 @@ function generateNutritionPlan(user):
 - Photo meal analysis
 - Calorie/macro tracking
 
-## Not MVP
+## Not In Initial Active Scope
 
 - Full medical diet therapy
 - Automatic grocery ordering
@@ -1205,13 +1213,14 @@ Future versions may include:
 
 - AI meal photo analysis
 - Grocery list generation
-- Food delivery integrations
 - Restaurant menu parsing
 - Personalized recipe engine
 - Macro and calorie tracking
 - Family nutrition mode
 - Nutrition programs for specific goals
-- Integration with supplement and bee product marketplace
+- Optional partner recommendation links, only after separate owner approval
+
+These are future ideas only. They do not add active ordering, checkout, delivery-address collection, or marketplace scope.
 
 ---
 

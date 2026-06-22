@@ -1,94 +1,70 @@
 # Health Coach
 
-Health Coach is a mobile AI health coach MVP designed to help users improve energy, emotional state, motivation, productivity, sleep, nutrition, recovery, and general well-being.
+Health Coach is a mobile AI health optimization product. It helps users turn health data, daily state, lifestyle context, nutrition, supplements, and progress feedback into clear actions for energy, mood, motivation, productivity, sleep, recovery, and general well-being.
 
-The repository is prepared for Codex-driven development and contains:
+The repository documentation is organized for iterative product development. Codex or another coding agent should not rebuild the product from scratch unless explicitly asked by the owner. New work should start from the current app state, inspect the existing routes/components first, and then make small, testable changes.
 
-- Product documentation in `/docs`
-- Expo React Native application scaffold
-- Supabase schema and Edge Function placeholders
-- Mock UI screens based on the current product concept
-- AI engine placeholders for later implementation
+## Current Product Direction
 
-## Current Status
-
-This repository is a **Milestone 1 scaffold**:
-
-- Expo / React Native structure is prepared.
-- TypeScript is configured.
-- Navigation structure is created.
-- Main MVP screens are present as placeholders with mock data.
-- Supabase client setup is prepared.
-- Database migration file is included.
-- AI functions are intentionally placeholders.
-
-The next step is to open this repository in Codex and implement the MVP step by step using `/docs/CODEX_TASK.md`.
-
-## Recommended Development Flow
-
-Do not ask Codex to build the whole product at once.
-
-Start with:
+The active product model uses five primary mobile tabs:
 
 ```text
-Read all files in /docs.
-Implement Phase 1 from /prompts/CODEX_PHASE_1.md.
-Do not implement AI, payments, or database writes yet.
-After finishing, explain what was created and what should be tested.
+Today / Supplements / Body / AI / Profile
 ```
 
-Then continue by phases:
+Secondary modules may be opened from those tabs or from onboarding:
 
-1. App shell and navigation
-2. Mock-data clickable prototype
-3. Supabase database and storage
-4. Auth and subscription flow
-5. AI Health Profile generation
-6. First user testing workflow
+```text
+Analyses
+Braverman assessment
+Supplement catalog
+My supplements
+Nutrition
+Weekly plan
+Progress review
+Settings
+```
 
-## Project Structure
+Goals are user preferences and progress targets. They are not a separate primary tab and should not be treated as a standalone main navigation item unless the product owner asks for that change.
+
+## Documentation Source Order
+
+Read documents in this order when planning or implementing changes:
+
+1. [`docs/CURRENT_SOURCE_OF_TRUTH.md`](docs/CURRENT_SOURCE_OF_TRUTH.md)
+2. [`docs/PRODUCT_SCOPE.md`](docs/PRODUCT_SCOPE.md)
+3. [`docs/CODEX_CONTEXT.md`](docs/CODEX_CONTEXT.md)
+4. [`docs/REPO_IMPLEMENTATION_STATUS.md`](docs/REPO_IMPLEMENTATION_STATUS.md)
+5. [`docs/UX_ARCHITECTURE.md`](docs/UX_ARCHITECTURE.md)
+6. [`docs/USER_FLOW.md`](docs/USER_FLOW.md)
+7. [`docs/CODEX_TASK.md`](docs/CODEX_TASK.md)
+8. Engine and domain documents in `/docs`
+9. [`docs/DATABASE_SCHEMA.md`](docs/DATABASE_SCHEMA.md)
+10. [`docs/PRODUCT_VISION.md`](docs/PRODUCT_VISION.md) and [`docs/MONETIZATION.md`](docs/MONETIZATION.md)
+11. [`docs/MVP.md`](docs/MVP.md), only as a deprecated historical note
+
+If documents conflict, follow `CURRENT_SOURCE_OF_TRUTH.md` first.
+
+## Project Areas
 
 ```text
 HealthCoach/
-├── app/                         # Expo Router routes
+├── app/                         # Expo Router routes in the full app checkout
 ├── src/                         # Shared components, theme, services, types
 ├── docs/                        # Product and technical documentation
-├── supabase/                    # Database migration and Edge Functions
+├── supabase/                    # Database migrations and Edge Functions
 ├── assets/                      # Images and UI references
-├── prompts/                     # Codex phase prompts
 ├── package.json
-├── app.json
+├── app.json / app.config.*
 ├── tsconfig.json
 └── .env.example
 ```
 
-## Setup
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start Expo:
-
-```bash
-npm run start
-```
-
-Run type check:
-
-```bash
-npm run typecheck
-```
+This documentation archive may contain only docs, `.env.example`, and selected Supabase schema references. Before changing routes or implementation details, inspect the full app checkout rather than relying on route names from documentation alone.
 
 ## Environment Variables
 
-Copy `.env.example` to `.env`.
-
-```bash
-cp .env.example .env
-```
+Copy `.env.example` to `.env` for local development.
 
 Client-safe variables:
 
@@ -97,10 +73,24 @@ EXPO_PUBLIC_SUPABASE_URL=
 EXPO_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
-Do not expose AI provider API keys inside the mobile app. AI calls should go through Supabase Edge Functions or a secure backend.
+Server-only variables:
 
-## Important Safety Principle
+```text
+SUPABASE_SERVICE_ROLE_KEY=
+DEEPSEEK_API_KEY=
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-v4-pro
+PAYMENT_PROVIDER_SECRET_KEY=
+```
 
-Health Coach must not diagnose diseases or present recommendations as medical treatment.
+Local or backend-owned variables:
 
-All supplement and health recommendations must include appropriate safety language and encourage consultation with a qualified healthcare professional when relevant.
+```text
+APP_ENV=development
+```
+
+Do not expose AI provider keys, payment secrets, or service-role keys inside the mobile app. AI calls must go through Supabase Edge Functions or another secure backend layer.
+
+## Product Safety Principle
+
+Health Coach must not diagnose diseases, promise cures, or present recommendations as medical treatment. Health, nutrition, supplement, and bee product guidance must stay informational and should encourage consultation with a qualified healthcare professional when biomarkers, symptoms, medications, pregnancy, breastfeeding, allergies, or other risk factors make that appropriate.

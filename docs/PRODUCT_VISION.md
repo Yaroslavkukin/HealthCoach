@@ -4,140 +4,79 @@
 
 Health Coach
 
----
+## Product Vision
 
-## Product Overview
+Health Coach is a mobile AI health coach that helps users improve daily state and long-term well-being by turning personal health data into clear, safe, practical actions.
 
-Health Coach is an AI-powered mobile application designed to help users improve their energy levels, productivity, motivation, focus, and emotional well-being.
+The product combines:
 
-The application combines personal health data, laboratory test results, lifestyle information, nutrition information, supplement protocols, bee product recommendations, and psychological assessments to generate personalized action plans.
+- user profile;
+- goals and preferences;
+- blood analysis data;
+- lifestyle context;
+- nutrition habits;
+- symptoms;
+- Braverman assessment;
+- supplement routine;
+- progress reviews;
+- AI explanations.
 
-The primary goal of Health Coach is to eliminate information overload and provide users with clear, practical, and personalized recommendations that can be implemented immediately.
-
----
+The goal is to reduce information overload and help the user understand what matters most today.
 
 ## Mission
 
-Help people achieve higher levels of energy, focus, motivation, emotional balance, and overall well-being through personalized health optimization.
+Help users improve energy, mood, motivation, productivity, sleep, recovery, nutrition consistency, and general well-being through personalized, safety-aware guidance.
 
----
+## Problem
 
-## Problem Statement
+Users often have health data, supplements, symptoms, and scattered advice, but still struggle to answer:
 
-Many people experience:
-
-- Low energy
-- Lack of motivation
-- Poor concentration
-- Brain fog
-- Emotional instability
-- Chronic fatigue
-- Poor sleep
-- Reduced productivity
-
-Although users often undergo laboratory testing, buy supplements, and search for health-related information, they struggle to understand:
-
-- What their results mean
-- Which factors are affecting their well-being
-- What actions should be taken first
-- Which supplements are actually necessary
-- Which lifestyle changes matter most
-- How to build a clear and sustainable plan
-
-As a result, users become overwhelmed by conflicting information and fail to take meaningful action.
-
----
+- what the data means;
+- what is limiting their current state;
+- what should be improved first;
+- which actions are realistic today;
+- which supplement or nutrition changes are actually relevant;
+- how to track whether anything is working.
 
 ## Solution
 
-Health Coach transforms complex health data into simple, personalized action plans.
+Health Coach creates a connected system around:
 
-The application:
+- Today plan;
+- body system overview;
+- biomarker interpretation;
+- supplement stack;
+- nutrition guidance;
+- AI assistant;
+- weekly plans;
+- progress reviews.
 
-- Analyzes laboratory results
-- Collects lifestyle information
-- Evaluates nutrition habits
-- Uses the Braverman assessment
-- Generates AI-powered recommendations
-- Creates step-by-step health improvement protocols
-- Tracks progress over time
-- Adjusts recommendations every 14 days
-
-Instead of providing raw data, the application provides clear actions.
-
----
+The product should turn complex data into simple next actions.
 
 ## Core Value Proposition
 
-Upload your health data, complete the initial assessment, and receive a personalized plan designed to improve:
-
-- Energy
-- Productivity
-- Focus
-- Motivation
-- Emotional well-being
-- Recovery
-
-without spending hours researching health information.
-
----
-
-## Target Audience
-
-### Primary User Profile
-
-Age:
-25–45 years old
-
-Gender:
-Any
-
-Profession:
-Knowledge workers and mentally demanding professions
-
-Examples:
-
-- Software engineers
-- Entrepreneurs
-- Designers
-- Product managers
-- Analysts
-- Marketers
-- Consultants
-- Executives
-- Students with high cognitive load
-
-Income:
-Middle income and above
-
-Geography:
-Global market, with the first monetization model designed for Russian-speaking users.
-
----
+```text
+Upload or enter your health data, complete the initial assessments, and receive a practical plan that helps you improve your state without spending hours researching conflicting information.
+```
 
 ## Primary User Goals
 
 Users want to:
 
-- Feel more energetic
-- Increase productivity
-- Improve concentration
-- Reduce brain fog
-- Improve mood
-- Increase motivation
-- Improve sleep
-- Understand health data
-- Receive clear action steps
-- Avoid information overload
+- feel more energetic;
+- improve focus and productivity;
+- reduce brain fog;
+- improve mood;
+- increase motivation;
+- sleep better;
+- recover better;
+- understand biomarkers;
+- use supplements more safely and consistently;
+- make better nutrition choices;
+- avoid information overload.
 
----
+## Long-Term Direction
 
-## Desired Outcome
+Health Coach should become a trusted personal AI health optimization companion.
 
-Health Coach becomes the user's personal AI health coach that continuously helps optimize physical and mental performance through personalized recommendations and actionable insights.
-
----
-
-## Long-Term Vision
-
-Build a trusted AI-powered personal health optimization platform focused on improving human energy, productivity, cognitive performance, motivation, emotional state, and quality of life.
+Long-term expansion may include integrations, partner services, and expert support, but the active product must remain centered on safe daily coaching and clear personalized action.

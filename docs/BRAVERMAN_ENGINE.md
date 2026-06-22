@@ -1,5 +1,11 @@
 # BRAVERMAN_ENGINE.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Purpose
 
 The Braverman Engine is responsible for evaluating neurotransmitter tendencies, behavioral patterns, cognitive style, stress response, motivation drivers, emotional regulation, and personality-based optimization strategies.
@@ -81,7 +87,7 @@ Mixed profiles are allowed.
 
 ## Dopamine Profile
 
-### Core Strengths
+### Dopamine — Core Strengths
 
 - Leadership
 - Goal orientation
@@ -89,14 +95,14 @@ Mixed profiles are allowed.
 - High motivation potential
 - Problem solving
 
-### Risks
+### Dopamine — Risks
 
 - Impulsivity
 - Burnout
 - Excessive risk-taking
 - Overstimulation
 
-### Motivated By
+### Dopamine — Motivated By
 
 - Progress
 - Achievement
@@ -107,7 +113,7 @@ Mixed profiles are allowed.
 
 ## Acetylcholine Profile
 
-### Core Strengths
+### Acetylcholine — Core Strengths
 
 - Creativity
 - Learning ability
@@ -115,13 +121,13 @@ Mixed profiles are allowed.
 - Innovation
 - Social intelligence
 
-### Risks
+### Acetylcholine — Risks
 
 - Overthinking
 - Mental overload
 - Scattered attention
 
-### Motivated By
+### Acetylcholine — Motivated By
 
 - Learning
 - Exploration
@@ -132,7 +138,7 @@ Mixed profiles are allowed.
 
 ## GABA Profile
 
-### Core Strengths
+### GABA — Core Strengths
 
 - Stability
 - Reliability
@@ -140,13 +146,13 @@ Mixed profiles are allowed.
 - Consistency
 - Emotional balance
 
-### Risks
+### GABA — Risks
 
 - Excessive caution
 - Reduced initiative
 - Comfort dependency
 
-### Motivated By
+### GABA — Motivated By
 
 - Structure
 - Routine
@@ -157,7 +163,7 @@ Mixed profiles are allowed.
 
 ## Serotonin Profile
 
-### Core Strengths
+### Serotonin — Core Strengths
 
 - Adaptability
 - Lifestyle balance
@@ -165,13 +171,13 @@ Mixed profiles are allowed.
 - Enjoyment
 - Emotional resilience
 
-### Risks
+### Serotonin — Risks
 
 - Impulsiveness
 - Lack of structure
 - Reduced consistency
 
-### Motivated By
+### Serotonin — Motivated By
 
 - Positive experiences
 - Freedom
@@ -180,18 +186,18 @@ Mixed profiles are allowed.
 
 ---
 
-# Neurotransmitter Deficiency Layer
+# Neurotransmitter Attention-Area Layer
 
-The AI may identify possible neurotransmitter deficiencies using:
+The AI may identify possible attention-area signals related to neurotransmitter patterns using:
 
 - Braverman Assessment
 - User symptoms
 - Lifestyle factors
 - Laboratory results
 
-Potential deficiency categories:
+Potential attention categories are listed below. These labels are internal personalization signals. User-facing copy should use `attention area`, `pattern`, or `may be related to`, not definitive biological deficiency language.
 
-## Dopamine Deficiency
+## Dopamine Attention Area
 
 Common indicators:
 
@@ -202,7 +208,7 @@ Common indicators:
 - Reduced ambition
 - Poor focus
 
-## Acetylcholine Deficiency
+## Acetylcholine Attention Area
 
 Common indicators:
 
@@ -212,7 +218,7 @@ Common indicators:
 - Cognitive slowing
 - Difficulty concentrating
 
-## GABA Deficiency
+## GABA Attention Area
 
 Common indicators:
 
@@ -222,7 +228,7 @@ Common indicators:
 - Restlessness
 - Excessive mental activity
 
-## Serotonin Deficiency
+## Serotonin Attention Area
 
 Common indicators:
 
@@ -257,20 +263,20 @@ Primary Neurotransmitter:
 
 Dopamine
 
-### Motivation Drivers
+### Strategist — Motivation Drivers
 
 - Achievement
 - Competition
 - Progress
 - Mastery
 
-### Energy Drainers
+### Strategist — Energy Drainers
 
 - Stagnation
 - Lack of challenge
 - Repetitive work
 
-### Best Coaching Style
+### Strategist — Best Coaching Style
 
 - Goals
 - Metrics
@@ -285,20 +291,20 @@ Primary Neurotransmitter:
 
 Acetylcholine
 
-### Motivation Drivers
+### Creator — Motivation Drivers
 
 - Curiosity
 - Creativity
 - Discovery
 - Learning
 
-### Energy Drainers
+### Creator — Energy Drainers
 
 - Repetition
 - Monotony
 - Lack of novelty
 
-### Best Coaching Style
+### Creator — Best Coaching Style
 
 - Experiments
 - Exploration
@@ -313,20 +319,20 @@ Primary Neurotransmitter:
 
 GABA
 
-### Motivation Drivers
+### Guardian — Motivation Drivers
 
 - Stability
 - Structure
 - Reliability
 - Responsibility
 
-### Energy Drainers
+### Guardian — Energy Drainers
 
 - Chaos
 - Uncertainty
 - Constant change
 
-### Best Coaching Style
+### Guardian — Best Coaching Style
 
 - Habits
 - Systems
@@ -341,20 +347,20 @@ Primary Neurotransmitter:
 
 Serotonin
 
-### Motivation Drivers
+### Explorer — Motivation Drivers
 
 - Enjoyment
 - Freedom
 - Experiences
 - Lifestyle satisfaction
 
-### Energy Drainers
+### Explorer — Energy Drainers
 
 - Restriction
 - Isolation
 - Excessive control
 
-### Best Coaching Style
+### Explorer — Best Coaching Style
 
 - Flexible planning
 - Lifestyle optimization

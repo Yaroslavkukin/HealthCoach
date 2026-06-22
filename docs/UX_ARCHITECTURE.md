@@ -4,1312 +4,542 @@
 
 Health Coach
 
-## Document Purpose
+## Purpose
 
-This document describes the UX architecture, screen structure, user flows, navigation logic, and interface states for the Health Coach mobile application MVP.
+This document defines the current UX architecture, navigation model, screen ownership, screen states, and interaction principles for Health Coach.
 
-The document is intended for:
+It follows `CURRENT_SOURCE_OF_TRUTH.md`.
 
-- Product development
-- UI/UX design
-- Codex implementation
-- Frontend architecture
-- Future feature planning
+## Core UX Philosophy
 
----
+Health Coach should feel like a calm, premium, practical coach.
 
-# 1. Core UX Philosophy
+The user should not be forced to interpret complex biomarkers or scattered recommendations.
 
-Health Coach is not a laboratory report application.
+The interface should answer:
 
-Health Coach is a personal AI health coach that helps the user understand what to do today to improve:
+```text
+How am I doing?
+What matters most?
+What should I do today?
+Why does this action matter?
+What should I do next?
+```
 
-- Energy
-- Emotional state
-- Motivation
-- Productivity
-- Recovery
-- General well-being
+Main principle:
 
-The interface should not focus on raw medical complexity.
+```text
+Today first.
+```
 
-The interface should focus on clear action.
+## Visual Direction
 
-Main UX principle:
+Recommended feel:
 
-> Today first.
+- calm;
+- clean;
+- premium;
+- trustworthy;
+- action-oriented;
+- not clinical or intimidating.
 
-The user should open the app and immediately understand:
+Avoid:
 
-1. How am I doing?
-2. What is limiting me?
-3. What should I do today?
-4. What is my next step?
+- dense medical dashboards;
+- alarmist colors and copy;
+- raw lab-data overload;
+- excessive gamification;
+- claims that sound diagnostic or therapeutic.
 
----
+## Main Navigation
 
-# 2. Visual Direction
+Bottom navigation:
 
-The visual style should feel:
+```text
+Today / Supplements / Body / AI / Profile
+```
 
-- Premium
-- Calm
-- Scientific
-- Natural
-- Personal
-- High-performance
+### Today
 
-## Recommended UI Style
+Daily plan and current state.
 
-- Dark green / black background
-- Neon green accents
-- Orange warning accents
-- Soft card-based layout
-- Rounded corners
-- Minimal visual noise
-- High contrast for important actions
-- Human-body visualization for biological systems
-- Progress bars and circular health indicators
-- Bottom navigation with clear active states
+### Supplements
 
-## Emotional Impression
+Supplement stack, schedule, catalog, safety, and bee products.
 
-The app should feel like a mix of:
+### Body
 
-- AI health coach
-- Biohacking dashboard
-- Personal performance system
-- Wellness companion
+Body systems, biomarkers, analyses, Braverman, and AI health profile.
 
----
+### AI
 
-# 3. Main Navigation
+Contextual assistant.
 
-The MVP should use a fixed bottom navigation bar.
+### Profile
 
-## Bottom Navigation Items
-
-1. Today
-2. Goal
-3. Body
-4. AI
-5. Profile
+User data, goals, preferences, subscription, privacy, and settings.
 
 ## Secondary Sections
 
-The following sections are accessed from cards, buttons, or internal tabs:
+Secondary sections open from cards, tabs, or buttons inside the main areas:
 
-- Supplements
-- Nutrition
-- Weekly Plan
-- Biomarker Details
-- AI Summary
-- Success Stories
-- Clinic
-- Settings
+- Weekly Plan;
+- Progress Review;
+- AI Summary;
+- Blood Analysis Upload;
+- Blood Analysis History;
+- Biomarker Detail;
+- Braverman Assessment;
+- Braverman Result;
+- Nutrition Guidance;
+- My Supplements;
+- Supplement Catalog;
+- Supplement Detail;
+- Bee Product Detail;
+- Subscription;
+- Settings;
+- Privacy and Consent.
 
----
+`Goal` is not a main tab. Goals appear inside Today, Weekly Plan, AI, and Profile.
 
-# 4. User Access Model
+`Clinic`, marketplace checkout, and delivery are not active UX sections.
 
-Health Coach should not force registration at first launch.
+## Global Screen States
 
-The user should be able to explore the application before purchasing.
+Every major screen should support these states.
 
-## Access Stages
+### Preview State
 
-### Stage 1 — Guest / Preview Mode
+Used before personalization or for demo mode.
 
-User can:
+Shows clearly labeled example data.
 
-- View demo interface
-- Explore example dashboards
-- Read example AI insights
-- View example success stories
-- Understand the value of the app
+CTA examples:
 
-User cannot:
-
-- Receive personal AI analysis
-- Upload personal blood tests
-- Save progress
-- Use personal recommendations
-
-### Stage 2 — Subscription Purchase
-
-User purchases access.
-
-Available pricing:
-
-- 3,000 RUB per month
-- 15,000 RUB per 6 months
-
-### Stage 3 — Account Creation
-
-Registration happens only after subscription purchase.
-
-### Stage 4 — Personal Data Entry
-
-User fills in personal profile and delivery information.
-
-### Stage 5 — Initial Assessment
-
-User completes:
-
-- Blood analysis upload
-- Braverman assessment
-- Lifestyle questionnaire
-- Nutrition description
-
-### Stage 6 — Active Health Coach Mode
-
-The app becomes fully personalized.
-
----
-
-# 5. Global Screen States
-
-Every major screen should support multiple states.
-
-## 5.1 Preview State
-
-Used before subscription.
-
-Displays demo data.
-
-CTA:
-
-- Start Your Health Journey
-- Unlock Full Access
-
-## 5.2 Empty State
-
-Used after subscription but before user data is added.
-
-Example:
-
-> Your personalized recommendations will appear here after you complete your initial assessment.
-
-CTA:
-
+- Start Health Coach
 - Complete Setup
+- Unlock Personal Plan
 
-## 5.3 Partial Data State
+### Empty State
 
-Used when the user completed only part of onboarding.
-
-Example:
-
-- Braverman completed
-- Blood analysis missing
-
-The AI may provide limited recommendations but should clearly indicate that the analysis is incomplete.
-
-## 5.4 Processing State
-
-Used when AI is generating results.
+Used when no data exists yet.
 
 Example:
 
-> Building your Health Profile...
+```text
+Your personalized insights will appear after you complete your initial assessment.
+```
 
-## 5.5 Active State
+### Partial Data State
 
-Used when all required information is available.
-
-Displays full personalized data.
-
-## 5.6 Subscription Expired State
-
-User can view limited historical data but cannot generate new AI recommendations.
-
-CTA:
-
-- Renew Subscription
-
----
-
-# 6. Screen 0 — Splash Screen
-
-## Purpose
-
-Create a premium first impression.
-
-## Duration
-
-2–3 seconds.
-
-## Content
-
-- Health Coach logo
-- Dark green background
-- Minimal animation
-
-## Transition
-
-After splash:
-
-- First-time user → Preview Mode
-- Existing logged-in user → Today Screen
-- Expired subscription → Subscription Renewal Screen
-
----
-
-# 7. Screen 1 — Preview Mode
-
-## Purpose
-
-Allow the user to explore Health Coach before payment.
-
-## Content
-
-A demo version of the app with sample data.
-
-Example demo user:
-
-- Health Score: 82/100
-- Energy: 78/100
-- Motivation: 74/100
-- Mood: 81/100
-- Archetype: The Strategist
-- Example supplement stack
-- Example nutrition plan
-- Example AI summary
-
-## CTA
-
-Primary:
-
-- Start Your Health Journey
-
-Secondary:
-
-- View Subscription
-
-## Restrictions
-
-Preview Mode must clearly indicate that data is fictional.
-
----
-
-# 8. Screen 2 — Subscription Screen
-
-## Purpose
-
-Convert preview users into paying users.
-
-## Positioning
-
-The user is not paying for access to an app.
-
-The user is paying for access to a personal AI health coach and a structured recommendation system.
-
-## Headline
-
-Health Coach
-
-Your personal AI health coach based on blood analysis, nutrition, lifestyle, and progress.
-
-## Benefits
-
-- Personalized AI recommendations
-- Blood analysis interpretation
-- Braverman assessment analysis
-- Supplement plans
-- Bee product optimization
-- Nutrition plans
-- AI assistant
-- Progress tracking
-- 14-day health reviews
-
-## Pricing
-
-Monthly:
-
-3,000 RUB / month
-
-Semi-Annual:
-
-15,000 RUB / 6 months
-
-## CTA
-
-- Subscribe for 3,000 RUB / month
-- Subscribe for 15,000 RUB / 6 months
-
----
-
-# 9. Screen 3 — Account Creation
-
-## Trigger
-
-Shown only after subscription purchase.
-
-## Required Fields
-
-- Email
-- Password
-
-## Optional Future Login Options
-
-- Apple ID
-- Google
-
-## Purpose
-
-Save personal data, recommendations, and progress history.
-
----
-
-# 10. Screen 4 — Personal Profile
-
-## Purpose
-
-Collect all user information required for personalization and future product delivery.
-
-## Required Personal Data
-
-- First name
-- Last name
-- Age
-- Gender
-- Height
-- Weight
-
-## Location Data
-
-- Country
-- City
-- Address
-- Postal code
-
-## Delivery Data
-
-- Preferred delivery method
-- CDEK pickup point
-- Russian Post office
-- Delivery comments
-
-## Health Context
-
-- Main goal
-- Work type
-- Activity level
-- Sleep schedule
-- Stress level
-- Current symptoms
-
-## UX Principle
-
-The user enters information once.
-
-AI and other app sections reuse this data automatically.
-
----
-
-# 11. Screen 5 — Start Checklist
-
-## Purpose
-
-Give the user a clear step-by-step instruction for how to start using Health Coach.
-
-## Checklist Items
-
-### Step 1 — Blood Analysis
-
-User selects recommended blood analysis package.
-
-Possible packages:
-
-Male:
-
-- Foundation
-- Advanced
-- Complete
-
-Female:
-
-- Foundation
-- Complete
-
-Status:
-
-- Not started
-- Uploaded
-- Processing
-- Completed
-
-### Step 2 — Braverman Assessment
-
-User completes the test.
-
-Status:
-
-- Not started
-- In progress
-- Completed
-
-### Step 3 — Lifestyle Description
-
-User describes:
-
-- Typical day
-- Sleep habits
-- Work schedule
-- Physical activity
-- Stress level
-
-Status:
-
-- Not started
-- Completed
-
-### Step 4 — Nutrition Description
-
-User describes:
-
-- What they usually eat
-- Meal timing
-- Sugar consumption
-- Processed food consumption
-- Water intake
-
-Status:
-
-- Not started
-- Completed
-
-### Step 5 — AI Health Profile
-
-Locked until required inputs are completed.
-
-CTA:
-
-- Generate My Health Profile
-
----
-
-# 12. Screen 6 — Blood Analysis Upload
-
-## Purpose
-
-Allow the user to upload blood test results.
-
-## Supported Formats
-
-- PDF
-- Image
-- Manual input
-
-## Features
-
-- Upload file
-- Take photo
-- Enter biomarkers manually
-- Select analysis package
-- See missing markers
-
-## Preparation Guide
-
-Before uploading or ordering tests, the app should display blood test preparation rules:
-
-- Avoid intense training the day before
-- Avoid emotional overload
-- Avoid overeating
-- Sleep well before testing
-- Test at the same time of day when tracking progress
-
----
-
-# 13. Screen 7 — Braverman Assessment
-
-## Purpose
-
-Identify neurotransmitter profile and motivation archetype.
-
-## Output
-
-The app calculates:
-
-- Dominant neurotransmitter profile
-- Possible neurotransmitter deficiencies
-- Motivation Archetype
-
-Possible archetypes:
-
-- The Strategist
-- The Creator
-- The Guardian
-- The Explorer
-
-## UX Principle
-
-The user should not see raw technical scoring as the main result.
-
-They should see a clear identity-based explanation.
+Used when only some inputs are available.
 
 Example:
 
-> Your Motivation Archetype: The Strategist
->
-> You are driven by progress, achievement, and clear goals.
+```text
+This recommendation is based on your questionnaire. Upload blood analysis for higher confidence.
+```
 
----
+### Processing State
 
-# 14. Screen 8 — AI Processing
-
-## Purpose
-
-Show that AI is building the user’s personalized profile.
-
-## Content
-
-Processing steps:
-
-- Reading blood analysis
-- Evaluating biomarkers
-- Evaluating Braverman profile
-- Reviewing symptoms
-- Building recommendations
-- Creating 7-day plan
-
-## Completion
-
-After processing, the user is taken to AI Summary.
-
----
-
-# 15. Screen 9 — AI Summary
-
-## Purpose
-
-This is one of the most important screens in the application.
-
-It explains the meaning behind the user’s results.
-
-## Main Question
-
-Why do I feel this way right now?
-
-## Sections
-
-### 1. Current Limiting Factors
+Used when AI or extraction is running.
 
 Example:
 
-1. Elevated cortisol
-2. Insufficient recovery
-3. Low vitamin D
+```text
+Building your Health Profile...
+```
 
-### 2. What Will Create the Biggest Result
+### Active State
 
-Example:
+Used when personalized data is available.
 
-1. Sleep stabilization
-2. Magnesium protocol
-3. Perga support
+Shows current scores, priorities, recommendations, and actions.
 
-### 3. Expected Effect
+### Error State
 
-Example:
+Used when upload, extraction, AI, auth, payment, or network steps fail.
 
-Over the next 4–8 weeks, you may notice:
+Must include:
 
-- More energy
-- Better sleep
-- Better recovery
-- Improved mood and motivation
+- what happened;
+- whether user data is safe;
+- next step;
+- retry or support option.
 
-### 4. Recommended Next Step
+### Expired / Limited Access State
 
-CTA:
+Used when subscription access is not active.
 
-- View Today’s Plan
-- View Supplement Stack
-- Ask AI
+The user may view limited history if product rules allow it, but new AI generation and personal updates should require active access.
 
-## Safety Note
+## Onboarding Architecture
 
-The AI should remind users that recommendations are informational and do not replace consultation with a qualified healthcare professional.
+The initial setup should collect only data needed for personalization.
 
----
+Recommended flow:
 
-# 16. Screen 10 — Today
+1. first launch / preview;
+2. account or subscription flow according to current business rules;
+3. profile basics;
+4. goals and preferences;
+5. lifestyle and symptoms;
+6. nutrition preferences and constraints;
+7. blood analysis upload or manual input;
+8. Braverman assessment;
+9. AI processing;
+10. AI Summary;
+11. Today.
 
-## Purpose
+Do not require delivery address as a standard onboarding step.
 
-Main daily screen.
+## Today Screen
 
-This screen answers:
+### Today — Purpose
 
-> What should I do today?
+Show the user exactly what matters today.
 
-## Content
+### Today — Core Blocks
 
-### Greeting
+- greeting and date;
+- current state / health score;
+- core scores: energy, mood, motivation, productivity;
+- top limiting factor;
+- today priorities;
+- daily checklist;
+- supplement reminders;
+- nutrition prompt;
+- weekly plan entry;
+- progress review entry when due;
+- AI insight;
+- CTA to ask AI.
 
-Example:
+### UX Rule
 
-> Good morning, Yaroslav.
+Today should be useful even when data is partial.
 
-### Health Score
+If confidence is low, show why and what data would improve confidence.
 
-Example:
+## Supplements Screen
 
-82 / 100
+### Supplements — Purpose
 
-Status:
+Help the user follow a safe and realistic supplement routine.
 
-Good condition
+### Recommended Structure
 
-### Core Scores
+Tabs or sections:
 
-- Energy
-- Motivation
-- Mood
+```text
+My Supplements / Catalog / Schedule / Bee Products
+```
 
-Example:
+### Card Content
 
-Energy: 78/100
-Motivation: 74/100
-Mood: 81/100
+A supplement card should include:
 
-### Today’s Tasks
+- name;
+- purpose;
+- reason;
+- confidence;
+- timing;
+- dose text when available;
+- food instruction;
+- compatibility notes;
+- safety note;
+- status or next intake.
+
+### Safety Rule
+
+Supplement recommendations must not look like prescriptions.
+
+Show professional-consultation guidance for users with medical conditions, medication use, pregnancy, breastfeeding, allergies, or other risk factors.
+
+## Body Screen
+
+### Body — Purpose
+
+Explain the user's body systems and health data without overwhelming them.
+
+### Body — Core Blocks
+
+- overall health score;
+- system cards;
+- biomarker highlights;
+- analysis status;
+- Braverman card;
+- AI Health Profile card;
+- missing-data guidance.
+
+### Body Systems
+
+Recommended system categories:
+
+- Hormonal;
+- Thyroid;
+- Metabolic;
+- Nutritional;
+- Stress & Recovery;
+- Inflammation;
+- Sleep;
+- Digestive.
+
+### System Card Content
+
+- score or status;
+- confidence;
+- main explanation;
+- key related biomarkers;
+- related symptoms;
+- recommended next action;
+- link to detail.
+
+## Biomarker Detail Screen
+
+### Biomarker Detail — Purpose
+
+Explain one biomarker in a clear, non-diagnostic way.
+
+### Biomarker Detail — Sections
+
+- latest value and unit;
+- reference range as provided by lab when available;
+- trend;
+- status;
+- what it may relate to;
+- what can influence it;
+- related systems;
+- actions or retesting guidance;
+- safety note.
+
+### Copy Rule
+
+Use language like:
+
+```text
+This may be associated with...
+This can be worth discussing with a qualified professional...
+```
+
+Avoid language like:
+
+```text
+You have...
+This means you are diagnosed with...
+This treatment will...
+```
+
+## Blood Analysis Screens
+
+### Upload / Input
+
+Supported UX options:
+
+- PDF upload;
+- image upload;
+- manual biomarker input;
+- package selection;
+- preparation guidance.
+
+### History
+
+Show:
+
+- analysis date;
+- package or custom label;
+- extraction status;
+- confidence or review status;
+- link to biomarker results;
+- ability to re-upload or correct data.
+
+## Braverman Screens
+
+### Assessment
+
+Use a long-form but manageable flow:
+
+- progress indicator;
+- one-question or small-batch steps;
+- save/resume if persistence exists;
+- neutral wording;
+- no diagnostic language.
+
+### Result
+
+Show:
+
+- dominant profile;
+- secondary profile when relevant;
+- attention areas;
+- motivation archetype;
+- coaching style;
+- how this changes recommendations;
+- safety note.
+
+## AI Summary Screen
+
+### AI Summary — Purpose
+
+Give a clear explanation of the user's current state after initial profile generation or major updates.
+
+### AI Summary — Sections
+
+- current limiting factors;
+- what creates the biggest expected impact;
+- expected effect;
+- confidence level;
+- next best action;
+- safety note;
+- CTA to Today;
+- CTA to ask AI.
+
+## Nutrition UX
+
+Nutrition is a capability, not a primary bottom tab by default.
+
+It may appear through:
+
+- Today meal prompt;
+- Nutrition Guidance screen;
+- AI chat;
+- Profile preferences;
+- recommendation cards;
+- Weekly Plan tasks.
+
+### Nutrition Guidance Screen
+
+Suggested sections:
+
+- What to eat today;
+- what to reduce or avoid;
+- hydration;
+- meal timing;
+- shopping ideas;
+- restaurant guidance;
+- safety constraints;
+- ask AI.
+
+Do not present nutrition guidance as medical diet therapy.
+
+## Weekly Plan
+
+### Weekly Plan — Purpose
+
+Convert recommendations into a manageable plan.
+
+### Weekly Plan — Structure
+
+- 7-day overview;
+- daily tasks;
+- supplement tasks;
+- nutrition tasks;
+- sleep/recovery tasks;
+- activity tasks;
+- progress indicator;
+- reason for each task;
+- adjust plan option.
+
+## Progress Review
+
+### Progress Review — Purpose
+
+Help the product adapt based on real results.
+
+### Progress Review — Recommended Cadence
+
+Every 14 days or after meaningful new data.
+
+### Progress Review — Inputs
+
+- energy;
+- mood;
+- motivation;
+- productivity;
+- sleep;
+- symptoms;
+- adherence;
+- free text;
+- side effects or problems.
+
+### Progress Review — Output
+
+- what improved;
+- what got worse;
+- what stayed unchanged;
+- what to adjust;
+- whether retesting or professional evaluation is appropriate.
+
+## AI Assistant
+
+### AI Assistant — Purpose
+
+Help users understand recommendations and choose next actions.
+
+### AI Can Help With
+
+- explain today's plan;
+- explain a biomarker;
+- explain supplement timing;
+- adapt nutrition within constraints;
+- clarify why a recommendation exists;
+- help prepare questions for a qualified professional;
+- summarize progress.
+
+### AI Must Not
+
+- diagnose;
+- claim treatment;
+- override clinician instructions;
+- recommend restricted substances;
+- handle emergencies as a substitute for care;
+- invent lab values or user data.
+
+## Profile Screen
+
+### Profile — Purpose
+
+Let the user manage personalization data and account settings.
+
+### Profile — Sections
+
+- personal details;
+- goals;
+- symptoms;
+- lifestyle;
+- nutrition preferences and constraints;
+- supplement constraints;
+- progress history;
+- subscription;
+- notifications;
+- privacy and consent;
+- settings.
+
+Do not make delivery address a required profile section unless commerce/delivery is explicitly added.
+
+## Notification Logic
+
+Notifications should be supportive, not stressful.
 
 Examples:
 
-- Take Omega-3
-- Take Magnesium
-- Walk 30 minutes
-- Drink 2 liters of water
-- Sleep before 23:00
-
-Each task has:
-
-- Checkbox
-- Category icon
-- Progress state
-
-### Progress Bar
-
-Example:
-
-Completed: 2 of 4
-
-### AI Insight
-
-Short explanation:
-
-> Today, your main focus is recovery. Magnesium and walking may help reduce stress and improve energy.
-
-### CTA
-
-- Learn More
-- Ask AI
-- Open Weekly Plan
-
----
-
-# 17. Screen 11 — Goal Journey
-
-## Purpose
-
-Show the user’s long-term goal and progress.
-
-## Example Goal
-
-Increase Testosterone
-
-Goal duration:
-
-90 days
-
-## Sections
-
-### Goal Card
-
-- Goal name
-- Goal duration
-- Edit button
-
-### Milestone Timeline
-
-Example:
-
-1. Blood analysis — Completed
-2. Supplement stack — Completed
-3. Plan execution — In progress
-4. Control blood analysis — Pending
-
-### Progress
-
-Example:
-
-56%
-
-### CTA
-
-- View Plan
-- Update Goal
-- Ask AI about Goal
-
----
-
-# 18. Screen 12 — My Body
-
-## Purpose
-
-Visualize user health systems in a simple way.
-
-The user should understand systems rather than isolated biomarkers.
-
-## Displayed Systems
-
-- Hormonal System
-- Energy System
-- Nutritional System
-- Stress & Recovery System
-- Digestive System
-- Sleep System
-
-## Each System Shows
-
-- Status
-- Icon
-- Color
-- Score or label
-
-Status examples:
-
-- Good
-- Attention
-- Poor
-
-## Main Visual
-
-Human body visualization in the center.
-
-## CTA
-
-- View All Systems
-- Open System Details
-
----
-
-# 19. Screen 13 — Biomarker Detail
-
-## Purpose
-
-Explain a specific biomarker clearly.
-
-## Example
-
-Cortisol
-
-Value:
-
-560 nmol/L
-
-Status:
-
-Above range
-
-## Sections
-
-### Chart
-
-Shows trend over time.
-
-### What Is This?
-
-Simple explanation.
-
-### Why Is It Important?
-
-Explains impact on:
-
-- Sleep
-- Energy
-- Immunity
-- Weight
-- Mood
-
-### What Affects It?
-
-Examples:
-
-- Stress
-- Lack of sleep
-- Nutrition
-- Training load
-- Caffeine
-- Alcohol
-
-### How To Improve It?
-
-Examples:
-
-- Sleep 7–9 hours
-- Walking
-- Magnesium
-- Meditation
-- Lower evening stimulation
-
-## CTA
-
-- Ask AI
-- View Related Recommendations
-
----
-
-# 20. Screen 14 — Supplements
-
-## Purpose
-
-Show supplement recommendations and daily intake schedule.
-
-## Tabs
-
-### My Supplements
-
-Shows current recommended stack.
-
-### All Supplements
-
-Shows supplement library.
-
-## Stack Types
-
-### Essential Stack
-
-Only necessary supplements.
-
-### Complete Stack
-
-Full optimization stack.
-
-## Supplement Card Includes
-
-- Name
-- Dosage
-- Today’s status
-- Next intake time
-- Image/icon
-- Details arrow
-
-Example:
-
-Omega-3
-1000 mg
-Today: Accepted
-Next intake: 20:00
-
-## Supplement Detail Screen Includes
-
-- Why recommended
-- Expected benefit
-- Confidence level
-- How to take
-- With food / before food / after food
-- Compatible supplements
-- Course duration
-- Safety note
-
-## Safety Note
-
-Every supplement recommendation must include:
-
-> Before starting any supplement protocol, consult a qualified healthcare professional, especially if you have medical conditions, take medication, are pregnant, breastfeeding, or have allergies.
-
----
-
-# 21. Screen 15 — Bee Product Optimization
-
-## Purpose
-
-Show natural optimization tools from bee products.
-
-This can be part of Supplements or a separate subsection.
-
-## Products
-
-- Perga
-- Royal Jelly
-- Bee Pollen
-- Honey
-- Zabrus
-
-## Priority Logic
-
-Default priority:
-
-1. Perga
-2. Royal Jelly
-3. Bee Pollen
-4. Honey
-5. Zabrus
-
-## Card Includes
-
-- Product name
-- Reason
-- How to use
-- Expected benefit
-- Allergy warning
-
-## Positioning
-
-Bee products are supportive optimization tools, not medical interventions.
-
----
-
-# 22. Screen 16 — Nutrition
-
-## Purpose
-
-Show AI-generated nutrition recommendations.
-
-## Main Tabs
-
-### What to eat today
-
-Daily meal suggestions.
-
-### Ask AI
-
-Nutrition assistant.
-
-## Daily Nutrition Cards
-
-- Breakfast
-- Lunch
-- Dinner
-- Snack
-- Water
-
-Each card includes:
-
-- Meal name
-- Short description
-- Image
-- Option to modify
-
-## Nutrition Principles
-
-The Nutrition AI should prioritize:
-
-- Foods close to natural state
-- Minimally processed foods
-- Nutrient density
-- No refined sugar
-- Bee products where appropriate
-- Personal goals and health status
-
-## CTA
-
-- Ask AI
-- Change Meal
-- Save Meal
-- Add Water
-
----
-
-# 23. Screen 17 — AI Assistant
-
-## Purpose
-
-Allow direct interaction with Health Coach AI.
-
-## AI Has Access To
-
-- User profile
-- Blood analysis
-- Braverman result
-- Motivation archetype
-- Supplement stack
-- Nutrition plan
-- Progress history
-- Current symptoms
-
-## Capabilities
-
-- Explain biomarkers
-- Explain recommendations
-- Adjust meal plan
-- Answer supplement questions
-- Help choose food
-- Help interpret symptoms
-- Update weekly plan
-
-## Example User Questions
-
-- What should I order at KFC?
-- Why is my cortisol high?
-- Can I take magnesium and zinc together?
-- What should I eat today?
-- Why do I feel tired?
-
-## Safety Layer
-
-AI should not diagnose disease.
-
-AI should encourage professional consultation when appropriate.
-
----
-
-# 24. Screen 18 — Weekly Plan
-
-## Purpose
-
-Show the user’s 7-day action plan.
-
-## Layout
-
-Horizontal day selector:
-
-- Monday
-- Tuesday
-- Wednesday
-- Thursday
-- Friday
-- Saturday
-- Sunday
-
-## Daily Checklist
-
-Categories:
-
-- Supplements
-- Training
-- Nutrition
-- Walking
-- Sleep
-- Water
-- Recovery practice
-
-## Each Task Includes
-
-- Icon
-- Task name
-- Short instruction
-- Completion checkbox
-
-## Progress
-
-Example:
-
-4 of 5 completed
-
----
-
-# 25. Screen 19 — Clinic
-
-## MVP Role
-
-In MVP, Clinic can be implemented as an informational or semi-manual screen.
-
-Full automatic clinic booking is a future feature.
-
-## Purpose
-
-Prepare the product for future clinic and laboratory integrations.
-
-## Content
-
-- My doctor
-- Next appointment
-- Recommendation history
-- Analysis and prescriptions
-- Messages
-
-## Future Features
-
-- Choose clinic
-- Book appointment
-- Sync blood test orders
-- Doctor chat
-- Calendar integration
-
----
-
-# 26. Screen 20 — Success Stories
-
-## Purpose
-
-Increase trust and motivation.
-
-## Content
-
-- User stories
-- Goal category filters
-- Before / after progress
-- Energy improvement
-- Motivation improvement
-- Weight change
-- Biomarker progress
-
-## Filters
-
-- All
-- Energy
-- Weight loss
-- Muscles
-- Sleep
-- Productivity
-
-## Preview Mode
-
-This screen should be available in Preview Mode to increase conversion.
-
----
-
-# 27. Screen 21 — Profile
-
-## Purpose
-
-Manage user account, data, integrations, and settings.
-
-## Header
-
-- User photo
-- Name
-- Age
-- Height
-- Weight
-- Profile completion percentage
-
-## Menu Items
-
-- Personal Data
-- Goals and Plans
-- Notifications
-- Delivery Information
-- Integrations
-- Settings
-- Help and Support
-
-## Future Integrations
-
-- Apple Health
-- Google Fit
-- Wearables
-- Laboratory accounts
-
----
-
-# 28. Notification Logic
-
-The app should support reminders for:
-
-- Supplements
-- Water
-- Walking
-- Sleep time
-- 14-day review
-- Blood retesting
-- Incomplete onboarding
-
-Notification tone should be supportive, not aggressive.
-
-Example:
-
-> Time for magnesium. This supports recovery and better sleep.
-
----
-
-# 29. 14-Day Review Flow
-
-Every 14 days, AI initiates a review.
-
-## Questions
-
-- How is your energy?
-- How is your mood?
-- How is your motivation?
-- How is your productivity?
-- How is your sleep?
-- Did anything get worse?
-- Did anything improve?
-
-## Output
-
-AI updates:
-
-- Today screen
-- Weekly plan
-- Supplement recommendations
-- Nutrition plan
-- Goal progress
-
----
-
-# 30. MVP Priority
-
-## Must Have
-
-- Splash screen
-- Preview mode
-- Subscription screen
-- Account creation after payment
-- Profile setup
-- Start checklist
-- Blood analysis upload
-- Braverman assessment
-- AI Summary
-- Today screen
-- My Body screen
-- Supplements screen
-- Nutrition screen
-- AI Assistant
-- Weekly Plan
-- Profile
-
-## Should Have
-
-- Success Stories
-- Bee Product section
-- Biomarker details
-- 14-day review
-
-## Could Have
-
-- Clinic screen placeholder
-- Delivery data integration
-- Apple Health / Google Fit placeholders
-
-## Not MVP
-
-- Full clinic booking
-- Automatic lab integrations
-- Marketplace checkout
-- Real supplement delivery automation
-- Wearable synchronization
-
----
-
-# 31. UX Success Criteria
-
-The MVP UX is successful if users can:
-
-1. Understand the app before registration.
-2. Purchase subscription after seeing value.
-3. Create an account after payment.
-4. Complete initial setup without confusion.
-5. Upload blood analysis.
-6. Complete Braverman assessment.
-7. Receive AI Summary.
-8. Understand what limits their current state.
-9. Follow Today’s Plan.
-10. Return for the 14-day review.
-
----
-
-# 32. Product Principle
-
-Health Coach should not overwhelm users.
-
-The app should convert complex health data into simple daily actions.
-
-Final UX rule:
-
-> Less interpretation. More clarity. More action.
+- supplement reminder;
+- progress review due;
+- daily plan ready;
+- analysis processing complete;
+- weekly plan update.
+
+Avoid alarmist or medical-urgency language unless explicitly directing the user to qualified care for safety reasons.
+
+## UX Success Criteria
+
+The UX is successful when users can:
+
+1. understand what to do today;
+2. understand why each action matters;
+3. trust that recommendations are personalized;
+4. see when data confidence is limited;
+5. follow supplement guidance safely;
+6. use nutrition guidance without feeling overwhelmed;
+7. ask AI for clarification;
+8. update progress;
+9. avoid feeling diagnosed or frightened by the app.

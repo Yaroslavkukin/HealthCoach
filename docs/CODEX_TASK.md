@@ -4,60 +4,62 @@
 
 Health Coach
 
-## Purpose of This Document
+## Purpose
 
-This file is the main execution brief for Codex.
+This file is the execution brief for Codex or any coding assistant.
 
-Codex must read all documentation files in the `/docs` folder and build the MVP according to the product, UX, AI, database, and safety specifications.
+Health Coach is an existing product direction, not a blank project. Continue the current product in small, safe, reviewable steps.
 
-This document defines:
+## Read First
 
-- implementation scope;
-- recommended tech stack;
-- development order;
-- non-negotiable product rules;
-- MVP exclusions;
-- expected deliverables.
-
----
-
-# 1. Required Documentation Files
-
-Before writing code, read the following files:
+Before changing code or docs, read:
 
 ```text
-/docs/PRODUCT_VISION.md
-/docs/MVP.md
+/docs/CURRENT_SOURCE_OF_TRUTH.md
+/docs/PRODUCT_SCOPE.md
+/docs/CODEX_CONTEXT.md
+/docs/REPO_IMPLEMENTATION_STATUS.md
+/docs/UX_ARCHITECTURE.md
+/docs/USER_FLOW.md
+/docs/CODEX_TASK.md
+```
+
+Then read the domain docs relevant to the task:
+
+```text
 /docs/ANALYSIS_SYSTEM.md
 /docs/AI_RECOMMENDATION_ENGINE.md
 /docs/SUPPLEMENTS_ENGINE.md
 /docs/BEE_PRODUCTS_ENGINE.md
 /docs/BRAVERMAN_ENGINE.md
-/docs/MONETIZATION.md
-/docs/UX_ARCHITECTURE.md
-/docs/USER_FLOW.md
-/docs/DATABASE_SCHEMA.md
+/docs/BRAVERMAN_TEST_RESEARCH_AND_IMPLEMENTATION.md
 /docs/HEALTH_SCORE_ENGINE.md
 /docs/NUTRITION_ENGINE.md
-/docs/CODEX_TASK.md
+/docs/MONETIZATION.md
+/docs/DATABASE_SCHEMA.md
 ```
 
-If documentation conflicts, use this priority order:
+`docs/MVP.md` is deprecated and must not drive implementation.
 
-1. `CODEX_TASK.md`
-2. `MVP.md`
-3. `UX_ARCHITECTURE.md`
-4. `DATABASE_SCHEMA.md`
-5. Engine documents
-6. Product vision documents
+## Documentation Priority
 
----
+When documents conflict, use this order:
 
-# 2. Product Summary
+1. `CURRENT_SOURCE_OF_TRUTH.md`
+2. `PRODUCT_SCOPE.md`
+3. `CODEX_CONTEXT.md`
+4. `REPO_IMPLEMENTATION_STATUS.md`
+5. `UX_ARCHITECTURE.md`
+6. `USER_FLOW.md`
+7. `CODEX_TASK.md`
+8. Domain engine documents
+9. `DATABASE_SCHEMA.md`
+10. `PRODUCT_VISION.md` and `MONETIZATION.md`
+11. Deprecated docs such as `MVP.md`
 
-Health Coach is a mobile AI health optimization application.
+## Product Summary
 
-It helps users improve:
+Health Coach helps users improve:
 
 - energy;
 - emotional state;
@@ -65,1091 +67,248 @@ It helps users improve:
 - productivity;
 - sleep;
 - recovery;
+- nutrition;
+- supplement adherence;
 - general well-being.
 
-The app uses:
+The product uses:
 
-- blood analysis results;
-- Braverman assessment;
-- lifestyle questionnaire;
-- nutrition description;
+- user profile;
+- goals and preferences;
 - symptoms;
-- 14-day progress reviews;
-- AI-generated recommendations.
+- lifestyle data;
+- nutrition preferences and constraints;
+- blood analysis uploads or manual biomarker input;
+- Braverman assessment;
+- supplement routine;
+- progress reviews;
+- AI chat context.
 
-Core product principle:
+Core principle:
 
-> Less interpretation. More clarity. More action.
+```text
+Today first. The user should immediately understand what to do today.
+```
 
-Main UX principle:
+## Target Platform
 
-> Today first.
-
-The user should open the app and immediately understand what to do today.
-
----
-
-# 3. Target Platform
-
-Build a mobile application for:
-
-- iOS
-- Android
-
-Recommended stack:
+Expected stack in a full app checkout:
 
 ```text
 Frontend: React Native + Expo + TypeScript
+Navigation: Expo Router
 Backend: Supabase
 Database: PostgreSQL via Supabase
 Authentication: Supabase Auth
 Storage: Supabase Storage
-AI: DeepSeek V4 Pro through backend/server functions
-Payments: payment provider abstraction for MVP
-Styling: React Native styling system or NativeWind/Tailwind-compatible approach
+AI: DeepSeek through backend/server functions
+Payments: backend-owned payment provider abstraction
 ```
 
-Do not hardcode secrets in the frontend.
+Do not hardcode secrets in frontend code.
 
-All API keys must be loaded from environment variables.
+## Main Navigation
 
----
-
-# 4. MVP Scope
-
-## Must Build
-
-The MVP must include:
-
-1. Splash screen
-2. Preview Mode
-3. Subscription screen
-4. Account creation after subscription
-5. Personal profile setup
-6. Delivery information setup
-7. Start checklist
-8. Blood analysis upload
-9. Braverman assessment
-10. Lifestyle questionnaire
-11. Nutrition questionnaire
-12. AI processing screen
-13. AI Summary screen
-14. Today screen
-15. Goal screen
-16. My Body screen
-17. Biomarker detail screen
-18. Supplements screen
-19. Bee Product Optimization section
-20. Nutrition screen
-21. AI Assistant screen
-22. Weekly Plan screen
-23. Profile screen
-24. 14-day review flow
-25. Subscription expired state
-
----
-
-# 5. MVP Exclusions
-
-Do not implement the following as full production features in MVP:
-
-- automatic clinic booking;
-- real laboratory API integrations;
-- real marketplace checkout;
-- automatic supplement delivery;
-- wearable synchronization;
-- doctor dashboard;
-- full medical record system;
-- community features;
-- complex analytics dashboards;
-- real-time chat with doctors.
-
-Clinic and marketplace screens may exist as placeholders or future-ready modules.
-
----
-
-# 6. Access Model
-
-The app must not force registration immediately after first launch.
-
-User flow:
+Target bottom navigation:
 
 ```text
-Open app
-↓
-Splash screen
-↓
-Preview Mode
-↓
-Subscription purchase
-↓
-Account creation
-↓
-Profile setup
-↓
-Initial assessment
-↓
-AI Health Profile generation
-↓
-Active Health Coach mode
+Today / Supplements / Body / AI / Profile
 ```
 
-## Preview Mode
+Do not add a standalone `Goal` bottom tab.
 
-In Preview Mode, user can explore demo interface data.
+Do not add `Clinic`, marketplace, or delivery flows unless the owner explicitly requests a scope change.
 
-Preview Mode must include:
+## Screen Ownership
 
-- demo Today screen;
-- demo Health Score;
-- demo Motivation Archetype;
-- demo supplement stack;
-- demo nutrition recommendations;
-- demo success stories;
-- subscription CTA.
+### Today
 
-Preview Mode must not store personal health data.
+Implement and refine:
 
----
-
-# 7. Subscription Logic
-
-Subscription options:
-
-## Monthly
-
-Price:
-
-```text
-3000 RUB / month
-```
-
-## Semi-Annual
-
-Price:
-
-```text
-15000 RUB / 6 months
-```
-
-Positioning:
-
-The user is not paying for access to an app.
-
-The user is paying for access to a personal AI Health Coach and recommendation system.
-
-## MVP Implementation Option
-
-If real payment provider integration is not ready, implement:
-
-- subscription screen UI;
-- subscription plan selection;
-- mocked payment success flow for development;
-- subscription status in database;
-- architecture prepared for real payment provider integration.
-
-Do not block core development on payment integration.
-
----
-
-# 8. Authentication
-
-Registration happens only after subscription purchase.
-
-Required authentication:
-
-- email;
-- password.
-
-Future-ready options:
-
-- Apple Login;
-- Google Login.
-
-Use Supabase Auth.
-
----
-
-# 9. User Profile Requirements
-
-After subscription and account creation, the user must complete profile setup.
-
-## Required Fields
-
-Personal data:
-
-- first name;
-- last name;
-- age;
-- gender;
-- height;
-- weight.
-
-Location:
-
-- country;
-- city;
-- address;
-- postal code.
-
-Delivery information:
-
-- preferred delivery method;
-- CDEK pickup point;
-- Russian Post office;
-- delivery comments.
-
-Health context:
-
-- main goal;
-- work type;
-- activity level;
-- sleep schedule;
-- stress level;
-- current symptoms.
-
-The user enters information once.
-
-Other app modules must reuse profile data automatically.
-
----
-
-# 10. Start Checklist
-
-After profile setup, show Start Checklist.
-
-Checklist items:
-
-1. Blood Analysis
-2. Braverman Assessment
-3. Lifestyle Description
-4. Nutrition Description
-5. AI Health Profile
-
-AI Health Profile is locked until required inputs are completed.
-
-Each checklist item must have status:
-
-- not started;
-- in progress;
-- completed;
-- processing;
-- locked.
-
----
-
-# 11. Blood Analysis Upload
-
-Supported upload formats:
-
-- PDF;
-- image;
-- manual input.
-
-The MVP should allow upload and storage of files.
-
-OCR/extraction can be implemented as:
-
-- real AI extraction if available;
-- manual entry fallback;
-- mock parser for development.
-
-## Blood Analysis Packages
-
-Male:
-
-- Foundation;
-- Advanced;
-- Complete.
-
-Female:
-
-- Foundation;
-- Complete.
-
-## Preparation Guide
-
-The app must include blood test preparation guidance:
-
-- avoid intense training the day before;
-- avoid emotional overload;
-- avoid overeating;
-- sleep well before testing;
-- test at the same time of day when tracking progress.
-
----
-
-# 12. Braverman Assessment
-
-Build a questionnaire system for the Braverman Assessment.
-
-The engine must identify:
-
-- dominant neurotransmitter profile;
-- possible neurotransmitter deficiencies;
-- Motivation Archetype.
-
-Possible Motivation Archetypes:
-
-- The Strategist;
-- The Creator;
-- The Guardian;
-- The Explorer.
-
-User should not see raw technical scores as the main output.
-
-User should see:
-
-- archetype name;
-- strengths;
-- challenges;
-- motivation drivers;
-- best coaching style.
-
----
-
-# 13. AI Health Profile
-
-After all required onboarding steps are completed, AI generates Health Profile.
-
-The AI Health Profile must include:
-
-- Overall Health Score;
-- Energy Score;
-- Mood Score;
-- Motivation Score;
-- Productivity Score;
-- Biological System Scores;
-- Motivation Archetype;
-- limiting factors;
-- recommendations;
-- 7-day action plan.
-
-Biological System Scores:
-
-- Hormonal System;
-- Thyroid System;
-- Metabolic System;
-- Nutritional System;
-- Stress & Recovery System;
-- Inflammation System;
-- Sleep System;
-- Digestive System.
-
-Use `HEALTH_SCORE_ENGINE.md` for scoring logic.
-
----
-
-# 14. AI Summary Screen
-
-AI Summary is one of the most important screens.
-
-It must answer:
-
-> Why do I feel this way right now?
-
-Required sections:
-
-1. Current Limiting Factors
-2. What Will Create the Biggest Result
-3. Expected Effect
-4. Recommended Next Step
-5. Safety Note
-
-Example:
-
-```text
-Current limiting factors:
-1. Elevated cortisol
-2. Insufficient recovery
-3. Low vitamin D
-
-What will create the biggest result:
-1. Sleep stabilization
-2. Magnesium protocol
-3. Perga support
-```
-
----
-
-# 15. Today Screen
-
-Today is the main daily screen.
-
-It answers:
-
-> What should I do today?
-
-Required elements:
-
-- greeting;
-- Overall Health Score;
-- Energy Score;
-- Motivation Score;
-- Mood Score;
+- current state summary;
+- health score / core scores;
+- daily priorities;
 - daily checklist;
-- supplement reminders;
-- bee product reminders;
-- walking/activity task;
-- hydration task;
-- sleep target;
 - AI insight;
-- link to Weekly Plan;
-- link to AI Assistant.
+- weekly plan entry;
+- goal progress summary;
+- progress review entry.
 
-Each daily task must have:
+### Supplements
 
-- title;
-- category;
-- time;
-- completion checkbox;
-- optional explanation.
+Implement and refine:
 
----
+- My Supplements;
+- supplement catalog;
+- recommended stack;
+- schedule and intake logging;
+- bee products when safe and relevant;
+- supplement safety notes.
 
-# 16. Goal Screen
+### Body
 
-Goal screen shows long-term progress.
+Implement and refine:
 
-Required features:
+- body systems;
+- system score cards;
+- biomarker detail screens;
+- analyses upload/history;
+- Braverman result and assessment entry;
+- AI health profile entry.
 
-- selected goal;
-- goal duration;
-- progress percentage;
-- milestone timeline;
-- related recommendations;
-- button to ask AI about the goal.
+### AI
 
-Example goals:
+Implement and refine:
 
-- Increase energy;
-- Improve emotional state;
-- Improve motivation;
-- Improve productivity;
-- Improve sleep;
-- Improve recovery;
-- Improve testosterone;
-- Reduce fatigue.
+- contextual chat;
+- safe recommendations explanation;
+- links back to Today, Body, Supplements, Nutrition, and Profile;
+- professional-evaluation escalation wording when needed.
 
----
+### Profile
 
-# 17. My Body Screen
+Implement and refine:
 
-My Body screen visualizes biological systems.
+- personal profile;
+- goals and preferences;
+- symptoms and lifestyle updates;
+- nutrition preferences and constraints;
+- subscription state;
+- settings;
+- consent and privacy;
+- progress history.
 
-Required systems:
+## Implementation Rules
 
-- Hormonal System;
-- Energy System;
-- Nutritional System;
-- Stress & Recovery System;
-- Digestive System;
-- Sleep System.
+Before coding:
 
-Each system card shows:
+1. inspect the full current code tree;
+2. verify actual route names under `app/`;
+3. verify existing shared components and theme tokens;
+4. verify Supabase client and Edge Functions;
+5. verify package scripts and dependency versions;
+6. choose the smallest useful change.
 
-- name;
-- score or status;
-- trend;
-- color state;
-- CTA to details.
+During coding:
 
-Use human body visualization if feasible.
+- do not rebuild the app from scratch;
+- do not duplicate existing components without reason;
+- preserve current route names unless a route migration is explicitly part of the task;
+- keep UI consistent with existing theme;
+- validate AI outputs before rendering;
+- handle loading, empty, error, partial-data, and active states;
+- keep provider keys server-side;
+- keep medical safety wording visible where relevant.
 
----
+After coding:
 
-# 18. Biomarker Detail Screen
+- run `npm run typecheck` when available;
+- run `npm run lint` when available;
+- report any commands that could not run and why;
+- list changed files;
+- list manual test steps.
 
-For each biomarker, display:
+## Environment Variables
 
-- biomarker name;
-- value;
-- unit;
-- reference range;
-- status;
-- trend chart;
-- simple explanation;
-- why it matters;
-- what affects it;
-- how to improve it;
-- related recommendations;
-- Ask AI button.
-
-Do not present biomarker interpretation as medical diagnosis.
-
----
-
-# 19. Supplements Screen
-
-The Supplements screen must show two stack modes.
-
-## Essential Stack
-
-Only necessary supplements.
-
-These are supplements without which meaningful improvement is unlikely or significantly harder.
-
-## Complete Stack
-
-Full optimization stack.
-
-Includes Essential Stack plus supportive supplements.
-
-Each supplement card shows:
-
-- name;
-- dosage field;
-- next intake time;
-- today status;
-- reason;
-- confidence level;
-- schedule;
-- food instructions;
-- compatibility notes;
-- safety note.
-
-The AI must automatically generate:
-
-- time of day;
-- before food / with food / after food;
-- compatible combinations;
-- separation rules;
-- course duration.
-
----
-
-# 20. Supplement Safety Rules
-
-Important MVP safety rule:
-
-The MVP should only actively recommend legal wellness supplements and general nutritional support.
-
-The app must not recommend prescription drugs, controlled substances, injectable substances, experimental compounds, SARMs, peptides, or other regulated medical products as ordinary supplements.
-
-Restricted or medical substances may only be stored as disabled/future/clinician-only catalog entries if needed.
-
-They must not appear in user-facing automatic recommendation stacks in MVP.
-
-Every supplement recommendation must include:
-
-```text
-Before starting any supplement protocol, consult a qualified healthcare professional, especially if you have medical conditions, take medication, are pregnant, breastfeeding, or have allergies.
-```
-
----
-
-# 21. Bee Product Optimization
-
-Bee products are supportive natural optimization tools.
-
-They do not replace:
-
-- sleep;
-- nutrition;
-- physical activity;
-- stress management;
-- essential supplements.
-
-Products:
-
-- Perga;
-- Royal Jelly;
-- Bee Pollen;
-- Honey;
-- Zabrus.
-
-Default priority:
-
-1. Perga
-2. Royal Jelly
-3. Bee Pollen
-4. Honey
-5. Zabrus
-
-Each card must include:
-
-- product name;
-- reason;
-- how to use;
-- expected benefit;
-- allergy warning.
-
-Safety warning:
-
-Bee products may cause allergic reactions.
-
-Users with allergies should avoid them.
-
----
-
-# 22. Nutrition Screen
-
-Nutrition screen must use `NUTRITION_ENGINE.md`.
-
-Required features:
-
-- daily meal suggestions;
-- nutrition principles;
-- AI nutrition chat;
-- meal modification;
-- water recommendation;
-- restaurant/fast food help mode.
-
-Nutrition principles:
-
-- prefer natural foods;
-- prefer minimally processed foods;
-- avoid refined sugar;
-- support nutrient density;
-- include bee products where appropriate;
-- adjust to user profile and goals.
-
-The app must avoid unsafe raw food advice.
-
-“Minimal processing” must be interpreted safely.
-
----
-
-# 23. AI Assistant
-
-AI Assistant must have access to:
-
-- user profile;
-- blood analysis;
-- biomarkers;
-- Braverman results;
-- Motivation Archetype;
-- supplement stack;
-- bee product plan;
-- nutrition plan;
-- weekly plan;
-- progress reviews;
-- current symptoms.
-
-AI Assistant can:
-
-- explain biomarkers;
-- explain recommendations;
-- answer supplement questions;
-- adjust meal plan;
-- help with food choices;
-- explain symptoms;
-- update weekly plan;
-- summarize progress.
-
-AI Assistant must not:
-
-- diagnose disease;
-- replace doctors;
-- prescribe medication;
-- recommend restricted substances;
-- provide emergency medical advice as a substitute for care.
-
----
-
-# 24. Weekly Plan
-
-Weekly Plan must show a 7-day action plan.
-
-For each day, show tasks by category:
-
-- supplements;
-- bee products;
-- nutrition;
-- walking;
-- training;
-- sleep;
-- water;
-- recovery practice.
-
-Each task has:
-
-- title;
-- short instruction;
-- time;
-- checkbox;
-- status.
-
-Weekly Plan should be generated after AI Health Profile.
-
----
-
-# 25. 14-Day Review
-
-Every 14 days, AI initiates progress review.
-
-Questions:
-
-- How is your energy?
-- How is your mood?
-- How is your motivation?
-- How is your productivity?
-- How is your sleep?
-- Did anything improve?
-- Did anything get worse?
-- Did you follow the plan?
-
-After review, AI updates:
-
-- scores;
-- Today tasks;
-- Weekly Plan;
-- supplement recommendations;
-- nutrition plan;
-- goal progress;
-- AI Summary.
-
----
-
-# 26. Database
-
-Use `DATABASE_SCHEMA.md` as the source of truth.
-
-Implement tables for:
-
-- users;
-- profiles;
-- delivery information;
-- subscriptions;
-- payments;
-- blood tests;
-- biomarkers;
-- Braverman results;
-- lifestyle questionnaires;
-- nutrition questionnaires;
-- AI health profiles;
-- health scores;
-- AI summaries;
-- supplement recommendations;
-- bee product recommendations;
-- weekly plans;
-- daily tasks;
-- reviews;
-- AI chat messages;
-- notifications.
-
-Use Supabase Row Level Security.
-
-Users must only access their own data.
-
----
-
-# 27. Storage
-
-Use Supabase Storage buckets:
-
-```text
-blood-test-files
-profile-images
-app-assets
-```
-
-Blood test files must be private.
-
-Profile images must be user-specific.
-
-App assets may be public.
-
----
-
-# 28. AI Architecture
-
-AI calls should go through backend/server functions, not directly from frontend.
-
-Recommended AI modules:
-
-- Blood Analysis Parser
-- AI Recommendation Engine
-- Health Score Engine
-- Supplements Engine
-- Bee Products Engine
-- Braverman Engine
-- Nutrition Engine
-- Task Engine
-- Review Engine
-- AI Assistant
-
-Each AI output should be stored in structured JSON where possible.
-
-AI responses should include:
-
-- explanation;
-- recommendation;
-- confidence;
-- safety note;
-- next action.
-
----
-
-# 29. Recommended Project Structure
-
-```text
-HealthCoach/
-│
-├── docs/
-│   ├── PRODUCT_VISION.md
-│   ├── MVP.md
-│   ├── ANALYSIS_SYSTEM.md
-│   ├── AI_RECOMMENDATION_ENGINE.md
-│   ├── SUPPLEMENTS_ENGINE.md
-│   ├── BEE_PRODUCTS_ENGINE.md
-│   ├── BRAVERMAN_ENGINE.md
-│   ├── MONETIZATION.md
-│   ├── UX_ARCHITECTURE.md
-│   ├── USER_FLOW.md
-│   ├── DATABASE_SCHEMA.md
-│   ├── HEALTH_SCORE_ENGINE.md
-│   ├── NUTRITION_ENGINE.md
-│   └── CODEX_TASK.md
-│
-├── app/
-│   ├── screens/
-│   ├── components/
-│   ├── navigation/
-│   ├── hooks/
-│   ├── services/
-│   ├── stores/
-│   ├── types/
-│   └── utils/
-│
-├── supabase/
-│   ├── migrations/
-│   ├── functions/
-│   └── seed/
-│
-├── assets/
-│   ├── images/
-│   ├── icons/
-│   └── fonts/
-│
-├── .env.example
-├── README.md
-└── package.json
-```
-
----
-
-# 30. Environment Variables
-
-Create `.env.example` with placeholders:
+Client-safe variables:
 
 ```text
 EXPO_PUBLIC_SUPABASE_URL=
 EXPO_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-DEEPSEEK_API_KEY=
-DEEPSEEK_BASE_URL=
-DEEPSEEK_MODEL=deepseek-v4-pro
-PAYMENT_PROVIDER_SECRET_KEY=
-PAYMENT_PROVIDER_PUBLIC_KEY=
+```
+
+Local or backend-owned variables:
+
+```text
 APP_ENV=development
 ```
 
-Do not commit real secrets.
+Server-only variables:
 
----
+```text
+SUPABASE_SERVICE_ROLE_KEY=
+DEEPSEEK_API_KEY=
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-v4-pro
+PAYMENT_PROVIDER_SECRET_KEY=
+```
 
-# 31. Implementation Phases
+Only variables prefixed with `EXPO_PUBLIC_` may be used by the mobile client. If a payment provider later requires a publishable key in the client, add a clearly named `EXPO_PUBLIC_...` variable during a dedicated payment task.
 
-## Phase 1 — Foundation
+## AI Architecture
 
-- initialize Expo React Native project;
-- set up TypeScript;
-- set up navigation;
-- set up Supabase client;
-- create basic design system;
-- create screen placeholders.
+AI calls should follow this pattern:
 
-## Phase 2 — Auth and Subscription Flow
+```text
+Expo client -> Supabase Edge Function / secure backend -> AI provider -> validated response -> Expo client
+```
 
-- Preview Mode;
-- Subscription screen;
-- mock payment success;
-- account creation;
-- subscription status logic.
+The app should not:
 
-## Phase 3 — Profile and Onboarding
+- call DeepSeek directly from client code;
+- store provider keys in client-accessible env variables;
+- render unvalidated AI JSON;
+- expose raw prompts with sensitive user data unnecessarily;
+- use provider names in user-facing copy unless intentionally required.
 
-- profile setup;
-- delivery data;
-- Start Checklist;
-- lifestyle questionnaire;
-- nutrition questionnaire.
+## Database Guidance
 
-## Phase 4 — Blood Analysis and Braverman
+Use `docs/DATABASE_SCHEMA.md` for product-level data modeling.
 
-- upload blood test file;
-- manual biomarker input;
-- Braverman questionnaire;
-- result storage.
+Use migrations only during code/database tasks, not during documentation-only review.
 
-## Phase 5 — AI Health Profile
+Every user-owned table should have ownership constraints and row-level security policies.
 
-- AI processing screen;
-- generate mock or real AI Health Profile;
-- store scores and summaries;
-- show AI Summary.
+Sensitive health data should be minimized, protected, and deleted/exported according to product privacy requirements.
 
-## Phase 6 — Daily Experience
+## Safety Requirements
 
-- Today screen;
-- Weekly Plan;
-- Daily tasks;
-- completion tracking;
-- notifications placeholder.
+Health Coach must not:
 
-## Phase 7 — Recommendations
+- diagnose disease;
+- claim to treat or cure disease;
+- replace qualified medical care;
+- give emergency advice as a substitute for emergency services;
+- recommend prescription medication or controlled substances as ordinary supplements;
+- recommend injectables, SARMs, peptides, experimental compounds, or restricted medical products as wellness supplements.
 
-- Supplements screen;
-- Bee products section;
-- Nutrition screen;
-- AI Assistant.
+Health Coach should:
 
-## Phase 8 — Review and Polish
+- use non-diagnostic language;
+- explain confidence levels;
+- flag incomplete data;
+- recommend professional evaluation for potentially serious findings;
+- include supplement and nutrition safety notes;
+- consider pregnancy, breastfeeding, medication use, chronic conditions, allergies, eating-disorder risk, and high-risk biomarkers.
 
-- 14-day review flow;
-- Profile screen;
-- expired subscription state;
-- error states;
-- loading states;
-- final UI polish.
+## Recommended Development Slices
 
----
+Use small slices such as:
 
-# 32. UI Requirements
+1. align bottom tabs with current navigation;
+2. polish Today screen states;
+3. implement one Supplements subsection;
+4. implement one Body system detail flow;
+5. connect Braverman result display;
+6. connect analyses upload/history UI;
+7. implement `ai-chat` backend call and safe fallback;
+8. add AI response validation;
+9. add weekly plan generation from mock or stored data;
+10. add progress review capture;
+11. improve Profile preferences and safety constraints;
+12. add tests or type coverage for one engine.
 
-Use the design direction from `UX_ARCHITECTURE.md`.
+Do not ask Codex to implement the entire product in one pass.
 
-General UI rules:
+## Definition of Done
 
-- dark premium background;
-- green accent color;
-- orange warning color;
-- card-based screens;
-- rounded components;
-- bottom navigation;
-- clear CTA buttons;
-- readable text;
-- minimal clutter;
-- action-first layouts.
+A change is done when:
 
----
-
-# 33. Error Handling
-
-Handle:
-
-- failed login;
-- expired subscription;
-- failed file upload;
-- unsupported file type;
-- AI processing failure;
-- incomplete questionnaire;
-- missing biomarkers;
-- network errors;
-- empty states.
-
-Every error should explain:
-
-- what happened;
-- what the user can do next.
-
----
-
-# 34. Security and Privacy
-
-Health data is sensitive.
-
-Requirements:
-
-- use Row Level Security;
-- store user health data privately;
-- keep blood test uploads private;
-- never expose service keys to frontend;
-- restrict AI calls to backend/server functions;
-- avoid logging sensitive user data unnecessarily;
-- allow users to delete account data in future version.
-
----
-
-# 35. Medical and Legal Safety
-
-The app must include clear disclaimer language.
-
-Health Coach:
-
-- does not diagnose diseases;
-- does not replace licensed medical professionals;
-- provides educational and informational recommendations;
-- encourages consultation with qualified healthcare professionals;
-- does not recommend prescription medication or restricted compounds in MVP.
-
-For potentially serious findings, AI should recommend professional medical evaluation.
-
----
-
-# 36. Expected Deliverables
-
-Codex should produce:
-
-1. Working Expo React Native app
-2. TypeScript project structure
-3. Supabase schema migrations
-4. Supabase storage bucket configuration notes
-5. Mock seed data
-6. AI service abstraction
-7. Payment abstraction or mock payment flow
-8. Complete navigation
-9. MVP screens
-10. README.md
-11. `.env.example`
-12. Basic tests or validation utilities where practical
-
----
-
-# 37. Definition of Done
-
-The MVP is considered complete when:
-
-1. User can open the app without registration.
-2. User can explore Preview Mode.
-3. User can choose subscription plan.
-4. User can create account after subscription.
-5. User can complete profile.
-6. User can complete Start Checklist.
-7. User can upload blood analysis or enter biomarkers manually.
-8. User can complete Braverman Assessment.
-9. User can generate AI Health Profile.
-10. User can see AI Summary.
-11. User can use Today screen.
-12. User can view supplement plan.
-13. User can view bee product recommendations.
-14. User can view nutrition recommendations.
-15. User can use AI Assistant.
-16. User can complete daily tasks.
-17. User can complete 14-day review.
-18. User data is isolated and protected.
-19. App does not present recommendations as medical diagnosis.
-
----
-
-# 38. Final Instruction to Codex
-
-Build the simplest working version first.
-
-Do not over-engineer.
-
-Prioritize:
-
-1. User flow
-2. Clear UI
-3. Correct data structure
-4. AI-ready architecture
-5. Safety layer
-6. Future extensibility
-
-The MVP should feel complete to the user, even if some backend integrations are mocked.
-
-Main product rule:
-
-> The user should always know what to do next.
+- it respects `CURRENT_SOURCE_OF_TRUTH.md`;
+- it does not introduce old navigation or deprecated product scope;
+- TypeScript passes when tooling is available;
+- lint passes when tooling is available;
+- runtime loading/error/empty states are handled;
+- user-facing copy is safety-aware;
+- no secrets are exposed to the client;
+- changed files and manual test steps are reported.

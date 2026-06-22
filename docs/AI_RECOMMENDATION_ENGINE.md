@@ -1,5 +1,11 @@
 # AI_RECOMMENDATION_ENGINE.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Purpose
 
 The purpose of the AI Recommendation Engine is to improve the user's overall state by continuously analyzing biological, psychological, behavioral, nutritional, and subjective health data.
@@ -19,7 +25,7 @@ The system is designed to improve:
 
 # Core Philosophy
 
-Health Coach is not a blood test interpretation application.
+Health Coach is not only a blood test interpretation application.
 
 Health Coach is an AI-powered health optimization system.
 

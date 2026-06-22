@@ -1,5 +1,11 @@
 # HEALTH_SCORE_ENGINE.md
 
+> Documentation status: domain specification. If this file conflicts with `CURRENT_SOURCE_OF_TRUTH.md`, `CURRENT_SOURCE_OF_TRUTH.md` wins.
+
+## Documentation Status
+
+This is a supporting domain document. For product scope and navigation decisions, follow `CURRENT_SOURCE_OF_TRUTH.md` and `PRODUCT_SCOPE.md` first.
+
 ## Project
 
 Health Coach
@@ -11,7 +17,7 @@ This document defines how Health Coach calculates and displays user health score
 The Health Score Engine is used by:
 
 - Today screen
-- My Body screen
+- Body screen
 - AI Summary
 - 7-Day Plan
 - 14-Day Review
@@ -49,7 +55,7 @@ The engine should always answer:
 
 # 2. Score Types
 
-The MVP uses five primary score groups.
+The current product model uses five primary score groups.
 
 ## 2.1 Overall Health Score
 
@@ -84,7 +90,7 @@ These scores reflect how the user feels and functions in real life.
 
 ## 2.3 Biological System Scores
 
-Displayed on the My Body screen.
+Displayed on the Body screen.
 
 Scores:
 
@@ -256,7 +262,7 @@ All scores use a 0–100 scale.
 | 30–49 | Priority Focus | Red |
 | 0–29 | Critical Attention | Red |
 
-## 5.2 MVP Language Rules
+## 5.2 Product Language Rules
 
 Avoid medical claims.
 
@@ -279,9 +285,9 @@ Do not use language such as:
 
 Different laboratories use different units and reference ranges.
 
-The MVP should avoid hardcoding universal medical ranges whenever possible.
+The product should avoid hardcoding universal medical ranges whenever possible.
 
-## 6.1 Preferred MVP Approach
+## 6.1 Preferred Baseline Approach
 
 For every biomarker, store:
 
@@ -365,7 +371,7 @@ Related symptoms:
 - Low drive
 - Emotional instability
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Hormonal System Score =
@@ -406,7 +412,7 @@ Related symptoms:
 - Weight gain
 - Low mood
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Thyroid System Score =
@@ -441,7 +447,7 @@ Related symptoms:
 - Weight gain
 - Poor appetite control
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Metabolic System Score =
@@ -478,7 +484,7 @@ Related symptoms:
 - Poor recovery
 - Hair/skin/nail issues
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Nutritional System Score =
@@ -519,7 +525,7 @@ Related symptoms:
 - Evening overstimulation
 - Burnout symptoms
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Stress & Recovery Score =
@@ -554,7 +560,7 @@ Related symptoms:
 - Joint discomfort
 - Frequent illness
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Inflammation Score =
@@ -588,7 +594,7 @@ Related biomarkers:
 - Vitamin D
 - Glucose/metabolic markers
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Sleep System Score =
@@ -626,7 +632,7 @@ Potential biomarkers:
 - Mineral deficiencies
 - Inflammation markers
 
-MVP calculation:
+Baseline calculation:
 
 ```text
 Digestive System Score =
@@ -663,7 +669,7 @@ Inputs:
 - Stress & Recovery Score
 - Hormonal System Score
 
-MVP formula:
+Baseline formula:
 
 ```text
 Energy Score =
@@ -693,10 +699,10 @@ Inputs:
 - Stress & Recovery Score
 - Sleep System Score
 - Nutritional System Score
-- Braverman deficiency signals
+- Braverman attention-area signals
 - Lifestyle stress
 
-MVP formula:
+Baseline formula:
 
 ```text
 Mood Score =
@@ -724,7 +730,7 @@ Inputs:
 - Stress & Recovery Score
 - Goal progress
 
-MVP formula:
+Baseline formula:
 
 ```text
 Motivation Score =
@@ -753,7 +759,7 @@ Inputs:
 - Braverman cognitive profile
 - Daily task completion
 
-MVP formula:
+Baseline formula:
 
 ```text
 Productivity Score =
@@ -777,7 +783,7 @@ It should reflect both objective biology and subjective life experience.
 
 Calculated from biological system scores.
 
-MVP formula:
+Baseline formula:
 
 ```text
 Biological Readiness Score =
@@ -798,7 +804,7 @@ Digestive System Score may be added in future or included when enough data exist
 
 Calculated from core state scores.
 
-MVP formula:
+Baseline formula:
 
 ```text
 User State Score =
@@ -831,7 +837,7 @@ Inputs:
 - Nutrition task completion
 - 7-day plan completion
 
-MVP formula:
+Baseline formula:
 
 ```text
 Adherence Score =
@@ -844,7 +850,7 @@ Adherence should influence recommendations, but it should not dominate the Healt
 
 ## 9.4 Overall Health Score Formula
 
-MVP formula:
+Baseline formula:
 
 ```text
 Overall Health Score =
@@ -993,7 +999,7 @@ These limiting factors should appear in:
 
 - AI Summary
 - Today screen
-- My Body screen
+- Body screen
 - Weekly Plan
 
 ---
@@ -1060,7 +1066,7 @@ The Health Score should not fluctuate too aggressively every day.
 
 Daily changes should be smoothed.
 
-Suggested MVP rule:
+Suggested baseline rule:
 
 ```text
 Displayed Daily Score =
@@ -1124,7 +1130,7 @@ Show:
 - Today’s tasks
 - AI Insight
 
-## 18.2 My Body Screen
+## 18.2 Body Screen
 
 Show:
 
@@ -1153,11 +1159,11 @@ Show:
 
 ---
 
-# 19. MVP Implementation Strategy
+# 19. Baseline Implementation Strategy
 
-The MVP should not attempt to create perfect medical scoring.
+The baseline implementation should not attempt to create perfect medical scoring.
 
-The MVP should implement:
+The baseline implementation should include:
 
 1. Simple deterministic scoring rules
 2. Confidence levels
@@ -1269,8 +1275,8 @@ Future versions may include:
 - Personalized biomarker optimal ranges
 - User-specific response modeling
 - Cohort comparison
-- Doctor-reviewed scoring layer
-- Advanced risk detection
+- Qualified-professional review layer, only after separate owner approval
+- Advanced safety flag detection
 
 ---
 

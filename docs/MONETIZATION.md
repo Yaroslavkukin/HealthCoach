@@ -2,170 +2,112 @@
 
 ## Business Model
 
-Health Coach operates on a subscription-based model.
+Health Coach uses a subscription-based model.
 
-Users do not pay for access to the application itself.
+The user pays for access to a personal AI health coach that turns health data and lifestyle context into clear daily guidance.
 
-Users pay for:
+## Core Value Proposition
 
-- Personalized recommendations
-- AI analysis
-- Health optimization protocols
-- Progress tracking
-- Continuous adaptation of recommendations
-- Access to the Health Coach intelligence system
+Health Coach does not sell raw information.
 
----
+Health Coach sells clarity, personalization, and action.
 
-# Core Value Proposition
+The user should need less time to:
 
-Health Coach does not sell information.
+- interpret biomarkers;
+- compare supplements;
+- build nutrition changes;
+- prioritize recovery actions;
+- understand what matters today;
+- adjust based on progress.
 
-Health Coach sells clarity.
+## Subscription Plans
 
-The user no longer needs to:
+Initial pricing examples may use Russian rubles.
 
-- Research blood biomarkers
-- Study supplements
-- Build nutrition plans
-- Search for recovery protocols
-- Compare conflicting information
+### Monthly Membership
 
-The AI performs these tasks and delivers a personalized action plan.
+Example price:
 
----
-
-# Subscription Plans
-
-## Monthly Membership
-
-Price:
-
-3,000 RUB per month
+```text
+3,000 RUB / month
+```
 
 Includes:
 
-- Full access to AI Health Coach
-- Blood analysis interpretation
-- Braverman assessment analysis
-- Personalized supplement protocols
-- Personalized bee product recommendations
-- Nutrition recommendations
-- Sleep optimization recommendations
-- Recovery recommendations
-- 14-day health reviews
-- Personalized action plans
+- AI Health Coach access;
+- blood analysis interpretation;
+- Braverman-based personalization;
+- personalized supplement guidance;
+- bee product guidance when safe and relevant;
+- nutrition guidance;
+- sleep and recovery recommendations;
+- progress reviews;
+- action plans;
+- AI assistant.
 
----
+### Six-Month Membership
 
-## Semi-Annual Membership
+Example price:
 
-Price:
+```text
+15,000 RUB / 6 months
+```
 
-15,000 RUB per 6 months
+Includes monthly features plus longer-term progress continuity.
 
-Equivalent Monthly Cost:
+## Positioning
 
-2,500 RUB
+The subscription should be positioned as:
 
-Savings:
+```text
+Access to your personal AI health coach.
+```
 
-3,000 RUB compared to monthly payments.
+Not as:
 
-Includes:
+```text
+Access to a static app or content library.
+```
 
-- All Monthly Membership features
-- Priority access to new features
-- Extended progress history
+## Retention Loop
 
----
+Retention comes from continuous value:
 
-# Positioning Strategy
+- daily Today plan;
+- supplement and nutrition support;
+- clear AI explanations;
+- 14-day progress reviews;
+- plan adjustments;
+- new analysis interpretation;
+- visible progress history.
 
-The subscription is not positioned as:
+## Future Revenue Options
 
-Access to an application.
+Future opportunities may include:
 
-The subscription is positioned as:
+- laboratory partnerships;
+- expert-reviewed programs;
+- premium coaching packages;
+- affiliate recommendations;
+- partner service referrals.
 
-Access to your personal AI Health Coach.
+These are future options only.
 
----
+Do not add active marketplace checkout, supplement delivery, shipment tracking, or delivery address collection unless the product owner explicitly adds commerce/delivery scope.
 
-# User Promise
+## Pricing Requirements
 
-Every subscriber receives:
+Implementation should keep pricing configurable.
 
-- Clear explanations
-- Actionable recommendations
-- Continuous optimization
-- Personalized guidance
+Do not hardcode provider secrets or payment logic in the mobile client.
 
-The objective is to improve:
+Payment provider integration must be backend-owned.
 
-- Energy
-- Emotional well-being
-- Motivation
-- Productivity
-- Recovery
+## Safety and Trust
 
----
+Monetization must not encourage unsafe recommendations.
 
-# Retention Strategy
+The product should not increase revenue by pushing unnecessary supplements, bee products, tests, or programs.
 
-The user should receive ongoing value.
-
-Every 14 days:
-
-- Progress review
-- Symptom review
-- Recommendation adjustment
-- Updated action plan
-
-The system continuously evolves with the user.
-
----
-
-# Future Revenue Streams
-
-The subscription model remains the primary revenue source.
-
-Future expansion may include:
-
-## Affiliate Revenue
-
-- Supplements
-- Bee products
-- Laboratory services
-
-## Premium Health Programs
-
-Examples:
-
-- Energy Optimization Program
-- Deep Recovery Program
-- Hormonal Optimization Program
-- Productivity Program
-
-## Laboratory Partnerships
-
-Revenue sharing from laboratory referrals.
-
-## Personalized Product Bundles
-
-AI-generated supplement and bee product stacks.
-
----
-
-# Pricing Philosophy
-
-The user is not paying for information.
-
-The user is paying for:
-
-- Better decisions
-- Faster progress
-- Reduced uncertainty
-- Improved quality of life
-
-Health Coach functions as a personal health optimization system rather than a content platform.
+User trust is the core asset.
