@@ -448,18 +448,23 @@ export async function saveDailyTaskStatus(task: DailyTask): Promise<PersistenceR
     return { ok: true, mode: 'mock', message: 'Daily task status saved to mock fallback.', data: task };
   }
 
+  const taskDate = new Date().toISOString().slice(0, 10);
+  const now = new Date().toISOString();
+
   const { data, error } = await supabase
     .from('daily_tasks')
-    .insert({
+    .upsert({
       user_id: context.userId,
-      task_date: new Date().toISOString().slice(0, 10),
+      task_date: taskDate,
+      task_key: task.id,
       category: mapTaskCategory(task.category),
       title: task.title,
       instruction: task.instruction,
       scheduled_time: toDatabaseTime(task.time),
       status: task.completed ? 'completed' : 'pending',
-      completed_at: task.completed ? new Date().toISOString() : null
-    })
+      completed_at: task.completed ? now : null,
+      updated_at: now
+    }, { onConflict: 'user_id,task_date,task_key' })
     .select()
     .single();
 
