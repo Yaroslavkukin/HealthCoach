@@ -18,7 +18,7 @@ const BODY_PLAQUE_SURFACE = '#FBF3E8';
 const PANEL_ASPECT_RATIO = 1086 / 1448;
 
 type BodySystemTouchZone = {
-  id: string;
+  id: DemoBodySystem['id'];
   label: string;
   left: `${number}%`;
   top: `${number}%`;

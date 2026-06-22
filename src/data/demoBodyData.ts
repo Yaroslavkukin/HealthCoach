@@ -4,10 +4,18 @@ import { demoBiomarkers, demoUser } from '@/data/mock/healthProfile';
 export type BodySystemStatus = 'good' | 'warning' | 'poor';
 export type BodySystemTrend = 'improving' | 'stable' | 'worsening' | 'unknown';
 
-export type BodySystemHeaderId = 'hormones' | 'metabolism' | 'nutrition' | 'stress' | 'digestion' | 'sleep';
+export type BodySystemHeaderId =
+  | 'hormones'
+  | 'metabolism'
+  | 'nutrition'
+  | 'stress'
+  | 'digestion'
+  | 'sleep'
+  | 'thyroid'
+  | 'inflammation';
 
 export type DemoBodySystem = {
-  id: 'hormonal' | 'energy' | 'nutritional' | 'stress_recovery' | 'digestive' | 'sleep';
+  id: 'hormonal' | 'energy' | 'nutritional' | 'stress_recovery' | 'digestive' | 'sleep' | 'thyroid' | 'inflammation';
   legacyIds: string[];
   headerSystemId: BodySystemHeaderId;
   title: string;
@@ -97,6 +105,27 @@ export const demoBodySystems: DemoBodySystem[] = [
     relatedSupplements: ['Омега-3', 'Магний (цитрат)']
   },
   {
+    id: 'thyroid',
+    legacyIds: [],
+    headerSystemId: 'thyroid',
+    title: 'Щитовидная система',
+    score: 71,
+    statusLabel: 'Требует внимания',
+    trend: 'stable',
+    trendLabel: 'Стабильно',
+    state: 'warning',
+    confidenceLabel: 'Средняя',
+    description:
+      'Система связана с темпом обмена, переносимостью нагрузки, температурной чувствительностью и дневной энергией.',
+    limitingFactor: 'Нестабильная энергия при недостатке сна',
+    supportingFactors: ['TSH в демо-данных не выглядит как острый сигнал', 'В плане уже есть сон, белковый завтрак и витамин D'],
+    recommendedAction: 'Поддерживать регулярный сон, питание и наблюдать динамику TSH',
+    relatedSignals: ['TSH', 'утренняя энергия', 'температурная чувствительность', 'сон', 'ферритин если есть'],
+    relatedBiomarkers: ['TSH', 'Витамин D'],
+    relatedActions: ['Сон до 23:00', 'Белковый завтрак', 'Отслеживать энергию и самочувствие утром'],
+    relatedSupplements: ['Витамин D3 + K2', 'Омега-3', 'Магний (цитрат)']
+  },
+  {
     id: 'energy',
     legacyIds: ['metabolism'],
     headerSystemId: 'metabolism',
@@ -158,6 +187,27 @@ export const demoBodySystems: DemoBodySystem[] = [
     relatedBiomarkers: ['Кортизол'],
     relatedActions: ['Вечерний ритуал восстановления', '30-минутная прогулка', 'Снижение света вечером'],
     relatedSupplements: ['Магний (цитрат)', 'L-теанин']
+  },
+  {
+    id: 'inflammation',
+    legacyIds: [],
+    headerSystemId: 'inflammation',
+    title: 'Воспалительная нагрузка',
+    score: 73,
+    statusLabel: 'Требует внимания',
+    trend: 'stable',
+    trendLabel: 'Стабильно',
+    state: 'warning',
+    confidenceLabel: 'Средняя',
+    description:
+      'Оценка отражает маркеры системной нагрузки, качество восстановления и факторы, которые могут усиливать утомление.',
+    limitingFactor: 'Недостаточное восстановление после нагрузки',
+    supportingFactors: ['CRP в демо-данных без критического сигнала', 'Омега-3, сон и прогулки уже поддерживают восстановление'],
+    recommendedAction: 'Снизить вечернюю нагрузку и отслеживать CRP в динамике',
+    relatedSignals: ['CRP', 'качество сна', 'мышечная болезненность', 'стресс', 'питание'],
+    relatedBiomarkers: ['CRP', 'Витамин D'],
+    relatedActions: ['Лёгкая прогулка', 'Сон до 23:00', 'Добавить больше овощей и белка в основные приёмы пищи'],
+    relatedSupplements: ['Омега-3', 'Витамин D3 + K2', 'Магний (цитрат)']
   },
   {
     id: 'digestive',
