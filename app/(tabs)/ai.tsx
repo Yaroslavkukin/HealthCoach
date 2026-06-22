@@ -11,7 +11,7 @@ import { useI18n } from '@/i18n';
 import { callHealthCoachAI } from '@/lib/aiClient';
 import { colors } from '@/theme/colors';
 
-const aiHeaderBanner = require('../../assets/images/ai-header-banner.png');
+const aiAssistantHeader = require('../../assets/images/ai-assistant-header.png');
 
 export default function AIScreen() {
   const { language, t } = useI18n();
@@ -96,7 +96,7 @@ export default function AIScreen() {
 
   return (
     <ScreenContainer contentStyle={styles.scrollContent}>
-      <AIPlaque title={t('ai.assistantTitle')} subtitle={t('ai.subtitle')} />
+      <AIPlaque />
 
       <View style={styles.contentBody}>
         <StateNotice
@@ -169,27 +169,13 @@ export default function AIScreen() {
   );
 }
 
-function AIPlaque({ title, subtitle }: { title: string; subtitle: string }) {
+function AIPlaque() {
   return (
-    <View style={styles.aiPlaque}>
-      <View style={styles.aiPlaqueText}>
-        <View style={styles.aiAccentLine} />
-        <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.aiPlaqueTitle}>
-          {title}
-        </AppText>
-        <AppText numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.aiPlaqueSubtitle}>
-          {subtitle}
-        </AppText>
-      </View>
-
-      <View style={styles.aiPlaqueArtFrame}>
-        <Image
-          source={aiHeaderBanner}
-          resizeMode="contain"
-          style={styles.aiPlaqueArt}
-        />
-      </View>
-    </View>
+    <Image
+      source={aiAssistantHeader}
+      resizeMode="cover"
+      style={styles.aiPlaqueImage}
+    />
   );
 }
 
@@ -198,55 +184,12 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingHorizontal: 0
   },
-  aiPlaque: {
+  aiPlaqueImage: {
     width: '100%',
-    minHeight: 112,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.accent,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
+    height: 112,
+    minHeight: 108,
+    backgroundColor: colors.background,
     overflow: 'hidden'
-  },
-  aiPlaqueText: {
-    flex: 1,
-    justifyContent: 'center',
-    minWidth: 0,
-    paddingRight: 12
-  },
-  aiAccentLine: {
-    width: 52,
-    height: 5,
-    borderRadius: 999,
-    backgroundColor: colors.accent,
-    marginBottom: 7
-  },
-  aiPlaqueTitle: {
-    color: colors.primary,
-    fontSize: 29,
-    lineHeight: 31,
-    fontWeight: '900'
-  },
-  aiPlaqueSubtitle: {
-    color: colors.textMuted,
-    fontSize: 14,
-    lineHeight: 18,
-    marginTop: 5
-  },
-  aiPlaqueArtFrame: {
-    width: 104,
-    height: 86,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  aiPlaqueArt: {
-    width: 118,
-    height: 86
   },
   contentBody: {
     paddingHorizontal: 20,
