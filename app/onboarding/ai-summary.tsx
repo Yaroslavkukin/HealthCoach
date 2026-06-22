@@ -57,7 +57,7 @@ export default function AISummaryScreen() {
       </SectionCard>
 
       <PrimaryButton label={t('onboarding.summary.today')} onPress={() => router.replace('/(tabs)/today')} />
-      <PrimaryButton label={t('onboarding.summary.supplements')} variant="secondary" onPress={() => router.push('/supplements')} />
+      <PrimaryButton label={t('onboarding.summary.supplements')} variant="secondary" onPress={() => router.push('/(tabs)/supplements')} />
       <PrimaryButton label={t('common.askAi')} variant="secondary" onPress={() => router.push('/(tabs)/ai')} />
     </ScreenContainer>
   );

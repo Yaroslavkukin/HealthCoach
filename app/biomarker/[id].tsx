@@ -47,7 +47,7 @@ export default function BiomarkerDetailScreen() {
       </SectionCard>
 
       <PrimaryButton label={t('common.askAi')} onPress={() => router.push('/(tabs)/ai')} />
-      <PrimaryButton label={t('biomarker.viewSupplements')} variant="secondary" onPress={() => router.push('/supplements')} />
+      <PrimaryButton label={t('biomarker.viewSupplements')} variant="secondary" onPress={() => router.push('/(tabs)/supplements')} />
     </ScreenContainer>
   );
 }

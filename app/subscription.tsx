@@ -13,10 +13,12 @@ import { colors } from '@/theme/colors';
 
 const benefitKeys = [
   'subscription.benefit.personalizedAi',
-  'subscription.benefit.blood',
-  'subscription.benefit.braverman',
+  'subscription.benefit.today',
+  'subscription.benefit.body',
   'subscription.benefit.supplements',
   'subscription.benefit.nutrition',
+  'subscription.benefit.blood',
+  'subscription.benefit.braverman',
   'subscription.benefit.progress'
 ] as const;
 
@@ -24,14 +26,14 @@ type SubscriptionPlan = 'monthly' | 'sixMonth';
 
 export default function SubscriptionScreen() {
   const { t } = useI18n();
-  const [successfulPlan, setSuccessfulPlan] = useState<SubscriptionPlan | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
 
-  function showMockPaymentSuccess(plan: SubscriptionPlan) {
-    setSuccessfulPlan(plan);
+  function selectDemoPlan(plan: SubscriptionPlan) {
+    setSelectedPlan(plan);
   }
 
-  function continueAfterPaymentSuccess() {
-    router.replace(accessRoutes.mainApp);
+  function continueToDemoProfile() {
+    router.replace('/(tabs)/profile');
   }
 
   return (
@@ -52,16 +54,16 @@ export default function SubscriptionScreen() {
         style={styles.greenElement}
       />
 
-      {successfulPlan ? (
+      {selectedPlan ? (
         <SectionCard tone="primary" style={styles.greenElement}>
-          <AppText variant="subtitle">{t('subscription.paymentSuccessTitle')}</AppText>
-          <AppText variant="body">{t('subscription.paymentSuccessMessage')}</AppText>
+          <AppText variant="subtitle">{t('subscription.planSelectedTitle')}</AppText>
+          <AppText variant="body">{t('subscription.planSelectedMessage')}</AppText>
           <AppText variant="caption" style={styles.accentText}>
-            {successfulPlan === 'monthly' ? t('subscription.monthly') : t('subscription.sixMonth')}
+            {selectedPlan === 'monthly' ? t('subscription.monthly') : t('subscription.sixMonth')}
           </AppText>
           <PrimaryButton
             label={t('subscription.continueToApp')}
-            onPress={continueAfterPaymentSuccess}
+            onPress={continueToDemoProfile}
             backgroundColor={colors.primary}
             textColor={colors.textOnPrimary}
             style={styles.greenButton}
@@ -69,7 +71,7 @@ export default function SubscriptionScreen() {
           <PrimaryButton
             label={t('subscription.changePlan')}
             variant="secondary"
-            onPress={() => setSuccessfulPlan(null)}
+            onPress={() => setSelectedPlan(null)}
             backgroundColor={colors.primary}
             textColor={colors.textOnPrimary}
             style={styles.greenButton}
@@ -86,11 +88,11 @@ export default function SubscriptionScreen() {
 
           <SectionCard tone="primary" style={styles.greenElement}>
             <AppText variant="subtitle">{t('subscription.monthly')}</AppText>
-            <AppText variant="metric" style={styles.priceText}>3000 ₽</AppText>
-            <AppText variant="caption">{t('common.month')}</AppText>
+            <AppText variant="metric" style={styles.priceText}>3,000 RUB/month</AppText>
+            <AppText variant="caption">{t('subscription.monthlyCaption')}</AppText>
             <PrimaryButton
               label={t('subscription.monthlyButton')}
-              onPress={() => showMockPaymentSuccess('monthly')}
+              onPress={() => selectDemoPlan('monthly')}
               backgroundColor={colors.primary}
               textColor={colors.textOnPrimary}
               style={styles.greenButton}
@@ -99,11 +101,11 @@ export default function SubscriptionScreen() {
 
           <SectionCard tone="primary" style={styles.greenElement}>
             <AppText variant="subtitle">{t('subscription.sixMonth')}</AppText>
-            <AppText variant="metric" style={styles.priceText}>15000 ₽</AppText>
+            <AppText variant="metric" style={styles.priceText}>15,000 RUB/6 months</AppText>
             <AppText variant="caption">{t('subscription.sixMonthCaption')}</AppText>
             <PrimaryButton
               label={t('subscription.sixMonthButton')}
-              onPress={() => showMockPaymentSuccess('sixMonth')}
+              onPress={() => selectDemoPlan('sixMonth')}
               backgroundColor={colors.primary}
               textColor={colors.textOnPrimary}
               style={styles.greenButton}

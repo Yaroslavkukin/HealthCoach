@@ -44,7 +44,7 @@ export default function WeeklyRationScreen() {
                 {mealSlotKeys.map((mealKey) => (
                   <View key={`${dayKey}-${mealKey}`} style={styles.slot}>
                     <View style={styles.placeholderIcon}>
-                      <AppText style={styles.placeholderIconText}>AI</AppText>
+                      <AppText style={styles.placeholderIconText}>{t('common.ai')}</AppText>
                     </View>
                     <View style={styles.slotText}>
                       <AppText style={styles.slotTitle}>{t(mealKey)}</AppText>

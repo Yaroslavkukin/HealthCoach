@@ -38,7 +38,7 @@ export default function BeeProductsScreen() {
       </SectionCard>
 
       <PrimaryButton label={t('bee.openNutrition')} onPress={() => router.push('/nutrition')} />
-      <PrimaryButton label={t('bee.backSupplements')} variant="secondary" onPress={() => router.push('/supplements')} />
+      <PrimaryButton label={t('bee.backSupplements')} variant="secondary" onPress={() => router.push('/(tabs)/supplements')} />
     </ScreenContainer>
   );
 }

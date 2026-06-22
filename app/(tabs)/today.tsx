@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScorePill } from '@/components/ScorePill';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { TaskItem } from '@/components/TaskItem';
 import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
@@ -13,6 +12,8 @@ import { useI18n } from '@/i18n';
 import { translateHealthStatus } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
+
+const todayHeaderIllustration = require('../../assets/images/today-header-illustration.png');
 
 export default function TodayScreen() {
   const { t } = useI18n();
@@ -39,72 +40,127 @@ export default function TodayScreen() {
   }
 
   return (
-    <ScreenContainer>
-      <ScreenHeader style={styles.topHeaderGoldOutline}>
-        <AppText variant="title">{t('common.today')}</AppText>
-        <AppText variant="body">{t('today.greeting', { name: demoUser.firstName })}</AppText>
-      </ScreenHeader>
+    <ScreenContainer contentStyle={styles.scrollContent}>
+      <TodayPlaque title={t('common.today')} greeting={t('today.greeting', { name: demoUser.firstName })} />
 
-      <SectionCard tone="primary" style={styles.heroCard}>
-        <AppText variant="caption">{t('today.overallScore')}</AppText>
-        <AppText variant="metric" style={styles.heroScore}>{demoUser.healthScore}</AppText>
-        <AppText variant="body">{translateHealthStatus(demoUser.healthStatus, t)}</AppText>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${progress}%` }]} />
+      <View style={styles.contentBody}>
+        <SectionCard tone="primary" style={styles.heroCard}>
+          <AppText variant="caption">{t('today.overallScore')}</AppText>
+          <AppText variant="metric" style={styles.heroScore}>{demoUser.healthScore}</AppText>
+          <AppText variant="body">{translateHealthStatus(demoUser.healthStatus, t)}</AppText>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${progress}%` }]} />
+          </View>
+          <AppText variant="caption">{t('today.completedCount', { completed, total: tasks.length })}</AppText>
+        </SectionCard>
+
+        <View style={styles.scoreRow}>
+          {demoCoreScores.map((score) => <ScorePill key={score.label} score={score} variant="primary" />)}
         </View>
-        <AppText variant="caption">{t('today.completedCount', { completed, total: tasks.length })}</AppText>
-      </SectionCard>
 
-      <View style={styles.scoreRow}>
-        {demoCoreScores.map((score) => <ScorePill key={score.label} score={score} variant="primary" />)}
+        <SectionCard style={styles.goldOutlineCard}>
+          <AppText variant="subtitle">{t('today.plan')}</AppText>
+          {tasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              task={task}
+              dividerColor={colors.accent}
+              onToggle={() => toggleTask(task.id)}
+            />
+          ))}
+        </SectionCard>
+
+        <SectionCard style={styles.goldOutlineCard}>
+          <AppText variant="body">{t('today.aiInsightBody')}</AppText>
+        </SectionCard>
+
+        <PrimaryButton
+          label={t('today.openWeeklyPlan')}
+          onPress={() => router.push('/weekly-plan')}
+          backgroundColor={colors.primary}
+          textColor={colors.textOnPrimary}
+          style={styles.goldButton}
+        />
+        <PrimaryButton
+          label={t('today.openNutrition')}
+          variant="secondary"
+          onPress={() => router.push('/nutrition')}
+          backgroundColor={colors.primary}
+          textColor={colors.textOnPrimary}
+          style={styles.goldButton}
+        />
       </View>
-
-      <SectionCard style={styles.goldOutlineCard}>
-        <AppText variant="subtitle">{t('today.plan')}</AppText>
-        {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            dividerColor={colors.accent}
-            onToggle={() => toggleTask(task.id)}
-          />
-        ))}
-      </SectionCard>
-
-      <SectionCard style={styles.goldOutlineCard}>
-        <AppText variant="body">{t('today.aiInsightBody')}</AppText>
-      </SectionCard>
-
-      <PrimaryButton
-        label={t('today.openWeeklyPlan')}
-        onPress={() => router.push('/weekly-plan')}
-        backgroundColor={colors.primary}
-        textColor={colors.textOnPrimary}
-        style={styles.goldButton}
-      />
-      <PrimaryButton
-        label={t('today.openSupplements')}
-        variant="secondary"
-        onPress={() => router.push('/supplements')}
-        backgroundColor={colors.primary}
-        textColor={colors.textOnPrimary}
-        style={styles.goldButton}
-      />
-      <PrimaryButton
-        label={t('today.openNutrition')}
-        variant="secondary"
-        onPress={() => router.push('/nutrition')}
-        backgroundColor={colors.primary}
-        textColor={colors.textOnPrimary}
-        style={styles.goldButton}
-      />
     </ScreenContainer>
   );
 }
 
+function TodayPlaque({ title, greeting }: { title: string; greeting: string }) {
+  return (
+    <View style={styles.todayPlaque}>
+      <View style={styles.todayPlaqueText}>
+        <View style={styles.todayAccentLine} />
+        <AppText style={styles.todayPlaqueTitle}>{title}</AppText>
+        <AppText numberOfLines={2} style={styles.todayPlaqueSubtitle}>
+          {greeting}
+        </AppText>
+      </View>
+
+      <Image
+        source={todayHeaderIllustration}
+        resizeMode="contain"
+        style={styles.todayPlaqueImage}
+      />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  topHeaderGoldOutline: {
-    borderColor: colors.accent
+  scrollContent: {
+    paddingTop: 0,
+    paddingHorizontal: 0
+  },
+  todayPlaque: {
+    width: '100%',
+    minHeight: 108,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 18,
+    paddingVertical: 10
+  },
+  todayPlaqueText: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  todayAccentLine: {
+    width: 52,
+    height: 5,
+    borderRadius: 999,
+    backgroundColor: colors.accent,
+    marginBottom: 8
+  },
+  todayPlaqueTitle: {
+    color: colors.primary,
+    fontSize: 30,
+    lineHeight: 32,
+    fontWeight: '900'
+  },
+  todayPlaqueSubtitle: {
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 20,
+    marginTop: 4
+  },
+  todayPlaqueImage: {
+    width: 122,
+    height: 80,
+    marginLeft: 8
+  },
+  contentBody: {
+    paddingHorizontal: 20,
+    paddingTop: 16
   },
   heroCard: {
     alignItems: 'center',

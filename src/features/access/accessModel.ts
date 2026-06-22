@@ -25,7 +25,7 @@ export type AccessFlowStep = {
   description: string;
 };
 
-export const founderAccessRule = 'Preview first. Subscription unlocks the full app; account setup is optional later.';
+export const founderAccessRule = 'Preview first. Demo plan selection unlocks the full app; account setup is optional later.';
 
 export const accessFlowSteps = [
   {
@@ -38,7 +38,7 @@ export const accessFlowSteps = [
     id: 'subscription',
     title: 'Subscription',
     route: accessRoutes.subscription,
-    description: 'Choose a mocked plan after the product value is clear.'
+    description: 'Choose a demo plan after the product value is clear.'
   },
   {
     id: 'accountCreation',

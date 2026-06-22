@@ -9,6 +9,9 @@ import {
   demoWeeklyPlan,
   supplementSafetyNote
 } from '@/data/mock/healthProfile';
+import { buildDemoAiCoachFallbackMessage, buildDemoAiCoachResponse } from '@/data/demoAiCoach';
+import { demoHealthProfile } from '@/data/demoHealthProfile';
+import type { Language } from '@/i18n';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import { getAuthPlaceholderContext } from '@/services/phase3Persistence';
 import type { AIHealthProfile, NutritionMeal } from '@/types';
@@ -35,6 +38,7 @@ export type AIChatResult = {
   answer: string;
   nutritionPlan?: NutritionMeal[];
   error?: string;
+  fallbackMode?: 'demo';
 };
 
 export type NutritionPlanState = {
@@ -53,13 +57,17 @@ type EdgeHealthProfileResponse = {
 
 type EdgeChatResponse = {
   ok?: boolean;
+  mode?: string;
   status?: string;
+  code?: string;
   detail?: string;
   message?: string;
   answer?: string;
   nutritionPlan?: unknown;
   aiError?: string;
+  fallbackMode?: string;
   generatedAt?: string;
+  model?: string;
 };
 
 let latestGeneratedProfile: AIHealthProfile | null = null;
@@ -210,11 +218,11 @@ export async function callHealthCoachAI(payload: AIRequestPayload) {
   }
 
   if (payload.task === 'nutrition_plan') {
-    return generateNutritionPlanFromChat(readInputMessage(payload.input));
+    return generateNutritionPlanFromChat(readInputMessage(payload.input), readInputLanguage(payload.input));
   }
 
   if (payload.task === 'ai_chat') {
-    return sendAIChatMessage(readInputMessage(payload.input), readInputContext(payload.input));
+    return sendAIChatMessage(readInputMessage(payload.input), readInputContext(payload.input), readInputLanguage(payload.input));
   }
 
   return {
@@ -223,11 +231,11 @@ export async function callHealthCoachAI(payload: AIRequestPayload) {
   };
 }
 
-export async function generateNutritionPlanFromChat(message: string): Promise<AIChatResult> {
-  return sendAIChatMessage(message, 'nutrition');
+export async function generateNutritionPlanFromChat(message: string, language: Language = 'en'): Promise<AIChatResult> {
+  return sendAIChatMessage(message, 'nutrition', language);
 }
 
-async function sendAIChatMessage(message: string, context: string): Promise<AIChatResult> {
+async function sendAIChatMessage(message: string, context: string, language: Language): Promise<AIChatResult> {
   const trimmedMessage = message.trim();
 
   if (!trimmedMessage) {
@@ -247,13 +255,7 @@ async function sendAIChatMessage(message: string, context: string): Promise<AICh
       missing: getMissingSupabasePublicEnvKeys()
     });
 
-    return {
-      ok: false,
-      mode: 'mock',
-      message: detail,
-      answer: '',
-      error: detail
-    };
+    return buildDemoChatFallbackResult(trimmedMessage, context, language, detail);
   }
 
   try {
@@ -261,7 +263,10 @@ async function sendAIChatMessage(message: string, context: string): Promise<AICh
       body: {
         task: context === 'nutrition' ? 'nutrition_plan' : 'ai_chat',
         message: trimmedMessage,
-        context
+        context,
+        locale: language,
+        profileContext: buildAiChatProfileContext(),
+        demoMode: true
       }
     });
 
@@ -284,17 +289,11 @@ async function sendAIChatMessage(message: string, context: string): Promise<AICh
         error: detail
       });
 
-      return {
-        ok: false,
-        mode: 'mock',
-        message: detail,
-        answer: '',
-        error: detail
-      };
+      return buildDemoChatFallbackResult(trimmedMessage, context, language, detail);
     }
 
     if (!response.ok) {
-      const detail = response.aiError ?? response.detail ?? response.message ?? 'AI chat request failed.';
+      const detail = response.code ?? response.aiError ?? response.detail ?? response.message ?? 'AI chat request failed.';
 
       console.error('AI chat returned an error response', {
         task: context === 'nutrition' ? 'nutrition_plan' : 'ai_chat',
@@ -302,24 +301,27 @@ async function sendAIChatMessage(message: string, context: string): Promise<AICh
         error: detail
       });
 
+      return buildDemoChatFallbackResult(trimmedMessage, context, language, detail);
+    }
+
+    if (response.mode === 'provider') {
+      const providerAnswer = response.message ?? response.answer ?? '';
+
+      if (!providerAnswer) {
+        return buildDemoChatFallbackResult(trimmedMessage, context, language, 'Provider returned an empty answer.');
+      }
+
       return {
-        ok: false,
-        mode: 'mock',
-        message: detail,
-        answer: response.answer ?? '',
-        error: detail
+        ok: true,
+        mode: 'edge',
+        message: 'AI response generated.',
+        answer: providerAnswer
       };
     }
 
     if (context === 'nutrition') {
       if (!isNutritionPlan(response.nutritionPlan)) {
-        return {
-          ok: false,
-          mode: 'mock',
-          message: 'AI chat returned an incomplete nutrition plan.',
-          answer: response.answer ?? '',
-          error: 'Invalid nutrition plan structure.'
-        };
+        return buildDemoChatFallbackResult(trimmedMessage, context, language, 'Invalid nutrition plan structure.');
       }
 
       const nutritionPlan = setLatestNutritionPlanFromAI(response.nutritionPlan, response.generatedAt);
@@ -347,14 +349,39 @@ async function sendAIChatMessage(message: string, context: string): Promise<AICh
       error: detail
     });
 
+    return buildDemoChatFallbackResult(trimmedMessage, context, language, detail);
+  }
+}
+
+function buildDemoChatFallbackResult(message: string, context: string, language: Language, error: string): AIChatResult {
+  const answer = buildDemoAiCoachResponse({
+    message,
+    language,
+    context: context === 'nutrition' ? 'nutrition' : 'general'
+  });
+  const result: AIChatResult = {
+    ok: false,
+    mode: 'mock',
+    message: buildDemoAiCoachFallbackMessage(language),
+    answer,
+    error,
+    fallbackMode: 'demo'
+  };
+
+  if (context === 'nutrition') {
+    latestNutritionPlan = {
+      source: 'mock',
+      meals: demoNutritionMeals
+    };
+    emitNutritionPlanUpdate(latestNutritionPlan);
+
     return {
-      ok: false,
-      mode: 'mock',
-      message: detail,
-      answer: '',
-      error: detail
+      ...result,
+      nutritionPlan: demoNutritionMeals
     };
   }
+
+  return result;
 }
 
 function buildMissingSupabaseConfigError() {
@@ -372,6 +399,19 @@ function getMissingSupabasePublicEnvKeys() {
     process.env.EXPO_PUBLIC_SUPABASE_URL ? null : 'EXPO_PUBLIC_SUPABASE_URL',
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ? null : 'EXPO_PUBLIC_SUPABASE_ANON_KEY'
   ].filter((key): key is string => Boolean(key));
+}
+
+function buildAiChatProfileContext() {
+  return {
+    userName: demoHealthProfile.userName,
+    overallScore: demoHealthProfile.overallScore,
+    energyScore: demoHealthProfile.energyScore,
+    recoveryScore: demoHealthProfile.recoveryScore,
+    sleepScore: demoHealthProfile.sleepScore,
+    nutritionScore: demoHealthProfile.nutritionScore,
+    mainLimiters: demoHealthProfile.mainLimiters,
+    recommendedFocus: demoHealthProfile.recommendedFocus
+  };
 }
 
 function setLatestNutritionPlanFromAI(meals: NutritionMeal[], generatedAt?: string) {
@@ -443,13 +483,17 @@ function normalizeEdgeChatResponse(value: unknown): EdgeChatResponse {
 
   return {
     ok: typeof value.ok === 'boolean' ? value.ok : undefined,
+    mode: typeof value.mode === 'string' ? value.mode : undefined,
     status: typeof value.status === 'string' ? value.status : undefined,
+    code: typeof value.code === 'string' ? value.code : undefined,
     detail: typeof value.detail === 'string' ? value.detail : undefined,
     message: typeof value.message === 'string' ? value.message : undefined,
     answer: typeof value.answer === 'string' ? value.answer : undefined,
     nutritionPlan: value.nutritionPlan,
     aiError: typeof value.aiError === 'string' ? value.aiError : undefined,
-    generatedAt: typeof value.generatedAt === 'string' ? value.generatedAt : undefined
+    fallbackMode: typeof value.fallbackMode === 'string' ? value.fallbackMode : undefined,
+    generatedAt: typeof value.generatedAt === 'string' ? value.generatedAt : undefined,
+    model: typeof value.model === 'string' ? value.model : undefined
   };
 }
 
@@ -480,6 +524,10 @@ function readInputMessage(input: Record<string, unknown>) {
 
 function readInputContext(input: Record<string, unknown>) {
   return typeof input.context === 'string' ? input.context : 'general';
+}
+
+function readInputLanguage(input: Record<string, unknown>): Language {
+  return input.language === 'ru' ? 'ru' : 'en';
 }
 
 function isSummary(value: unknown) {

@@ -38,7 +38,7 @@ export default function SubscriptionExpiredScreen() {
       </SectionCard>
 
       <PrimaryButton label={t('expired.renew')} onPress={() => router.push('/subscription')} />
-      <PrimaryButton label={t('expired.openPreview')} variant="secondary" onPress={() => router.push('/preview')} />
+      <PrimaryButton label={t('expired.openPreview')} variant="secondary" onPress={() => router.push('/(tabs)/profile')} />
     </ScreenContainer>
   );
 }

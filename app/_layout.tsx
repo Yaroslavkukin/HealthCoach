@@ -30,8 +30,13 @@ function RootNavigator() {
         <Stack.Screen name="preview" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="subscription" options={{ title: t('nav.subscription') }} />
-        <Stack.Screen name="supplements" options={{ headerShown: false }} />
         <Stack.Screen name="bee-products" options={{ title: t('nav.beeProducts') }} />
+        <Stack.Screen name="analyses" options={{ headerShown: false }} />
+        <Stack.Screen name="take-analyses" options={{ headerShown: false }} />
+        <Stack.Screen name="braverman-test" options={{ headerShown: false }} />
+        <Stack.Screen name="braverman-test-run" options={{ headerShown: false }} />
+        <Stack.Screen name="my-supplements" options={{ headerShown: false }} />
+        <Stack.Screen name="supplement-catalog" options={{ headerShown: false }} />
         <Stack.Screen name="nutrition" options={{ headerShown: false }} />
         <Stack.Screen name="weekly-plan" options={{ headerShown: false }} />
         <Stack.Screen name="weekly-ration" options={{ title: t('nav.weeklyRation') }} />
@@ -41,6 +46,7 @@ function RootNavigator() {
         <Stack.Screen name="success-stories" options={{ title: t('nav.successStories') }} />
         <Stack.Screen name="settings" options={{ title: t('common.settings') }} />
         <Stack.Screen name="biomarker/[id]" options={{ title: t('nav.biomarker') }} />
+        <Stack.Screen name="body-system/[id]" options={{ headerShown: false }} />
       </Stack>
     </>
   );

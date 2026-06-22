@@ -8,25 +8,26 @@ import type {
   SupplementRecommendation,
   WeeklyPlanDay
 } from '@/types';
+import { demoHealthProfile } from '@/data/demoHealthProfile';
 
 export const supplementSafetyNote =
-  'Before starting any supplement or bee product protocol, consult a qualified healthcare professional, especially if you have medical conditions, take medication, are pregnant, breastfeeding, or have allergies. Avoid bee products if you are sensitive to honey, pollen, propolis, royal jelly, or other bee products.';
+  'Before starting any supplement or bee product protocol, consult a qualified healthcare professional, especially if you have medical conditions, take medication, are pregnant, breastfeeding, or have allergies. Avoid bee products if you are sensitive to honey, pollen, royal jelly, or other bee products.';
 
 export const demoUser = {
-  firstName: 'Yaroslav',
+  firstName: demoHealthProfile.userName,
   age: 30,
   goal: 'Increase energy and recovery',
   archetype: 'The Strategist',
   profileCompletion: 72,
-  healthScore: 82,
+  healthScore: demoHealthProfile.overallScore,
   healthStatus: 'Good condition',
-  planFocus: 'Recovery, stable energy, and sleep consistency'
+  planFocus: demoHealthProfile.planFocus
 };
 
 export const demoCoreScores: HealthScore[] = [
-  { label: 'Energy', value: 78, status: 'good', trend: 'up', action: 'Morning light and protein breakfast' },
-  { label: 'Motivation', value: 74, status: 'good', trend: 'stable', action: 'Keep tasks short and measurable' },
-  { label: 'Mood', value: 81, status: 'good', trend: 'up', action: 'Evening recovery routine' }
+  { label: 'Energy', value: demoHealthProfile.energyScore, status: 'attention', trend: 'down', action: 'Morning light and protein breakfast' },
+  { label: 'Recovery', value: demoHealthProfile.recoveryScore, status: 'attention', trend: 'stable', action: 'Evening recovery routine' },
+  { label: 'Sleep', value: demoHealthProfile.sleepScore, status: 'attention', trend: 'down', action: 'Sleep before 23:00' }
 ];
 
 export const demoSystemScores: HealthScore[] = [
@@ -34,7 +35,7 @@ export const demoSystemScores: HealthScore[] = [
     label: 'Hormonal System',
     value: 76,
     status: 'good',
-    trend: 'up',
+    trend: 'stable',
     limitingFactor: 'Stress load',
     action: 'Protect sleep timing'
   },
@@ -48,15 +49,15 @@ export const demoSystemScores: HealthScore[] = [
   },
   {
     label: 'Nutritional System',
-    value: 68,
+    value: demoHealthProfile.nutritionScore,
     status: 'attention',
-    trend: 'up',
+    trend: 'stable',
     limitingFactor: 'Low meal regularity',
     action: 'Protein at breakfast'
   },
   {
     label: 'Stress & Recovery',
-    value: 61,
+    value: demoHealthProfile.recoveryScore,
     status: 'attention',
     trend: 'stable',
     limitingFactor: 'Elevated evening stimulation',
@@ -64,15 +65,15 @@ export const demoSystemScores: HealthScore[] = [
   },
   {
     label: 'Sleep System',
-    value: 70,
+    value: demoHealthProfile.sleepScore,
     status: 'attention',
-    trend: 'up',
+    trend: 'down',
     limitingFactor: 'Late bedtime drift',
     action: 'Sleep before 23:00'
   },
   {
     label: 'Digestive System',
-    value: 82,
+    value: 78,
     status: 'good',
     trend: 'stable',
     limitingFactor: 'Occasional heavy dinners',
@@ -83,19 +84,19 @@ export const demoSystemScores: HealthScore[] = [
 export const demoTasks: DailyTask[] = [
   {
     id: 'task-1',
-    title: 'Omega-3',
-    category: 'supplement',
-    instruction: 'Take with breakfast to support recovery balance.',
+    title: 'Morning light',
+    category: 'movement',
+    instruction: 'Get 10-20 minutes of outdoor light early.',
     completed: true,
-    time: '09:00'
+    time: '08:00'
   },
   {
     id: 'task-2',
-    title: 'Perga',
-    category: 'bee_product',
-    instruction: 'Take in the morning before deep work.',
+    title: 'Protein breakfast',
+    category: 'nutrition',
+    instruction: 'Eat protein with breakfast before caffeine.',
     completed: false,
-    time: '10:00'
+    time: '08:30'
   },
   {
     id: 'task-3',
@@ -103,7 +104,7 @@ export const demoTasks: DailyTask[] = [
     category: 'movement',
     instruction: 'Keep it easy; today is recovery-focused.',
     completed: false,
-    time: '18:00'
+    time: '13:30'
   },
   {
     id: 'task-4',
@@ -115,7 +116,7 @@ export const demoTasks: DailyTask[] = [
   },
   {
     id: 'task-5',
-    title: 'Magnesium bisglycinate',
+    title: 'Magnesium citrate',
     category: 'supplement',
     instruction: 'Take 1-2 hours before sleep.',
     completed: false,
@@ -134,12 +135,12 @@ export const demoTasks: DailyTask[] = [
 export const demoSupplements: SupplementRecommendation[] = [
   {
     id: 'sup-1',
-    name: 'Magnesium Bisglycinate',
-    dosage: '200-400 mg',
-    teaspoonDosage: '1 teaspoon',
+    name: 'Magnesium citrate',
+    dosage: '1 capsule',
+    teaspoonDosage: '1 capsule',
     schedule: 'Evening',
     foodInstruction: 'After dinner or 1-2 hours before sleep',
-    reason: 'Supports relaxation, recovery, and sleep quality.',
+    reason: 'Supports the evening recovery routine and sleep consistency.',
     confidence: 'high',
     stackType: 'essential',
     nextIntake: '21:30',
@@ -166,12 +167,12 @@ export const demoSupplements: SupplementRecommendation[] = [
   },
   {
     id: 'sup-3',
-    name: 'Vitamin D3',
-    dosage: '1000-2000 IU',
-    teaspoonDosage: '1/2 teaspoon',
+    name: 'Vitamin D3 + K2',
+    dosage: '1 capsule',
+    teaspoonDosage: '1 capsule',
     schedule: 'Morning',
     foodInstruction: 'With breakfast',
-    reason: 'Demo support for low-normal vitamin D status and mood/energy resilience.',
+    reason: 'Supports micronutrient status when the demo vitamin D signal is in an attention zone.',
     confidence: 'medium',
     stackType: 'essential',
     nextIntake: 'Tomorrow 09:00',
@@ -214,18 +215,18 @@ export const demoSupplements: SupplementRecommendation[] = [
   },
   {
     id: 'sup-6',
-    name: 'Propolis',
+    name: 'Bee Pollen',
     dosage: '1/2 teaspoon',
     teaspoonDosage: '1/2 teaspoon',
-    schedule: 'Evening',
+    schedule: 'Morning',
     foodInstruction: 'After food',
-    reason: 'Demo support for resilience during high-load weeks.',
+    reason: 'Supportive nutrient-dense food for users who tolerate bee products.',
     confidence: 'medium',
     stackType: 'complete',
-    nextIntake: '21:30',
+    nextIntake: 'Tomorrow 09:00',
     takenToday: false,
-    compatibilityNotes: 'Avoid with bee product, pollen, or propolis sensitivity.',
-    courseDuration: '2-4 weeks, then review tolerance',
+    compatibilityNotes: 'Avoid with pollen allergy; start small and stop if sensitivity appears.',
+    courseDuration: '2 weeks, then review tolerance',
     safetyNote: supplementSafetyNote
   },
   {
@@ -242,22 +243,6 @@ export const demoSupplements: SupplementRecommendation[] = [
     takenToday: false,
     compatibilityNotes: 'Avoid if allergic or sensitive to bee products.',
     courseDuration: '2-4 weeks, then review',
-    safetyNote: supplementSafetyNote
-  },
-  {
-    id: 'sup-8',
-    name: 'Bee Pollen',
-    dosage: '1 teaspoon',
-    teaspoonDosage: '1 teaspoon',
-    schedule: 'Morning',
-    foodInstruction: 'Start with breakfast',
-    reason: 'Supportive nutrient-dense food for users who tolerate bee products.',
-    confidence: 'medium',
-    stackType: 'complete',
-    nextIntake: 'Tomorrow 09:00',
-    takenToday: false,
-    compatibilityNotes: 'Avoid with pollen allergy; start small and stop if sensitivity appears.',
-    courseDuration: '2 weeks, then review tolerance',
     safetyNote: supplementSafetyNote
   }
 ];
@@ -296,12 +281,12 @@ export const demoBiomarkers: Biomarker[] = [
   {
     id: 'cortisol',
     name: 'Cortisol',
-    value: '560',
+    value: '548',
     unit: 'nmol/L',
     status: 'attention',
     referenceRange: '140-535 nmol/L',
-    trend: 'Slightly higher than last check',
-    explanation: 'Elevated cortisol may be associated with stress load and insufficient recovery.',
+    trend: 'Near the upper edge of the demo range',
+    explanation: 'Cortisol in an attention zone may be associated with stress load and insufficient recovery.',
     affects: ['Sleep depth', 'Energy stability', 'Mood', 'Recovery'],
     improvementActions: ['Sleep 7-9 hours', 'Walk daily', 'Reduce late caffeine', 'Use an evening wind-down routine'],
     relatedRecommendations: ['Magnesium evening protocol', '30-minute recovery walk', 'Sleep before 23:00']
@@ -309,11 +294,11 @@ export const demoBiomarkers: Biomarker[] = [
   {
     id: 'vitamin-d',
     name: 'Vitamin D',
-    value: '27',
+    value: '28',
     unit: 'ng/ml',
     status: 'attention',
     referenceRange: '30-60 ng/ml',
-    trend: 'Stable but below target',
+    trend: 'Stable, slightly below the demo target',
     explanation: 'Vitamin D status may influence energy, mood, and immune resilience.',
     affects: ['Mood', 'Immune resilience', 'Energy', 'Recovery'],
     improvementActions: ['Morning daylight', 'Review intake with a professional', 'Retest after 8 weeks'],
@@ -338,15 +323,15 @@ export const demoNutritionMeals: NutritionMeal[] = [
   {
     id: 'breakfast',
     meal: 'Breakfast',
-    title: 'Protein breakfast with eggs and greens',
-    description: 'Eggs, greens, buckwheat or sourdough, olive oil, and tea without sugar.',
+    title: 'Protein-rich breakfast for stable energy',
+    description: 'Eggs or Greek yogurt, greens, buckwheat or sourdough, olive oil, and tea without sugar.',
     time: '08:30',
     modification: 'If rushed: Greek yogurt, berries, and walnuts.'
   },
   {
     id: 'lunch',
     meal: 'Lunch',
-    title: 'Simple recovery plate',
+    title: 'Regular recovery plate',
     description: 'Chicken or fish, rice or potatoes, cooked vegetables, and fermented vegetables if tolerated.',
     time: '13:30',
     modification: 'Restaurant option: grilled protein, side rice, salad, no sweet sauce.'
@@ -354,15 +339,15 @@ export const demoNutritionMeals: NutritionMeal[] = [
   {
     id: 'dinner',
     meal: 'Dinner',
-    title: 'Lighter evening meal',
-    description: 'Turkey, fish, or cottage cheese with vegetables. Keep it easy to digest.',
+    title: 'Sleep-supporting lighter dinner',
+    description: 'Turkey, fish, or cottage cheese with vegetables. Keep it easy to digest and avoid late sugar.',
     time: '19:30',
     modification: 'If eating late: reduce starch and keep the portion smaller.'
   },
   {
     id: 'snack',
     meal: 'Snack',
-    title: 'Perga or nuts with fruit',
+    title: 'Afternoon energy support',
     description: 'Use a small snack only if energy drops between meals.',
     time: '16:30',
     modification: 'If sensitive to pollen, skip bee products and use nuts or yogurt.'
@@ -370,41 +355,79 @@ export const demoNutritionMeals: NutritionMeal[] = [
   {
     id: 'water',
     meal: 'Water',
-    title: '2 liters across the day',
-    description: 'Drink steadily before evening. Add minerals if training or sweating.',
+    title: 'Water and minerals across the day',
+    description: 'Drink steadily before evening. Add minerals if training, sweating, or eating irregularly.',
     time: 'All day',
     modification: 'Set two 750 ml bottle targets before 18:00.'
   }
 ];
 
 export const demoWeeklyPlan: WeeklyPlanDay[] = [
-  { id: 'mon', day: 'Monday', focus: 'Recovery base', tasks: demoTasks.slice(0, 5) },
+  { id: 'mon', day: 'Monday', focus: 'Baseline and morning routine', tasks: demoTasks.slice(0, 4) },
   {
     id: 'tue',
     day: 'Tuesday',
-    focus: 'Stable energy',
+    focus: 'Protein breakfast',
     tasks: [
       { ...demoTasks[0], id: 'tue-1', completed: false },
-      { ...demoTasks[2], id: 'tue-2', title: 'Walk 35 minutes', completed: false },
-      { id: 'tue-3', title: 'Protein breakfast', category: 'nutrition', instruction: 'Eat 30-40 g protein early.', completed: false, time: '08:30' },
+      { ...demoTasks[1], id: 'tue-2', completed: false },
+      { ...demoTasks[3], id: 'tue-3', completed: false },
       { ...demoTasks[5], id: 'tue-4', completed: false }
     ]
   },
   {
     id: 'wed',
     day: 'Wednesday',
-    focus: 'Light training',
+    focus: 'Evening recovery routine',
     tasks: [
-      { id: 'wed-1', title: 'Zone 2 training', category: 'training', instruction: 'Keep intensity conversational.', completed: false, time: '18:30' },
-      { ...demoTasks[1], id: 'wed-2', completed: false },
-      { ...demoTasks[3], id: 'wed-3', completed: false },
-      { ...demoTasks[4], id: 'wed-4', completed: false }
+      { ...demoTasks[2], id: 'wed-1', completed: false },
+      { ...demoTasks[3], id: 'wed-2', completed: false },
+      { ...demoTasks[4], id: 'wed-3', completed: false },
+      { ...demoTasks[5], id: 'wed-4', completed: false }
     ]
   },
-  { id: 'thu', day: 'Thursday', focus: 'Sleep protection', tasks: demoTasks.slice(1, 6).map((task, index) => ({ ...task, id: `thu-${index}` })) },
-  { id: 'fri', day: 'Friday', focus: 'Work capacity', tasks: demoTasks.slice(0, 4).map((task, index) => ({ ...task, id: `fri-${index}` })) },
-  { id: 'sat', day: 'Saturday', focus: 'Outdoor movement', tasks: demoTasks.slice(2, 6).map((task, index) => ({ ...task, id: `sat-${index}` })) },
-  { id: 'sun', day: 'Sunday', focus: 'Review and reset', tasks: demoTasks.slice(0, 3).map((task, index) => ({ ...task, id: `sun-${index}` })) }
+  {
+    id: 'thu',
+    day: 'Thursday',
+    focus: 'Walking and sunlight',
+    tasks: [
+      { ...demoTasks[0], id: 'thu-1', completed: false },
+      { ...demoTasks[2], id: 'thu-2', title: 'Walk 35 minutes', completed: false },
+      { ...demoTasks[3], id: 'thu-3', completed: false },
+      { ...demoTasks[5], id: 'thu-4', completed: false }
+    ]
+  },
+  {
+    id: 'fri',
+    day: 'Friday',
+    focus: 'Nutrition density',
+    tasks: [
+      { ...demoTasks[1], id: 'fri-1', completed: false },
+      { ...demoTasks[3], id: 'fri-2', completed: false },
+      { id: 'fri-3', title: 'Omega-3', category: 'supplement', instruction: 'Take with breakfast to support recovery balance.', completed: false, time: '09:00' },
+      { ...demoTasks[5], id: 'fri-4', completed: false }
+    ]
+  },
+  {
+    id: 'sat',
+    day: 'Saturday',
+    focus: 'Low-stimulation evening',
+    tasks: [
+      { ...demoTasks[2], id: 'sat-1', completed: false },
+      { ...demoTasks[4], id: 'sat-2', completed: false },
+      { ...demoTasks[5], id: 'sat-3', completed: false }
+    ]
+  },
+  {
+    id: 'sun',
+    day: 'Sunday',
+    focus: 'Review and adjust',
+    tasks: [
+      { ...demoTasks[0], id: 'sun-1', completed: false },
+      { ...demoTasks[1], id: 'sun-2', completed: false },
+      { ...demoTasks[5], id: 'sun-3', completed: false }
+    ]
+  }
 ];
 
 export const demoSuccessStories: SuccessStory[] = [
@@ -437,8 +460,8 @@ export const demoAssistantQuestions = [
 ];
 
 export const demoAISummary = {
-  limitingFactors: ['Elevated stress load', 'Inconsistent sleep timing', 'Low-normal vitamin D'],
-  biggestResult: ['Sleep stabilization', 'Magnesium evening protocol', 'Perga support before deep work'],
+  limitingFactors: ['Stress load and insufficient recovery', 'Inconsistent sleep timing', 'Micronutrient support needs attention'],
+  biggestResult: ['Sleep stabilization', 'Protein breakfast routine', 'Evening recovery routine'],
   expectedEffect: 'Over the next 4-8 weeks, the demo plan targets steadier energy, deeper sleep, improved recovery, and better motivation.',
-  nextStep: 'Follow Today’s Plan and complete the 7-day recovery base.'
+  nextStep: 'Best weekly focus: lower nervous load, stabilize meals, and keep evenings light.'
 };

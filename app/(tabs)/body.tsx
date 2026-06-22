@@ -1,85 +1,700 @@
 import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, Pressable, StyleSheet, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/components/AppText';
-import { HealthSystemCard } from '@/components/HealthSystemCard';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { ScreenHeader } from '@/components/ScreenHeader';
-import { SectionCard } from '@/components/SectionCard';
-import { demoBiomarkers, demoSystemScores } from '@/data/mock/healthProfile';
+import {
+  demoBodyOverview,
+  demoBodySystems,
+  type BodySystemStatus,
+  type DemoBodySystem
+} from '@/data/demoBodyData';
 import { useI18n } from '@/i18n';
-import { translateBiomarker, translateSimpleLabel } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
+
+const bodyHeaderPlaque = require('../../assets/images/body-header-plaque-v1.png');
+const bodySystemsPanel = require('../../assets/images/body-systems-panel.png');
+const BODY_PLAQUE_SURFACE = '#FBF3E8';
+const PANEL_ASPECT_RATIO = 1086 / 1448;
+
+type BodySystemTouchZone = {
+  id: string;
+  label: string;
+  left: `${number}%`;
+  top: `${number}%`;
+};
+
+const TOUCH_ZONE_SIZE = {
+  width: '14.8%' as const,
+  height: '10.8%' as const
+};
+
+const systemTouchZones: BodySystemTouchZone[] = [
+  { id: 'hormonal', label: 'Гормоны', left: '13.4%', top: '18.9%' },
+  { id: 'energy', label: 'Метаболизм', left: '13.4%', top: '36.1%' },
+  { id: 'stress_recovery', label: 'Стресс', left: '13.4%', top: '53.0%' },
+  { id: 'sleep', label: 'Сон', left: '13.4%', top: '69.9%' },
+  { id: 'thyroid', label: 'Щитовидка', left: '71.8%', top: '18.9%' },
+  { id: 'nutritional', label: 'Питание', left: '71.8%', top: '36.1%' },
+  { id: 'inflammation', label: 'Воспаление', left: '71.8%', top: '53.0%' },
+  { id: 'digestive', label: 'Пищеварение', left: '71.8%', top: '69.9%' }
+];
+
+const summarySections = [
+  {
+    title: 'Главные ограничения',
+    items: demoBodyOverview.limitingFactors
+  },
+  {
+    title: 'Что поддерживает состояние',
+    items: demoBodyOverview.supportingFactors
+  },
+  {
+    title: 'Что улучшать в первую очередь',
+    items: [demoBodyOverview.recommendedAction]
+  }
+];
+
+const systemStateColors: Record<BodySystemStatus, string> = {
+  good: colors.success,
+  warning: colors.warning,
+  poor: colors.danger
+};
 
 export default function BodyScreen() {
   const { t } = useI18n();
 
   return (
-    <ScreenContainer>
-      <ScreenHeader>
-        <AppText variant="title">{t('body.title')}</AppText>
-        <AppText variant="body">{t('body.subtitle')}</AppText>
-      </ScreenHeader>
+    <ScreenContainer contentStyle={styles.scrollContent}>
+      <BodyPlaque title={t('body.title')} subtitle={t('body.subtitle')} />
 
-      <SectionCard style={styles.bodyVisual}>
-        <View style={styles.figure}>
-          <View style={styles.head} />
-          <View style={styles.torso} />
-          <View style={styles.legs} />
+      <View style={styles.contentBody}>
+        <BodySystemsPanel />
+        <BodySystemsOverview />
+        <View style={styles.actionButtons}>
+          <BodyActionButton label={t('body.openAnalyses')} onPress={() => router.push('/analyses')} />
+          <BodyActionButton label={t('body.openBraverman')} onPress={() => router.push('/braverman-test')} />
         </View>
-        <AppText variant="subtitle">{t('body.systemMap')}</AppText>
-        <AppText variant="caption">{t('body.systemMapCaption')}</AppText>
-      </SectionCard>
-
-      {demoSystemScores.map((score) => <HealthSystemCard key={score.label} score={score} />)}
-
-      <SectionCard>
-        <AppText variant="subtitle">{t('body.keyBiomarkers')}</AppText>
-        {demoBiomarkers.map((item) => {
-          const marker = translateBiomarker(item, t);
-
-          return (
-          <AppText key={marker.id} variant="body" onPress={() => router.push(`/biomarker/${marker.id}`)}>
-            {marker.name}: {marker.value} {marker.unit} - {translateSimpleLabel(marker.status, t)}
-          </AppText>
-          );
-        })}
-      </SectionCard>
-
-      <PrimaryButton label={t('body.askAi')} onPress={() => router.push('/(tabs)/ai')} />
-      <PrimaryButton label={t('body.openCortisol')} variant="secondary" onPress={() => router.push('/biomarker/cortisol')} />
+        <BodyStateSummary />
+      </View>
     </ScreenContainer>
   );
 }
 
+function BodySystemsPanel() {
+  return (
+    <View style={styles.systemsPanel}>
+      <Image source={bodySystemsPanel} resizeMode="stretch" style={styles.systemsPanelImage} />
+
+      {systemTouchZones.map((zone) => (
+        <Pressable
+          key={zone.id}
+          accessibilityRole="button"
+          accessibilityLabel={zone.label}
+          hitSlop={0}
+          onPress={() => router.push({ pathname: '/body-system/[id]', params: { id: zone.id } })}
+          style={({ pressed }) => [
+            styles.touchZone,
+            {
+              left: zone.left,
+              top: zone.top,
+              width: TOUCH_ZONE_SIZE.width,
+              height: TOUCH_ZONE_SIZE.height
+            },
+            pressed && styles.touchZonePressed
+          ]}
+        />
+      ))}
+    </View>
+  );
+}
+
+function BodyActionButton({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
+    >
+      <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.actionButtonText}>
+        {label}
+      </AppText>
+    </Pressable>
+  );
+}
+
+function BodyStateSummary() {
+  return (
+    <View style={styles.summaryCard}>
+      <View style={styles.summaryHeader}>
+        <View style={styles.summaryIcon}>
+          <Ionicons name="analytics-outline" size={22} color={colors.accent} />
+        </View>
+        <View style={styles.summaryTitleBlock}>
+          <AppText style={styles.summaryTitle}>Общее состояние тела</AppText>
+          <AppText style={styles.summaryHelper}>{demoBodyOverview.summary}</AppText>
+        </View>
+      </View>
+
+      <View style={styles.summaryScoreRow}>
+        <View style={styles.summaryScoreBadge}>
+          <AppText style={styles.summaryScoreValue}>{demoBodyOverview.score}</AppText>
+          <AppText style={styles.summaryScoreSuffix}>/100</AppText>
+        </View>
+        <View style={styles.summaryMeta}>
+          <View style={styles.summaryPill}>
+            <AppText style={styles.summaryPillText}>{demoBodyOverview.sourceLabel}</AppText>
+          </View>
+          <AppText style={styles.summaryStatus}>{demoBodyOverview.statusLabel}</AppText>
+          <AppText style={styles.summaryTrend}>
+            Тренд: {demoBodyOverview.trendLabel} · {demoBodyOverview.confidenceLabel}
+          </AppText>
+        </View>
+      </View>
+
+      <AppText style={styles.summaryMainText}>{demoBodyOverview.recommendedAction}</AppText>
+
+      <View style={styles.summarySections}>
+        {summarySections.map((section) => (
+          <View key={section.title} style={styles.summarySection}>
+            <AppText style={styles.summarySectionTitle}>{section.title}</AppText>
+            {section.items.map((item) => (
+              <View key={item} style={styles.summaryListItem}>
+                <View style={styles.summaryListDot} />
+                <AppText style={styles.summarySectionText}>{item}</AppText>
+              </View>
+            ))}
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.sourceBlock}>
+        <AppText style={styles.sourceTitle}>Основано на демо-данных</AppText>
+        {demoBodyOverview.sourceDetails.map((source) => (
+          <AppText key={source} style={styles.sourceText}>
+            {source}
+          </AppText>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function BodySystemsOverview() {
+  return (
+    <View style={styles.systemsOverview}>
+      <View style={styles.systemsOverviewHeader}>
+        <View>
+          <AppText style={styles.systemsOverviewTitle}>Системы тела</AppText>
+          <AppText style={styles.systemsOverviewSubtitle}>Пример на основе демо-данных</AppText>
+        </View>
+        <View style={styles.systemsOverviewPill}>
+          <AppText style={styles.systemsOverviewPillText}>{demoBodySystems.length} систем</AppText>
+        </View>
+      </View>
+
+      <View style={styles.systemCards}>
+        {demoBodySystems.map((system) => (
+          <BodySystemStatusCard key={system.id} system={system} />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function BodySystemStatusCard({ system }: { system: DemoBodySystem }) {
+  const stateColor = systemStateColors[system.state];
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={system.title}
+      onPress={() => router.push(`/body-system/${system.id}`)}
+      style={({ pressed }) => [styles.systemCard, pressed && styles.systemCardPressed]}
+    >
+      <View style={styles.systemCardTop}>
+        <View style={styles.systemCardTitleBlock}>
+          <AppText style={styles.systemCardTitle}>{system.title}</AppText>
+          <AppText style={styles.systemCardDescription}>{system.description}</AppText>
+        </View>
+        <View style={[styles.systemScoreBadge, { borderColor: stateColor }]}>
+          <AppText style={[styles.systemScoreValue, { color: stateColor }]}>{system.score}</AppText>
+        </View>
+      </View>
+
+      <View style={styles.systemMetaRow}>
+        <View style={[styles.systemStatusPill, { borderColor: stateColor }]}>
+          <AppText style={[styles.systemStatusText, { color: stateColor }]}>{system.statusLabel}</AppText>
+        </View>
+        <AppText style={styles.systemTrendText}>{system.trendLabel}</AppText>
+      </View>
+
+      <View style={styles.systemDetailRow}>
+        <AppText style={styles.systemDetailLabel}>Ограничивает</AppText>
+        <AppText style={styles.systemDetailText}>{system.limitingFactor}</AppText>
+      </View>
+      <View style={styles.systemDetailRow}>
+        <AppText style={styles.systemDetailLabel}>Следующий шаг</AppText>
+        <AppText style={styles.systemDetailText}>{system.recommendedAction}</AppText>
+      </View>
+
+      <View style={styles.signalRow}>
+        {system.relatedSignals.slice(0, 3).map((signal) => (
+          <View key={signal} style={styles.signalChip}>
+            <AppText style={styles.signalChipText}>{signal}</AppText>
+          </View>
+        ))}
+      </View>
+    </Pressable>
+  );
+}
+
+function BodyPlaque({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <ImageBackground
+      source={bodyHeaderPlaque}
+      resizeMode="cover"
+      style={styles.bodyPlaque}
+      imageStyle={styles.bodyPlaqueArtwork}
+    >
+      <View style={styles.bodyPlaqueText}>
+        <View style={styles.bodyAccentLine} />
+        <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.88} style={styles.bodyPlaqueTitle}>
+          {title}
+        </AppText>
+        <AppText numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.86} style={styles.bodyPlaqueSubtitle}>
+          {subtitle}
+        </AppText>
+      </View>
+    </ImageBackground>
+  );
+}
+
 const styles = StyleSheet.create({
-  bodyVisual: {
-    alignItems: 'center'
+  scrollContent: {
+    paddingTop: 0,
+    paddingHorizontal: 0
   },
-  figure: {
+  bodyPlaque: {
+    width: '100%',
+    height: 112,
+    minHeight: 108,
+    backgroundColor: BODY_PLAQUE_SURFACE,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    overflow: 'hidden'
   },
-  head: {
+  bodyPlaqueArtwork: {
+    backgroundColor: BODY_PLAQUE_SURFACE,
+    transform: [{ translateX: 48 }]
+  },
+  bodyPlaqueText: {
+    justifyContent: 'center',
+    width: '62%',
+    maxWidth: 250,
+    minWidth: 0
+  },
+  bodyAccentLine: {
+    width: 52,
+    height: 5,
+    borderRadius: 999,
+    backgroundColor: colors.accent,
+    marginBottom: 8
+  },
+  bodyPlaqueTitle: {
+    color: colors.primary,
+    fontSize: 30,
+    lineHeight: 32,
+    fontWeight: '900'
+  },
+  bodyPlaqueSubtitle: {
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 20,
+    marginTop: 4
+  },
+  contentBody: {
+    alignItems: 'center',
+    paddingTop: 16,
+    paddingHorizontal: 10
+  },
+  actionButtons: {
+    width: '100%',
+    maxWidth: 430,
+    gap: 12,
+    marginTop: 18
+  },
+  actionButton: {
+    minHeight: 54,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.16,
+    shadowRadius: 16,
+    elevation: 3
+  },
+  actionButtonPressed: {
+    opacity: 0.78,
+    transform: [{ scale: 0.99 }]
+  },
+  actionButtonText: {
+    color: colors.textOnPrimary,
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: '900',
+    textAlign: 'center'
+  },
+  summaryCard: {
+    width: '100%',
+    maxWidth: 430,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: colors.surface,
+    padding: 18,
+    marginTop: 18,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 18,
+    elevation: 3
+  },
+  summaryHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12
+  },
+  summaryIcon: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    backgroundColor: colors.accentSoft
-  },
-  torso: {
-    width: 86,
-    height: 120,
-    borderRadius: 42,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: colors.accent,
     backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  summaryTitleBlock: {
+    flex: 1,
+    minWidth: 0
+  },
+  summaryTitle: {
+    color: colors.primary,
+    fontSize: 20,
+    lineHeight: 25,
+    fontWeight: '900'
+  },
+  summaryHelper: {
+    color: colors.textMuted,
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 6
+  },
+  summaryScoreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginTop: 16
+  },
+  summaryScoreBadge: {
+    width: 78,
+    height: 78,
+    borderRadius: 24,
     borderWidth: 2,
     borderColor: colors.accent,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  summaryScoreValue: {
+    color: colors.accent,
+    fontSize: 28,
+    lineHeight: 32,
+    fontWeight: '900'
+  },
+  summaryScoreSuffix: {
+    color: colors.textOnPrimaryMuted,
+    fontSize: 12,
+    lineHeight: 15,
+    fontWeight: '800'
+  },
+  summaryMeta: {
+    flex: 1,
+    minWidth: 0
+  },
+  summaryPill: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: colors.accentSoft,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginTop: 14
+  },
+  summaryPillText: {
+    color: colors.primary,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '800'
+  },
+  summaryStatus: {
+    color: colors.primary,
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: '900',
     marginTop: 8
   },
-  legs: {
-    width: 54,
-    height: 70,
-    borderRadius: 24,
-    backgroundColor: colors.accentSoft,
+  summaryTrend: {
+    color: colors.textMuted,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 3
+  },
+  summaryMainText: {
+    color: colors.text,
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 14
+  },
+  summarySections: {
+    gap: 10,
+    marginTop: 16
+  },
+  summarySection: {
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.background,
+    padding: 14
+  },
+  summarySectionTitle: {
+    color: colors.primary,
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: '800'
+  },
+  summarySectionText: {
+    color: colors.textMuted,
+    fontSize: 14,
+    lineHeight: 20,
+    flex: 1
+  },
+  summaryListItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
     marginTop: 8
+  },
+  summaryListDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.accent,
+    marginTop: 7
+  },
+  sourceBlock: {
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.background,
+    padding: 14,
+    marginTop: 14
+  },
+  sourceTitle: {
+    color: colors.primary,
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: '900'
+  },
+  sourceText: {
+    color: colors.textMuted,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 5
+  },
+  systemsOverview: {
+    width: '100%',
+    maxWidth: 430,
+    marginTop: 18
+  },
+  systemsOverviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 12
+  },
+  systemsOverviewTitle: {
+    color: colors.primary,
+    fontSize: 20,
+    lineHeight: 25,
+    fontWeight: '900'
+  },
+  systemsOverviewSubtitle: {
+    color: colors.textMuted,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 2
+  },
+  systemsOverviewPill: {
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: colors.accentSoft,
+    paddingHorizontal: 10,
+    paddingVertical: 5
+  },
+  systemsOverviewPillText: {
+    color: colors.primary,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '800'
+  },
+  systemCards: {
+    gap: 12
+  },
+  systemCard: {
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.surface,
+    padding: 15,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 2
+  },
+  systemCardPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.99 }]
+  },
+  systemCardTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12
+  },
+  systemCardTitleBlock: {
+    flex: 1,
+    minWidth: 0
+  },
+  systemCardTitle: {
+    color: colors.primary,
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: '900'
+  },
+  systemCardDescription: {
+    color: colors.textMuted,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 5
+  },
+  systemScoreBadge: {
+    width: 54,
+    height: 54,
+    borderRadius: 18,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background
+  },
+  systemScoreValue: {
+    fontSize: 18,
+    lineHeight: 22,
+    fontWeight: '900'
+  },
+  systemMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 12
+  },
+  systemStatusPill: {
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: colors.background
+  },
+  systemStatusText: {
+    fontSize: 12,
+    lineHeight: 15,
+    fontWeight: '900'
+  },
+  systemTrendText: {
+    color: colors.textMuted,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '700'
+  },
+  systemDetailRow: {
+    marginTop: 10
+  },
+  systemDetailLabel: {
+    color: colors.textSoft,
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: '900',
+    textTransform: 'uppercase'
+  },
+  systemDetailText: {
+    color: colors.text,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 3
+  },
+  signalRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 12
+  },
+  signalChip: {
+    borderRadius: 999,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    paddingHorizontal: 9,
+    paddingVertical: 4
+  },
+  signalChipText: {
+    color: colors.textMuted,
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: '700'
+  },
+  systemsPanel: {
+    width: '100%',
+    maxWidth: 430,
+    aspectRatio: PANEL_ASPECT_RATIO,
+    overflow: 'hidden'
+  },
+  systemsPanelImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%'
+  },
+  touchZone: {
+    position: 'absolute',
+    borderRadius: 22
+  },
+  touchZonePressed: {
+    backgroundColor: 'rgba(255, 240, 182, 0.14)'
   }
 });

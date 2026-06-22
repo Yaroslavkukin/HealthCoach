@@ -1,10 +1,12 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/components/AppText';
 import { useI18n } from '@/i18n';
 import { translateTask } from '@/i18n/mockContent';
 import { colors } from '@/theme/colors';
 import type { DailyTask } from '@/types';
+
+const supplementsIcon = require('../../assets/images/supplements-icon.png');
 
 export function TaskItem({
   task,
@@ -18,19 +20,17 @@ export function TaskItem({
   const { t } = useI18n();
   const displayTask = translateTask(task, t);
   const iconName =
-    task.category === 'supplement'
-      ? 'medical-outline'
-      : task.category === 'bee_product'
-        ? 'flower-outline'
-        : task.category === 'nutrition'
-          ? 'restaurant-outline'
-          : task.category === 'sleep'
-            ? 'moon-outline'
-            : task.category === 'water'
-              ? 'water-outline'
-              : task.category === 'training'
-                ? 'barbell-outline'
-                : 'walk-outline';
+    task.category === 'bee_product'
+      ? 'flower-outline'
+      : task.category === 'nutrition'
+        ? 'restaurant-outline'
+        : task.category === 'sleep'
+          ? 'moon-outline'
+          : task.category === 'water'
+            ? 'water-outline'
+            : task.category === 'training'
+              ? 'barbell-outline'
+              : 'walk-outline';
 
   return (
     <Pressable
@@ -46,7 +46,11 @@ export function TaskItem({
       </View>
       <View style={styles.textWrap}>
         <View style={styles.titleRow}>
-          <Ionicons name={iconName} size={16} color={colors.accent} />
+          {task.category === 'supplement' ? (
+            <Image source={supplementsIcon} resizeMode="contain" style={styles.supplementIcon} />
+          ) : (
+            <Ionicons name={iconName} size={16} color={colors.accent} />
+          )}
           <AppText style={styles.title}>{displayTask.title}</AppText>
         </View>
         <AppText variant="caption">{displayTask.instruction}</AppText>
@@ -87,6 +91,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6
+  },
+  supplementIcon: {
+    width: 16,
+    height: 16,
+    tintColor: colors.accent
   },
   title: {
     fontWeight: '700',

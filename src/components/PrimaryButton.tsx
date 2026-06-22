@@ -8,6 +8,7 @@ export function PrimaryButton({
   variant = 'primary',
   backgroundColor,
   textColor,
+  disabled = false,
   style
 }: {
   label: string;
@@ -15,10 +16,13 @@ export function PrimaryButton({
   variant?: 'primary' | 'secondary';
   backgroundColor?: string;
   textColor?: string;
+  disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   return (
     <Pressable
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
       style={[
         styles.button,

@@ -3,10 +3,18 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { TextToneProvider } from '@/components/AppText';
 import { colors } from '@/theme/colors';
 
-export function ScreenHeader({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+export function ScreenHeader({
+  children,
+  style,
+  integrated = false
+}: {
+  children: ReactNode;
+  style?: StyleProp<ViewStyle>;
+  integrated?: boolean;
+}) {
   return (
     <TextToneProvider tone="primary">
-      <View style={[styles.root, style]}>
+      <View style={[styles.root, integrated && styles.integrated, style]}>
         <View style={styles.accentMark} />
         {children}
       </View>
@@ -27,6 +35,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 18,
     elevation: 5
+  },
+  integrated: {
+    borderRadius: 0,
+    borderWidth: 0,
+    marginHorizontal: -20,
+    marginBottom: 16,
+    paddingHorizontal: 22,
+    paddingTop: 20,
+    paddingBottom: 20,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0
   },
   accentMark: {
     width: 42,

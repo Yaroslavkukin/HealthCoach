@@ -44,6 +44,8 @@ const notificationTimingKeys: Record<string, TranslationKey> = {
 
 const healthScoreLabelKeys: Record<string, TranslationKey> = {
   Energy: 'mock.score.energy',
+  Recovery: 'mock.score.recovery',
+  Sleep: 'mock.score.sleep',
   Motivation: 'mock.score.motivation',
   Mood: 'mock.score.mood',
   Productivity: 'mock.score.productivity',
@@ -74,11 +76,13 @@ const healthScoreTextKeys: Record<string, TranslationKey> = {
 };
 
 const taskTitleKeys: Record<string, TranslationKey> = {
+  'Morning light': 'mock.task.morningLight.title',
   'Omega-3': 'mock.task.omega.title',
   Perga: 'mock.task.perga.title',
   'Walk 30 minutes': 'mock.task.walk30.title',
   '2 liters of water': 'mock.task.water.title',
   'Magnesium bisglycinate': 'mock.task.magnesium.title',
+  'Magnesium citrate': 'mock.task.magnesium.title',
   'Sleep target': 'mock.task.sleep.title',
   'Walk 35 minutes': 'mock.task.walk35.title',
   'Protein breakfast': 'mock.task.proteinBreakfast.title',
@@ -86,12 +90,14 @@ const taskTitleKeys: Record<string, TranslationKey> = {
 };
 
 const taskInstructionKeys: Record<string, TranslationKey> = {
+  'Get 10-20 minutes of outdoor light early.': 'mock.task.morningLight.instruction',
   'Take with breakfast to support recovery balance.': 'mock.task.omega.instruction',
   'Take in the morning before deep work.': 'mock.task.perga.instruction',
   'Keep it easy; today is recovery-focused.': 'mock.task.walk30.instruction',
   'Front-load hydration before evening.': 'mock.task.water.instruction',
   'Take 1-2 hours before sleep.': 'mock.task.magnesium.instruction',
   'Lights out before 23:00.': 'mock.task.sleep.instruction',
+  'Eat protein with breakfast before caffeine.': 'mock.task.proteinBreakfast.instruction',
   'Eat 30-40 g protein early.': 'mock.task.proteinBreakfast.instruction',
   'Keep intensity conversational.': 'mock.task.zone2.instruction'
 };
@@ -138,12 +144,12 @@ const supplementKeys: Record<string, { name: TranslationKey; reason: Translation
     course: 'mock.supplement.honey.course'
   },
   'sup-6': {
-    name: 'mock.supplement.propolis.name',
-    reason: 'mock.supplement.propolis.reason',
-    teaspoons: 'mock.supplement.propolis.teaspoons',
-    food: 'mock.supplement.propolis.food',
-    compatibility: 'mock.supplement.propolis.compatibility',
-    course: 'mock.supplement.propolis.course'
+    name: 'mock.supplement.beePollen.name',
+    reason: 'mock.supplement.beePollen.reason',
+    teaspoons: 'mock.supplement.beePollen.teaspoons',
+    food: 'mock.supplement.beePollen.food',
+    compatibility: 'mock.supplement.beePollen.compatibility',
+    course: 'mock.supplement.beePollen.course'
   },
   'sup-7': {
     name: 'mock.supplement.royalJelly.name',
