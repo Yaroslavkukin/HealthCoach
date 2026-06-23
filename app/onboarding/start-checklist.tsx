@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { router, useFocusEffect } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
@@ -13,7 +12,6 @@ import { translatePersistenceMessage } from '@/i18n/mockContent';
 import type { TranslationKey } from '@/i18n/translations/en';
 import {
   fetchOnboardingChecklist,
-  saveOnboardingChecklist,
   type OnboardingChecklistState
 } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
@@ -76,23 +74,6 @@ export default function StartChecklistScreen() {
     }, [t])
   );
 
-  async function continueRequiredFlow() {
-    const initialChecklist: OnboardingChecklistState = {
-      bloodAnalysisCompleted: false,
-      bravermanCompleted: false,
-      lifestyleCompleted: false,
-      nutritionCompleted: false,
-      aiProfileGenerated: false
-    };
-    const result = await saveOnboardingChecklist(initialChecklist);
-
-    setSaveMessage(translatePersistenceMessage(result.message, t));
-    if (result.ok) {
-      setChecklist(initialChecklist);
-    }
-    router.push('/onboarding/blood-upload');
-  }
-
   return (
     <ScreenContainer>
       <ScreenHeader>
@@ -129,9 +110,6 @@ export default function StartChecklistScreen() {
           </Pressable>
         );
       })}
-
-      <PrimaryButton label={t('onboarding.checklist.continue')} onPress={continueRequiredFlow} />
-      <PrimaryButton label={t('onboarding.checklist.preview')} variant="secondary" onPress={() => router.replace('/(tabs)/today')} />
     </ScreenContainer>
   );
 }

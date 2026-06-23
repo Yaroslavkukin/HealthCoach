@@ -1,66 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
-import { PrimaryButton } from '@/components/PrimaryButton';
-import { SectionCard } from '@/components/SectionCard';
-import { StateNotice } from '@/components/StateNotice';
-import { demoUser } from '@/data/mock/healthProfile';
-import { notificationPlaceholders, privacySafetyNotices } from '@/data/mock/testingReadiness';
 import { useI18n } from '@/i18n';
-import { translateArchetype, translateNotificationTiming, translateUserGoal } from '@/i18n/mockContent';
-import type { TranslationKey } from '@/i18n/translations/en';
 import { signOutCurrentUser } from '@/services/authService';
-import { fetchProfile } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 const profileHeaderIllustration = require('../../assets/images/profile-header-illustration.png');
+const profileAlexeyCard = require('../../assets/images/profile-alexey-card.png');
 
-type StoredProfile = {
-  first_name?: unknown;
-  last_name?: unknown;
-  age?: unknown;
-  gender?: unknown;
-  main_goal?: unknown;
-  profile_completed?: unknown;
-};
-
-const notificationTitleKeys: Record<string, TranslationKey> = {
-  'morning-plan': 'readiness.notification.morningPlan',
-  'supplement-window': 'readiness.notification.supplementWindow',
-  'fourteen-day-review': 'readiness.notification.review'
-};
-
-const privacyNoticeKeys: Record<string, { title: TranslationKey; message: TranslationKey }> = {
-  educational: { title: 'privacy.educationalTitle', message: 'privacy.educationalMessage' },
-  'urgent-care': { title: 'privacy.urgentTitle', message: 'privacy.urgentMessage' },
-  'data-use': { title: 'privacy.dataTitle', message: 'privacy.dataMessage' }
-};
+const referenceMutedText = '#6F7E70';
+const referenceCream = '#FFF9EF';
 
 export default function ProfileScreen() {
   const { t } = useI18n();
-  const [storedProfile, setStoredProfile] = useState<StoredProfile | null>(null);
   const [signOutMessage, setSignOutMessage] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadProfile() {
-      const result = await fetchProfile();
-
-      if (active && result.ok && result.data) {
-        setStoredProfile(result.data);
-      }
-    }
-
-    void loadProfile();
-
-    return () => {
-      active = false;
-    };
-  }, []);
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 
   async function signOut() {
     setSigningOut(true);
@@ -75,74 +33,39 @@ export default function ProfileScreen() {
     router.replace('/preview');
   }
 
-  const storedName = [toDisplayText(storedProfile?.first_name), toDisplayText(storedProfile?.last_name)].filter(Boolean).join(' ');
-  const usingDemoProfile = !storedName;
-  const displayName = storedName || demoUser.firstName;
-  const displayAge = toDisplayNumber(storedProfile?.age) ?? demoUser.age;
-  const displayGoal = toDisplayText(storedProfile?.main_goal) || translateUserGoal(demoUser.goal, t);
-  const displayCompletion = storedProfile?.profile_completed === true ? 100 : demoUser.profileCompletion;
-
   return (
     <SafeAreaView style={styles.screenRoot}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <ProfileHeader title={t('common.profile')} subtitle={t('profile.headerSubtitle')} />
+        <ProfileHeader />
+        <DemoNotice />
 
         <View style={styles.contentBody}>
-          {signOutMessage ? <StateNotice title={t('profile.signOut')} message={signOutMessage} variant="error" /> : null}
-          {usingDemoProfile ? <StateNotice title={t('profile.demoProfileTitle')} message={t('profile.demoProfileMessage')} variant="info" /> : null}
-
-          <SectionCard>
-            <AppText variant="subtitle">{displayName}</AppText>
-            <AppText variant="body">{t('profile.age', { age: displayAge })}</AppText>
-            <AppText variant="body">{t('profile.goal', { goal: displayGoal })}</AppText>
-            {toDisplayText(storedProfile?.gender) ? <AppText variant="body">{t('profile.gender', { gender: toDisplayText(storedProfile?.gender) })}</AppText> : null}
-            <AppText variant="body">{t('profile.archetype', { archetype: translateArchetype(demoUser.archetype, t) })}</AppText>
-            <AppText variant="body">{t('profile.completion', { percent: displayCompletion })}</AppText>
-          </SectionCard>
-
-          <SectionCard>
-            <AppText variant="subtitle">{t('profile.subscription')}</AppText>
-            <AppText variant="body">{t('profile.subscriptionBody')}</AppText>
-          </SectionCard>
-
-          <SectionCard>
-            <AppText variant="subtitle">{t('profile.notifications')}</AppText>
-            {notificationPlaceholders.map((item) => (
-              <AppText key={item.id} variant="body">- {t(notificationTitleKeys[item.id])}: {translateNotificationTiming(item.timing, t)}</AppText>
-            ))}
-          </SectionCard>
-
-          <SectionCard>
-            <AppText variant="subtitle">{t('profile.privacySafety')}</AppText>
-            {privacySafetyNotices.map((item) => (
-              <AppText key={item.id} variant="body">- {t(privacyNoticeKeys[item.id].title)}: {t(privacyNoticeKeys[item.id].message)}</AppText>
-            ))}
-          </SectionCard>
-
-          <PrimaryButton label={t('profile.settings')} onPress={() => router.push('/settings')} />
-          <PrimaryButton label={t('profile.edit')} variant="secondary" onPress={() => router.push('/onboarding/profile')} />
-          <PrimaryButton label={t('profile.delivery')} variant="secondary" onPress={() => router.push('/onboarding/delivery')} />
-          <PrimaryButton label={t('profile.review')} variant="secondary" onPress={() => router.push('/review')} />
-          <PrimaryButton label={t('profile.expired')} variant="secondary" onPress={() => router.push('/subscription-expired')} />
-          <PrimaryButton label={t('common.clinic')} variant="secondary" onPress={() => router.push('/clinic')} />
-          <PrimaryButton label={t('profile.successStories')} variant="secondary" onPress={() => router.push('/success-stories')} />
-          <PrimaryButton label={signingOut ? t('profile.signingOut') : t('profile.signOut')} variant="secondary" onPress={signingOut ? undefined : () => void signOut()} />
+          <ProfileCard />
+          <ProfileQuickActions />
+          <SettingsSection
+            expanded={isSettingsExpanded}
+            onEditProfile={() => router.push('/onboarding/profile')}
+            onSafety={() => undefined}
+            onSignOut={() => void signOut()}
+            onToggle={() => setIsSettingsExpanded((current) => !current)}
+            signOutMessage={signOutMessage}
+            signingOut={signingOut}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function ProfileHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function ProfileHeader() {
   return (
     <View style={styles.headerPlaque}>
       <View style={styles.headerText}>
         <View style={styles.headerAccentLine} />
-        <AppText adjustsFontSizeToFit minimumFontScale={0.88} numberOfLines={1} style={styles.headerTitle}>
-          {title}
-        </AppText>
-        <AppText numberOfLines={2} style={styles.headerSubtitle}>
-          {subtitle}
+        <AppText style={styles.headerTitle}>Профиль</AppText>
+        <AppText style={styles.headerSubtitle}>
+          Ваши данные, настройки и{'\n'}
+          прогресс в одном месте.
         </AppText>
       </View>
 
@@ -155,6 +78,156 @@ function ProfileHeader({ title, subtitle }: { title: string; subtitle: string })
   );
 }
 
+function DemoNotice() {
+  return (
+    <View style={styles.demoNotice}>
+      <View style={styles.demoInfoIcon}>
+        <Ionicons name="information" size={18} color={colors.accent} />
+      </View>
+
+      <View style={styles.demoNoticeText}>
+        <AppText style={styles.demoNoticeTitle}>Демо-профиль</AppText>
+        <AppText style={styles.demoNoticeBody}>
+          Показан пример заполнения для Алексея.{'\n'}
+          После подключения аккаунта рекомендации{'\n'}
+          будут строиться на ваших данных.
+        </AppText>
+      </View>
+    </View>
+  );
+}
+
+function ProfileCard() {
+  return (
+    <View style={styles.alexeyCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Демо-профиль Алексей: возраст 30, цель повысить энергию и восстановление, архетип Исследователь."
+        resizeMode="contain"
+        source={profileAlexeyCard}
+        style={styles.alexeyCardImage}
+      />
+    </View>
+  );
+}
+
+function ProfileQuickActions() {
+  return (
+    <View style={styles.profileQuickActions}>
+      <ProfileQuickActionButton
+        icon="cube-outline"
+        label="Доставка"
+        onPress={() => router.push('/onboarding/delivery')}
+      />
+      <ProfileQuickActionButton
+        icon="medkit-outline"
+        label="Клиника"
+        onPress={() => router.push('/clinic')}
+      />
+      <ProfileQuickActionButton
+        icon="checkbox-outline"
+        label="Стартовый чеклист"
+        onPress={() => router.push('/onboarding/start-checklist')}
+      />
+    </View>
+  );
+}
+
+function ProfileQuickActionButton({
+  icon,
+  label,
+  onPress
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.profileQuickActionButton,
+        pressed && styles.profileQuickActionButtonPressed
+      ]}
+    >
+      <Ionicons name={icon} size={18} color={colors.textOnPrimary} />
+      <AppText style={styles.profileQuickActionText}>{label}</AppText>
+    </Pressable>
+  );
+}
+
+function SettingsSection({
+  expanded,
+  onEditProfile,
+  onSafety,
+  onSignOut,
+  onToggle,
+  signOutMessage,
+  signingOut
+}: {
+  expanded: boolean;
+  onEditProfile: () => void;
+  onSafety: () => void;
+  onSignOut: () => void;
+  onToggle: () => void;
+  signOutMessage: string | null;
+  signingOut: boolean;
+}) {
+  return (
+    <View style={styles.settingsSection}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Настройки"
+        accessibilityState={{ expanded }}
+        onPress={onToggle}
+        style={({ pressed }) => [styles.settingsButton, pressed && styles.settingsButtonPressed]}
+      >
+        <Ionicons name="settings-outline" size={20} color={colors.textOnPrimary} />
+        <AppText style={styles.settingsButtonText}>Настройки</AppText>
+        <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={18} color={colors.textOnPrimary} />
+      </Pressable>
+
+      {expanded ? (
+        <View style={styles.settingsPanel}>
+          {signOutMessage ? <AppText style={styles.signOutError}>{signOutMessage}</AppText> : null}
+          <SettingsActionRow icon="shield-checkmark-outline" label="Безопасность" onPress={onSafety} />
+          <SettingsActionRow icon="create-outline" label="Редактировать профиль" onPress={onEditProfile} />
+          <SettingsActionRow
+            icon="log-out-outline"
+            label={signingOut ? 'Выходим...' : 'Выйти'}
+            onPress={signingOut ? undefined : onSignOut}
+          />
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+function SettingsActionRow({
+  icon,
+  label,
+  onPress
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      disabled={!onPress}
+      onPress={onPress}
+      style={({ pressed }) => [styles.settingsActionRow, pressed && onPress && styles.settingsActionRowPressed]}
+    >
+      <Ionicons name={icon} size={18} color={colors.primary} />
+      <AppText style={styles.settingsActionText}>{label}</AppText>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   screenRoot: {
     flex: 1,
@@ -163,32 +236,26 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingTop: 0,
     paddingHorizontal: 0,
-    paddingBottom: 120
-  },
-  contentBody: {
-    paddingHorizontal: 20,
-    paddingTop: 16
+    paddingBottom: 150
   },
   headerPlaque: {
     width: '100%',
+    height: 112,
     minHeight: 108,
-    backgroundColor: colors.surface,
+    backgroundColor: referenceCream,
     borderWidth: 1,
     borderColor: colors.accent,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
+    paddingHorizontal: 22,
+    paddingVertical: 0,
     overflow: 'hidden'
-  },
-  headerIllustration: {
-    width: 138,
-    height: 94,
-    marginLeft: 6
   },
   headerText: {
     flex: 1,
-    justifyContent: 'center'
+    minWidth: 0,
+    justifyContent: 'center',
+    paddingRight: 8
   },
   headerAccentLine: {
     width: 52,
@@ -200,21 +267,180 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: colors.primary,
     fontSize: 30,
-    lineHeight: 32,
+    lineHeight: 36,
     fontWeight: '900'
   },
   headerSubtitle: {
-    color: colors.textMuted,
+    color: referenceMutedText,
+    fontSize: 13,
+    lineHeight: 17,
+    fontWeight: '500',
+    marginTop: 5
+  },
+  headerIllustration: {
+    width: 138,
+    height: 100,
+    marginLeft: 4
+  },
+  demoNotice: {
+    width: '100%',
+    marginTop: 8,
+    height: 108,
+    minHeight: 108,
+    maxHeight: 108,
+    backgroundColor: referenceCream,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 18,
+    paddingRight: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+    shadowColor: '#6D5930',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.14,
+    shadowRadius: 8,
+    elevation: 3
+  },
+  demoInfoIcon: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 18
+  },
+  demoNoticeText: {
+    flex: 1,
+    minWidth: 0
+  },
+  demoNoticeTitle: {
+    color: colors.primary,
+    fontSize: 19,
+    lineHeight: 23,
+    fontWeight: '900',
+    marginBottom: 3
+  },
+  demoNoticeBody: {
+    color: referenceMutedText,
+    fontSize: 14,
+    lineHeight: 18
+  },
+  contentBody: {
+    alignItems: 'center',
+    paddingHorizontal: 23,
+    paddingTop: 6
+  },
+  alexeyCardFrame: {
+    width: '100%',
+    maxWidth: 370,
+    alignSelf: 'center',
+    aspectRatio: 770 / 1304
+  },
+  alexeyCardImage: {
+    width: '100%',
+    height: '100%'
+  },
+  profileQuickActions: {
+    width: '100%',
+    maxWidth: 370,
+    gap: 6,
+    marginTop: 6
+  },
+  profileQuickActionButton: {
+    width: '100%',
+    minHeight: 48,
+    borderRadius: 16,
+    backgroundColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 2
+  },
+  profileQuickActionButtonPressed: {
+    opacity: 0.78,
+    transform: [{ scale: 0.99 }]
+  },
+  profileQuickActionText: {
+    color: colors.textOnPrimary,
     fontSize: 15,
     lineHeight: 20,
-    marginTop: 4
+    fontWeight: '900'
+  },
+  settingsSection: {
+    width: '100%',
+    maxWidth: 370,
+    marginTop: 6
+  },
+  settingsButton: {
+    width: '100%',
+    minHeight: 52,
+    borderRadius: 18,
+    backgroundColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 18,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 14,
+    elevation: 3
+  },
+  settingsButtonPressed: {
+    opacity: 0.78,
+    transform: [{ scale: 0.99 }]
+  },
+  settingsButtonText: {
+    flex: 1,
+    color: colors.textOnPrimary,
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: '900',
+    textAlign: 'center'
+  },
+  settingsPanel: {
+    width: '100%',
+    gap: 6,
+    marginTop: 6
+  },
+  settingsActionRow: {
+    minHeight: 44,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: referenceCream,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 14
+  },
+  settingsActionRowPressed: {
+    opacity: 0.72,
+    transform: [{ scale: 0.99 }]
+  },
+  settingsActionText: {
+    color: colors.primary,
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: '800'
+  },
+  signOutError: {
+    color: colors.danger,
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 10
   }
 });
-
-function toDisplayText(value: unknown) {
-  return typeof value === 'string' ? value : '';
-}
-
-function toDisplayNumber(value: unknown) {
-  return typeof value === 'number' ? value : undefined;
-}

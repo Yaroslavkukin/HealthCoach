@@ -380,6 +380,7 @@ function AIPlaque() {
         style={styles.aiPlaqueImage}
       />
       <View pointerEvents="none" style={styles.aiPlaqueLeftStripMask} />
+      <View pointerEvents="none" style={styles.aiPlaqueRightStripMask} />
       <View pointerEvents="none" style={styles.aiPlaqueTextBlock}>
         <AppText
           numberOfLines={1}
@@ -609,6 +610,7 @@ const styles = StyleSheet.create({
     minHeight: 108,
     backgroundColor: colors.background,
     borderWidth: 1,
+    borderRightWidth: 0,
     borderColor: colors.accent,
     overflow: 'hidden'
   },
@@ -619,6 +621,14 @@ const styles = StyleSheet.create({
   aiPlaqueLeftStripMask: {
     position: 'absolute',
     left: 1,
+    top: 1,
+    bottom: 1,
+    width: '0.8%',
+    backgroundColor: AI_HEADER_PLAQUE_SURFACE
+  },
+  aiPlaqueRightStripMask: {
+    position: 'absolute',
+    right: 0,
     top: 1,
     bottom: 1,
     width: '0.8%',

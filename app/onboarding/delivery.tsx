@@ -1,17 +1,12 @@
 import { useState } from 'react';
-import { router } from 'expo-router';
 import { StyleSheet, TextInput } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { accessRoutes } from '@/features/access/accessModel';
 import { useI18n } from '@/i18n';
-import { translatePersistenceMessage } from '@/i18n/mockContent';
 import type { TranslationKey } from '@/i18n/translations/en';
-import { upsertDeliveryDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 const deliveryPlaceholders = [
@@ -50,31 +45,9 @@ const initialDeliveryForm: DeliveryForm = {
 export default function DeliverySetupScreen() {
   const { t } = useI18n();
   const [form, setForm] = useState<DeliveryForm>(initialDeliveryForm);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [noticeVariant, setNoticeVariant] = useState<'info' | 'error'>('info');
 
   function updateField(key: keyof DeliveryForm, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
-  }
-
-  async function saveDelivery() {
-    const result = await upsertDeliveryDraft({
-      country: textOrUndefined(form.country),
-      city: textOrUndefined(form.city),
-      addressLine1: textOrUndefined(form.address),
-      postalCode: textOrUndefined(form.postal),
-      preferredDeliveryProvider: textOrUndefined(form.method),
-      cdekPickupPointAddress: textOrUndefined(form.cdek),
-      russianPostOfficeAddress: textOrUndefined(form.post),
-      deliveryNotes: textOrUndefined(form.comments)
-    });
-
-    setSaveMessage(translatePersistenceMessage(result.message, t));
-    setNoticeVariant(result.ok ? 'info' : 'error');
-
-    if (result.ok) {
-      router.push(accessRoutes.startChecklist);
-    }
   }
 
   return (
@@ -83,7 +56,7 @@ export default function DeliverySetupScreen() {
         <AppText variant="title">{t('onboarding.delivery.title')}</AppText>
         <AppText variant="body">{t('onboarding.delivery.subtitle')}</AppText>
       </ScreenHeader>
-      <StateNotice title={t('onboarding.delivery.title')} message={saveMessage ?? t('onboarding.delivery.initialSave')} variant={noticeVariant} />
+      <StateNotice title={t('onboarding.delivery.title')} message={t('onboarding.delivery.initialSave')} variant="info" />
 
       <SectionCard>
         {deliveryPlaceholders.map((field) => (
@@ -96,7 +69,6 @@ export default function DeliverySetupScreen() {
             style={styles.input}
           />
         ))}
-        <PrimaryButton label={t('onboarding.delivery.continue')} onPress={saveDelivery} />
       </SectionCard>
     </ScreenContainer>
   );
@@ -113,8 +85,3 @@ const styles = StyleSheet.create({
     borderColor: colors.borderSoft
   }
 });
-
-function textOrUndefined(value: string) {
-  const text = value.trim();
-  return text || undefined;
-}

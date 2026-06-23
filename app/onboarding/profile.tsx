@@ -1,17 +1,12 @@
 import { useState } from 'react';
-import { router } from 'expo-router';
 import { Pressable, TextInput, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
-import { accessRoutes } from '@/features/access/accessModel';
-import { useI18n, type Language } from '@/i18n';
-import { translatePersistenceMessage } from '@/i18n/mockContent';
+import { useI18n } from '@/i18n';
 import type { TranslationKey } from '@/i18n/translations/en';
-import { upsertProfileDraft } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 type ProfileForm = {
@@ -39,16 +34,6 @@ type ProfileField = {
   keyboardType?: 'numeric';
 };
 
-type NumericProfileFieldKey = 'age' | 'height' | 'weight';
-
-type NumericProfileValidation = {
-  key: NumericProfileFieldKey;
-  storageKey: 'age' | 'heightCm' | 'weightKg';
-  labelKey: TranslationKey;
-  min: number;
-  max: number;
-};
-
 const profileFieldsBeforeGender: readonly ProfileField[] = [
   { key: 'name', placeholder: 'onboarding.profile.name' },
   { key: 'age', placeholder: 'onboarding.profile.age', keyboardType: 'numeric' }
@@ -59,52 +44,17 @@ const profileFieldsAfterGender: readonly ProfileField[] = [
   { key: 'weight', placeholder: 'onboarding.profile.weight', keyboardType: 'numeric' }
 ];
 
-const numericProfileValidations: readonly NumericProfileValidation[] = [
-  { key: 'age', storageKey: 'age', labelKey: 'onboarding.profile.age', min: 10, max: 120 },
-  { key: 'height', storageKey: 'heightCm', labelKey: 'onboarding.profile.height', min: 80, max: 250 },
-  { key: 'weight', storageKey: 'weightKg', labelKey: 'onboarding.profile.weight', min: 25, max: 300 }
-];
-
 const genderOptions = [
   { value: 'male', label: 'onboarding.profile.male' },
   { value: 'female', label: 'onboarding.profile.female' }
 ] as const satisfies readonly { value: Exclude<ProfileGender, ''>; label: TranslationKey }[];
 
 export default function ProfileSetupScreen() {
-  const { language, t } = useI18n();
+  const { t } = useI18n();
   const [form, setForm] = useState<ProfileForm>(initialProfileForm);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [noticeVariant, setNoticeVariant] = useState<'info' | 'error'>('info');
 
   function updateField<Key extends keyof ProfileForm>(key: Key, value: ProfileForm[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
-  }
-
-  async function saveProfile() {
-    const numericProfileValues = validateNumericProfileValues(form, language, t);
-
-    if (!numericProfileValues.ok) {
-      setSaveMessage(numericProfileValues.error);
-      setNoticeVariant('error');
-      return;
-    }
-
-    const nameParts = splitName(form.name);
-    const result = await upsertProfileDraft({
-      firstName: nameParts.firstName,
-      lastName: nameParts.lastName,
-      age: numericProfileValues.values.age,
-      gender: form.gender || 'not_specified',
-      heightCm: numericProfileValues.values.heightCm,
-      weightKg: numericProfileValues.values.weightKg
-    });
-
-    setSaveMessage(translatePersistenceMessage(result.message, t));
-    setNoticeVariant(result.ok ? 'info' : 'error');
-
-    if (result.ok) {
-      router.push(accessRoutes.delivery);
-    }
   }
 
   return (
@@ -113,7 +63,7 @@ export default function ProfileSetupScreen() {
         <AppText variant="title">{t('onboarding.profile.title')}</AppText>
         <AppText variant="body">{t('onboarding.profile.subtitle')}</AppText>
       </ScreenHeader>
-      <StateNotice title={t('onboarding.profile.title')} message={saveMessage ?? t('onboarding.profile.initialSave')} variant={noticeVariant} />
+      <StateNotice title={t('onboarding.profile.title')} message={t('onboarding.profile.initialSave')} variant="info" />
       <SectionCard>
         {profileFieldsBeforeGender.map((field) => (
           <TextInput
@@ -149,7 +99,6 @@ export default function ProfileSetupScreen() {
             style={styles.input}
           />
         ))}
-        <PrimaryButton label={t('onboarding.profile.continue')} onPress={saveProfile} />
       </SectionCard>
     </ScreenContainer>
   );
@@ -196,70 +145,3 @@ const styles = StyleSheet.create({
     color: colors.textOnPrimary
   }
 });
-
-function parseOptionalNumber(value: string) {
-  const normalizedValue = value.replace(',', '.').trim();
-
-  if (!normalizedValue) {
-    return undefined;
-  }
-
-  const numericValue = Number(normalizedValue);
-
-  if (!Number.isFinite(numericValue) || numericValue <= 0) {
-    return undefined;
-  }
-
-  return numericValue;
-}
-
-function validateNumericProfileValues(form: ProfileForm, language: Language, t: (key: TranslationKey) => string) {
-  const values: {
-    age?: number;
-    heightCm?: number;
-    weightKg?: number;
-  } = {};
-
-  for (const validation of numericProfileValidations) {
-    const rawValue = form[validation.key];
-    const trimmedValue = rawValue.trim();
-
-    if (!trimmedValue) {
-      values[validation.storageKey] = undefined;
-      continue;
-    }
-
-    const numericValue = parseOptionalNumber(rawValue);
-
-    if (numericValue === undefined || numericValue < validation.min || numericValue > validation.max) {
-      return {
-        ok: false as const,
-        error: buildNumericValidationMessage(language, t(validation.labelKey), validation.min, validation.max)
-      };
-    }
-
-    values[validation.storageKey] = numericValue;
-  }
-
-  return {
-    ok: true as const,
-    values
-  };
-}
-
-function buildNumericValidationMessage(language: Language, label: string, min: number, max: number) {
-  if (language === 'ru') {
-    return `${label}: введите число от ${min} до ${max}.`;
-  }
-
-  return `${label}: enter a number from ${min} to ${max}.`;
-}
-
-function splitName(value: string) {
-  const parts = value.trim().split(/\s+/).filter(Boolean);
-
-  return {
-    firstName: parts[0],
-    lastName: parts.slice(1).join(' ') || undefined
-  };
-}
