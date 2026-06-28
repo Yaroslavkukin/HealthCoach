@@ -1,25 +1,28 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Platform, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
-import { ScorePill } from '@/components/ScorePill';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionCard } from '@/components/SectionCard';
 import { TaskItem } from '@/components/TaskItem';
-import { demoCoreScores, demoTasks, demoUser } from '@/data/mock/healthProfile';
+import { demoTasks, demoUser } from '@/data/mock/healthProfile';
 import { useI18n } from '@/i18n';
-import { translateHealthStatus } from '@/i18n/mockContent';
 import { saveDailyTaskStatus } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
 const todayHeaderIllustration = require('../../assets/images/today-header-illustration.png');
+const todayHealthScoreCard = require('../../assets/images/today-health-score-card.png');
+const todayPlanTitleFontFamily = Platform.select({
+  ios: 'Georgia',
+  android: 'serif',
+  web: 'Georgia',
+  default: 'serif'
+});
 
 export default function TodayScreen() {
   const { t } = useI18n();
   const [tasks, setTasks] = useState(demoTasks);
-  const completed = tasks.filter((task) => task.completed).length;
-  const progress = Math.round((completed / tasks.length) * 100);
 
   function toggleTask(id: string) {
     const currentTask = tasks.find((task) => task.id === id);
@@ -44,31 +47,25 @@ export default function TodayScreen() {
       <TodayPlaque title={t('common.today')} greeting={t('today.greeting', { name: demoUser.firstName })} />
 
       <View style={styles.contentBody}>
-        <SectionCard tone="primary" style={styles.heroCard}>
-          <AppText variant="caption">{t('today.overallScore')}</AppText>
-          <AppText variant="metric" style={styles.heroScore}>{demoUser.healthScore}</AppText>
-          <AppText variant="body">{translateHealthStatus(demoUser.healthStatus, t)}</AppText>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${progress}%` }]} />
-          </View>
-          <AppText variant="caption">{t('today.completedCount', { completed, total: tasks.length })}</AppText>
-        </SectionCard>
-
-        <View style={styles.scoreRow}>
-          {demoCoreScores.map((score) => <ScorePill key={score.label} score={score} variant="primary" />)}
+        <View style={styles.healthScoreImageFrame}>
+          <Image source={todayHealthScoreCard} resizeMode="contain" style={styles.healthScoreCardImage} />
         </View>
 
-        <SectionCard style={styles.goldOutlineCard}>
-          <AppText variant="subtitle">{t('today.plan')}</AppText>
-          {tasks.map((task) => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              dividerColor={colors.accent}
-              onToggle={() => toggleTask(task.id)}
-            />
-          ))}
-        </SectionCard>
+        <View style={styles.planCard}>
+          <View style={styles.planCardHeader}>
+            <AppText style={styles.planCardTitle}>{t('today.plan')}</AppText>
+          </View>
+          <View style={styles.planCardBody}>
+            {tasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                dividerColor={colors.accent}
+                onToggle={() => toggleTask(task.id)}
+              />
+            ))}
+          </View>
+        </View>
 
         <SectionCard style={styles.goldOutlineCard}>
           <AppText variant="body">{t('today.aiInsightBody')}</AppText>
@@ -143,9 +140,12 @@ const styles = StyleSheet.create({
   },
   todayPlaqueTitle: {
     color: colors.primary,
+    fontFamily: 'CormorantGaramond_700Bold',
     fontSize: 30,
     lineHeight: 32,
-    fontWeight: '900'
+    textShadowColor: colors.primary,
+    textShadowOffset: { width: 0.35, height: 0 },
+    textShadowRadius: 0.2
   },
   todayPlaqueSubtitle: {
     color: colors.textMuted,
@@ -162,13 +162,53 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16
   },
-  heroCard: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderColor: colors.accent
+  healthScoreImageFrame: {
+    width: '100%',
+    aspectRatio: 1.2766,
+    alignSelf: 'center',
+    marginBottom: 16,
+    overflow: 'visible'
   },
-  heroScore: {
-    color: colors.accent
+  healthScoreCardImage: {
+    width: '117.5%',
+    height: '100%',
+    aspectRatio: 1.5,
+    alignSelf: 'center'
+  },
+  planCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 26,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    marginBottom: 16,
+    overflow: 'hidden',
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    elevation: 3
+  },
+  planCardHeader: {
+    minHeight: 56,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 14
+  },
+  planCardTitle: {
+    color: colors.textOnPrimary,
+    fontFamily: todayPlanTitleFontFamily,
+    fontSize: 22.5,
+    lineHeight: 27,
+    fontWeight: '400',
+    letterSpacing: 0,
+    textAlign: 'center'
+  },
+  planCardBody: {
+    backgroundColor: colors.surface,
+    padding: 20,
+    paddingTop: 14
   },
   goldOutlineCard: {
     borderWidth: 1,
@@ -177,23 +217,5 @@ const styles = StyleSheet.create({
   goldButton: {
     borderWidth: 1,
     borderColor: colors.accent
-  },
-  scoreRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 16
-  },
-  progressTrack: {
-    width: '100%',
-    height: 8,
-    backgroundColor: colors.textOnPrimaryMuted,
-    borderRadius: 999,
-    overflow: 'hidden',
-    marginTop: 12,
-    marginBottom: 8
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: colors.accent
   }
 });

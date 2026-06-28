@@ -280,9 +280,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: colors.primary,
+    fontFamily: 'CormorantGaramond_700Bold',
     fontSize: 30,
     lineHeight: 32,
-    fontWeight: '900'
+    textShadowColor: colors.primary,
+    textShadowOffset: { width: 0.35, height: 0 },
+    textShadowRadius: 0.2
   },
   headerSubtitle: {
     color: colors.textMuted,

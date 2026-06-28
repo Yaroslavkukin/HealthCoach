@@ -1,22 +1,32 @@
 import { useCallback, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { AppText } from '@/components/AppText';
-import { ScreenContainer } from '@/components/ScreenContainer';
-import { ScreenHeader } from '@/components/ScreenHeader';
-import { SectionCard } from '@/components/SectionCard';
-import { StateNotice } from '@/components/StateNotice';
+import { Image, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { onboardingSteps, type OnboardingStepId } from '@/features/onboarding/onboardingSteps';
-import { useI18n } from '@/i18n';
-import { translatePersistenceMessage } from '@/i18n/mockContent';
-import type { TranslationKey } from '@/i18n/translations/en';
 import {
   fetchOnboardingChecklist,
   type OnboardingChecklistState
 } from '@/services/phase3Persistence';
 import { colors } from '@/theme/colors';
 
-type OnboardingStepStatus = 'not started' | 'completed' | 'locked';
+type OnboardingStepStatus = 'not started' | 'completed';
+
+const startChecklistHeaderPlaque = require('../../assets/images/start-checklist-header-plaque.png');
+const startChecklistCardsExact = require('../../assets/images/start-checklist-cards-exact.png');
+const startChecklistJourneyExact = require('../../assets/images/start-checklist-journey-exact.png');
+
+const cardsAssetSize = {
+  width: 852,
+  height: 1010
+};
+
+const journeyAssetSize = {
+  width: 852,
+  height: 545
+};
+
+const headerHeight = 82;
 
 const emptyChecklist: OnboardingChecklistState = {
   bloodAnalysisCompleted: false,
@@ -26,24 +36,37 @@ const emptyChecklist: OnboardingChecklistState = {
   aiProfileGenerated: false
 };
 
-const stepKeys: Record<OnboardingStepId, { title: TranslationKey; description: TranslationKey }> = {
-  'blood-analysis': { title: 'onboarding.step.blood.title', description: 'onboarding.step.blood.description' },
-  braverman: { title: 'onboarding.step.braverman.title', description: 'onboarding.step.braverman.description' },
-  lifestyle: { title: 'onboarding.step.lifestyle.title', description: 'onboarding.step.lifestyle.description' },
-  nutrition: { title: 'onboarding.step.nutrition.title', description: 'onboarding.step.nutrition.description' },
-  'ai-profile': { title: 'onboarding.step.ai.title', description: 'onboarding.step.ai.description' }
+const statusLabels: Record<OnboardingStepStatus, string> = {
+  'not started': 'Не начато',
+  completed: 'Выполнено'
 };
 
-const statusKeys: Record<OnboardingStepStatus, TranslationKey> = {
-  'not started': 'onboarding.status.notStarted',
-  completed: 'onboarding.status.completed',
-  locked: 'onboarding.status.locked'
-};
+const cardHitAreas: {
+  id: OnboardingStepId;
+  title: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}[] = [
+  { id: 'blood-analysis', title: 'Анализы крови', x: 47, y: 45, width: 758, height: 306 },
+  { id: 'braverman', title: 'Тест Бравермана', x: 47, y: 374, width: 758, height: 296 },
+  { id: 'profile', title: 'Заполнить профиль', x: 47, y: 696, width: 758, height: 296 }
+];
 
 export default function StartChecklistScreen() {
-  const { t } = useI18n();
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const { height, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const [checklist, setChecklist] = useState<OnboardingChecklistState>(emptyChecklist);
+  const availableMediaHeight = Math.max(0, height - insets.top - insets.bottom - headerHeight);
+  const fullWidthMediaHeight =
+    (width * cardsAssetSize.height) / cardsAssetSize.width +
+    (width * journeyAssetSize.height) / journeyAssetSize.width;
+  const contentScale = fullWidthMediaHeight > 0 ? Math.min(1, availableMediaHeight / fullWidthMediaHeight) : 1;
+  const cardsImageWidth = width * contentScale;
+  const cardsScale = cardsImageWidth / cardsAssetSize.width;
+  const cardsImageHeight = cardsAssetSize.height * cardsScale;
+  const journeyImageHeight = journeyAssetSize.height * cardsScale;
 
   useFocusEffect(
     useCallback(() => {
@@ -57,10 +80,7 @@ export default function StartChecklistScreen() {
 
           if (result.ok) {
             setChecklist(result.data ?? emptyChecklist);
-            return;
           }
-
-          setSaveMessage(translatePersistenceMessage(result.message, t));
         })
         .catch(() => {
           if (isActive) {
@@ -71,46 +91,73 @@ export default function StartChecklistScreen() {
       return () => {
         isActive = false;
       };
-    }, [t])
+    }, [])
   );
 
   return (
-    <ScreenContainer>
-      <ScreenHeader>
-        <AppText variant="title">{t('onboarding.checklist.title')}</AppText>
-        <AppText variant="body">{t('onboarding.checklist.subtitle')}</AppText>
-      </ScreenHeader>
+    <SafeAreaView edges={['top', 'left', 'right']} style={styles.screenRoot}>
+      <StartChecklistHeader />
 
-      <StateNotice
-        title={t('onboarding.checklist.title')}
-        message={saveMessage ?? t('onboarding.checklist.initialSave')}
-        variant="info"
-      />
+      <View style={[styles.content, { paddingBottom: insets.bottom }]}>
+        <View style={[styles.cardsImageFrame, { width: cardsImageWidth, height: cardsImageHeight }]}>
+          <Image
+            source={startChecklistCardsExact}
+            resizeMode="contain"
+            style={styles.cardsImage}
+          />
 
-      {onboardingSteps.map((step, index) => {
-        const status = getStepStatus(step.id, checklist);
-        const locked = status === 'locked';
+          {cardHitAreas.map((area) => {
+            const step = onboardingSteps.find((candidate) => candidate.id === area.id);
 
-        return (
-          <Pressable key={step.id} disabled={locked} onPress={() => router.push(step.route)} style={({ pressed }) => pressed && styles.pressed}>
-            <SectionCard style={locked ? styles.locked : undefined}>
-              <View style={styles.stepRow}>
-                <View style={[styles.number, locked && styles.numberLocked]}>
-                  <AppText style={styles.numberText}>{index + 1}</AppText>
-                </View>
-                <View style={styles.stepText}>
-                  <View style={styles.titleRow}>
-                    <AppText style={styles.title}>{t(stepKeys[step.id].title)}</AppText>
-                    <AppText style={[styles.status, locked && styles.lockedText]}>{t(statusKeys[status])}</AppText>
-                  </View>
-                  <AppText variant="caption">{t(stepKeys[step.id].description)}</AppText>
-                </View>
-              </View>
-            </SectionCard>
-          </Pressable>
-        );
-      })}
-    </ScreenContainer>
+            if (!step) {
+              return null;
+            }
+
+            const status = getStepStatus(area.id, checklist);
+
+            return (
+              <Pressable
+                key={area.id}
+                accessibilityRole="button"
+                accessibilityLabel={`${area.title}, ${statusLabels[status]}`}
+                onPress={() => router.push(step.route)}
+                style={[
+                  styles.cardHitArea,
+                  {
+                    left: area.x * cardsScale,
+                    top: area.y * cardsScale,
+                    width: area.width * cardsScale,
+                    height: area.height * cardsScale
+                  }
+                ]}
+              />
+            );
+          })}
+        </View>
+
+        <Image
+          source={startChecklistJourneyExact}
+          resizeMode="contain"
+          style={{ width: cardsImageWidth, height: journeyImageHeight }}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+function StartChecklistHeader() {
+  return (
+    <View style={styles.headerCard}>
+      <Image source={startChecklistHeaderPlaque} resizeMode="cover" style={styles.headerImage} />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Назад"
+        onPress={() => router.back()}
+        style={({ pressed }) => [styles.headerAction, pressed && styles.pressedAction]}
+      >
+        <Ionicons name="chevron-back" size={22} color={colors.textOnPrimary} />
+      </Pressable>
+    </View>
   );
 }
 
@@ -123,75 +170,63 @@ function getStepStatus(stepId: OnboardingStepId, checklist: OnboardingChecklistS
     return checklist.bravermanCompleted ? 'completed' : 'not started';
   }
 
-  if (stepId === 'lifestyle') {
-    return checklist.lifestyleCompleted ? 'completed' : 'not started';
-  }
-
-  if (stepId === 'nutrition') {
-    return checklist.nutritionCompleted ? 'completed' : 'not started';
-  }
-
-  if (checklist.aiProfileGenerated) {
-    return 'completed';
-  }
-
-  return isRequiredDataComplete(checklist) ? 'not started' : 'locked';
-}
-
-function isRequiredDataComplete(checklist: OnboardingChecklistState) {
-  return (
-    checklist.bloodAnalysisCompleted &&
-    checklist.bravermanCompleted &&
-    checklist.lifestyleCompleted &&
-    checklist.nutritionCompleted
-  );
+  return 'not started';
 }
 
 const styles = StyleSheet.create({
-  stepRow: {
-    flexDirection: 'row',
-    gap: 14,
-    alignItems: 'center'
+  screenRoot: {
+    flex: 1,
+    backgroundColor: colors.background
   },
-  number: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: colors.accent,
+  content: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'flex-start',
+    paddingHorizontal: 0,
+    paddingTop: 0
   },
-  numberLocked: {
-    backgroundColor: colors.surfaceMuted
+  headerCard: {
+    width: '100%',
+    height: headerHeight,
+    minHeight: headerHeight,
+    maxHeight: headerHeight,
+    backgroundColor: colors.background,
+    overflow: 'hidden',
+    shadowOpacity: 0,
+    elevation: 0
   },
-  numberText: {
-    color: colors.text,
-    fontWeight: '900'
+  headerImage: {
+    width: '100%',
+    height: '100%',
+    transform: [{ translateY: 5 }]
   },
-  stepText: {
-    flex: 1
+  headerAction: {
+    position: 'absolute',
+    left: '4.25%',
+    top: 11,
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    zIndex: 1
   },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    alignItems: 'center'
-  },
-  title: {
-    fontWeight: '800'
-  },
-  status: {
-    color: colors.accent,
-    fontWeight: '800',
-    textTransform: 'capitalize'
-  },
-  locked: {
-    opacity: 0.62
-  },
-  lockedText: {
-    color: colors.textSoft
-  },
-  pressed: {
+  pressedAction: {
     opacity: 0.78
+  },
+  cardsImageFrame: {
+    position: 'relative',
+    overflow: 'visible'
+  },
+  cardsImage: {
+    width: '100%',
+    height: '100%'
+  },
+  cardHitArea: {
+    position: 'absolute',
+    backgroundColor: 'transparent'
   }
 });

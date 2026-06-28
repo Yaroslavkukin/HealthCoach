@@ -1,9 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StateNotice } from '@/components/StateNotice';
+import { accessRoutes } from '@/features/access/accessModel';
 import { languageOptions, useI18n } from '@/i18n';
 import { colors } from '@/theme/colors';
 
@@ -17,6 +20,21 @@ export default function SettingsScreen() {
         <AppText variant="title">{t('settings.title')}</AppText>
         <AppText variant="body">{t('settings.subtitle')}</AppText>
       </ScreenHeader>
+
+      <SectionCard>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Войти в аккаунт"
+          onPress={() => router.push(accessRoutes.createAccount)}
+          style={({ pressed }) => [styles.accountActionRow, pressed && styles.accountActionRowPressed]}
+        >
+          <View style={styles.accountActionIcon}>
+            <Ionicons name="person-circle-outline" size={22} color={colors.primary} />
+          </View>
+          <AppText style={styles.accountActionText}>Войти в аккаунт</AppText>
+          <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+        </Pressable>
+      </SectionCard>
 
       <SectionCard>
         <AppText variant="subtitle">{t('settings.languageTitle')}</AppText>
@@ -43,6 +61,34 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+  accountActionRow: {
+    minHeight: 56,
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.borderSoft
+  },
+  accountActionRowPressed: {
+    opacity: 0.82
+  },
+  accountActionIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.accentSoft
+  },
+  accountActionText: {
+    flex: 1,
+    color: colors.text,
+    fontWeight: '800'
+  },
   languageRow: {
     flexDirection: 'row',
     gap: 8,

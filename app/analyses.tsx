@@ -692,12 +692,12 @@ function AnalysisHistoryCard({
         <>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={interpretationExpanded ? 'Скрыть ИИ-расшифровку' : 'Показать ИИ-расшифровку'}
+            accessibilityLabel={interpretationExpanded ? 'Скрыть AI-расшифровку' : 'Показать AI-расшифровку'}
             onPress={onToggleInterpretation}
             style={({ pressed }) => [styles.interpretationToggle, pressed && styles.pressed]}
           >
             <AppText style={styles.interpretationToggleText}>
-              {interpretationExpanded ? 'Скрыть ИИ-расшифровку' : 'Показать ИИ-расшифровку'}
+              {interpretationExpanded ? 'Скрыть AI-расшифровку' : 'Показать AI-расшифровку'}
             </AppText>
             <Ionicons
               name={interpretationExpanded ? 'chevron-up' : 'chevron-down'}

@@ -45,11 +45,6 @@ export default function NutritionScreen() {
         ))}
 
         <PrimaryButton
-          label={t('nutrition.askAi')}
-          onPress={() => router.push('/(tabs)/ai?context=nutrition')}
-          style={styles.goldOutline}
-        />
-        <PrimaryButton
           label={t('nutrition.weeklyRation')}
           variant="secondary"
           onPress={() => router.push('/weekly-ration')}

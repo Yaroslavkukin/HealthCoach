@@ -67,7 +67,16 @@ const inflammationSystemHeader = require('../../assets/images/inflammation-syste
 const digestiveSystemHeader = require('../../assets/images/digestive-system-header.png');
 const nutritionSystemHeader = require('../../assets/images/nutrition-system-header.png');
 const thyroidSystemHeader = require('../../assets/images/thyroid-system-header.png');
+const bodySystemInsightsCardExact = require('../../assets/images/body-system-insights-card-exact.png');
+const bodySystemMetabolicInsightsCardExact = require('../../assets/images/body-system-insights-card-metabolic-exact.png');
+const stressRecoveryInfoCard = require('../../assets/images/stress-recovery-info-card.png');
+const sleepCircadianInfoCard = require('../../assets/images/sleep-circadian-info-card.png');
+const thyroidSystemInfoCard = require('../../assets/images/thyroid-system-info-card.png');
+const nutritionalSystemInfoCard = require('../../assets/images/nutritional-system-info-card.png');
+const inflammationSystemInfoCard = require('../../assets/images/inflammation-system-info-card.png');
+const digestiveSystemInfoCard = require('../../assets/images/digestive-system-info-card.png');
 const SLEEP_HEADER_HEIGHT = 82;
+const BODY_SYSTEM_INSIGHTS_CARD_ASPECT_RATIO = 822 / 1794;
 
 export default function BodySystemDetailScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -378,26 +387,67 @@ function SystemDetailContent({ system }: { system?: DemoBodySystem }) {
       (item, index, items) => items.indexOf(item) === index
     );
     const supportActions = [...system.relatedSupplements, ...system.relatedActions.slice(0, 2)];
+    const isHormonalSystem = system.headerSystemId === 'hormones' || system.id === 'hormonal';
+    const isMetabolicSystem = system.headerSystemId === 'metabolism' || system.id === 'energy';
+    const isStressSystem = system.headerSystemId === 'stress' || system.id === 'stress_recovery';
+    const isSleepSystem = system.headerSystemId === 'sleep' || system.id === 'sleep';
+    const isThyroidSystem = system.headerSystemId === 'thyroid' || system.id === 'thyroid';
+    const isNutritionalSystem = system.headerSystemId === 'nutrition' || system.id === 'nutritional';
+    const isInflammationSystem = system.headerSystemId === 'inflammation' || system.id === 'inflammation';
+    const isDigestiveSystem = system.headerSystemId === 'digestion' || system.id === 'digestive';
 
     return (
       <>
-        <View style={styles.statusCard}>
-          <View style={styles.statusIcon}>
-            <AppText style={styles.statusScore}>{system.score}</AppText>
-          </View>
-          <View style={styles.statusText}>
-            <AppText style={styles.statusLabel}>{system.title}</AppText>
-            <AppText style={styles.statusMeta}>
-              {system.statusLabel} · {system.trendLabel} · {system.confidenceLabel}
-            </AppText>
-            <AppText style={styles.statusDescription}>{system.description}</AppText>
-          </View>
-        </View>
+        {isHormonalSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactSystemInsightsCard />
+          </>
+        ) : isStressSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactStressRecoveryInsightsCard />
+          </>
+        ) : isMetabolicSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactMetabolicSystemInsightsCard />
+          </>
+        ) : isSleepSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactSleepCircadianInsightsCard />
+          </>
+        ) : isThyroidSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactThyroidSystemInsightsCard />
+          </>
+        ) : isNutritionalSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactNutritionalSystemInsightsCard />
+          </>
+        ) : isInflammationSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactInflammationSystemInsightsCard />
+          </>
+        ) : isDigestiveSystem ? (
+          <>
+            <SystemStatusCard system={system} />
+            <ExactDigestiveSystemInsightsCard />
+          </>
+        ) : (
+          <>
+            <SystemStatusCard system={system} />
 
-        <DetailListBlock title="Связанные показатели" items={relatedIndicators} />
-        <DetailListBlock title="Что влияет на систему" items={influenceFactors} />
-        <DetailListBlock title="Рекомендации" items={recommendations} />
-        <DetailListBlock title="Добавки, питание и привычки" items={supportActions} />
+            <DetailListBlock title="Связанные показатели" items={relatedIndicators} />
+            <DetailListBlock title="Что влияет на систему" items={influenceFactors} />
+            <DetailListBlock title="Рекомендации" items={recommendations} />
+            <DetailListBlock title="Добавки, питание и привычки" items={supportActions} />
+          </>
+        )}
 
         <View style={styles.safetyCard}>
           <Ionicons name="information-circle-outline" size={20} color={colors.accent} />
@@ -423,6 +473,135 @@ function SystemDetailContent({ system }: { system?: DemoBodySystem }) {
       <PlaceholderBlock title="Что влияет на систему" />
       <PlaceholderBlock title="Рекомендации" />
     </>
+  );
+}
+
+function SystemStatusCard({ system }: { system: DemoBodySystem }) {
+  return (
+    <View style={styles.statusCard}>
+      <View style={styles.statusIcon}>
+        <AppText style={styles.statusScore}>{system.score}</AppText>
+      </View>
+      <View style={styles.statusText}>
+        <AppText style={styles.statusLabel}>{system.title}</AppText>
+        <AppText style={styles.statusMeta}>
+          {system.statusLabel} · {system.trendLabel} · {system.confidenceLabel}
+        </AppText>
+        <AppText style={styles.statusDescription}>{system.description}</AppText>
+      </View>
+    </View>
+  );
+}
+
+function ExactSystemInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки."
+        resizeMode="contain"
+        source={bodySystemInsightsCardExact}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactMetabolicSystemInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для метаболической системы."
+        resizeMode="contain"
+        source={bodySystemMetabolicInsightsCardExact}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactStressRecoveryInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для системы стресса и восстановления."
+        resizeMode="contain"
+        source={stressRecoveryInfoCard}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactSleepCircadianInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для сна и циркадных ритмов."
+        resizeMode="contain"
+        source={sleepCircadianInfoCard}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactThyroidSystemInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для щитовидной системы."
+        resizeMode="contain"
+        source={thyroidSystemInfoCard}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactNutritionalSystemInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для питательной системы."
+        resizeMode="contain"
+        source={nutritionalSystemInfoCard}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactInflammationSystemInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для воспаления."
+        resizeMode="contain"
+        source={inflammationSystemInfoCard}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
+  );
+}
+
+function ExactDigestiveSystemInsightsCard() {
+  return (
+    <View style={styles.exactInsightsCardFrame}>
+      <Image
+        accessible
+        accessibilityLabel="Связанные показатели, что влияет на систему, рекомендации, добавки, питание и привычки для пищеварения."
+        resizeMode="contain"
+        source={digestiveSystemInfoCard}
+        style={styles.exactInsightsCardImage}
+      />
+    </View>
   );
 }
 
@@ -723,19 +902,19 @@ const styles = StyleSheet.create({
   block: {
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.surface,
+    borderColor: colors.accent,
+    backgroundColor: colors.primary,
     padding: 18,
     marginBottom: 14
   },
   blockTitle: {
-    color: colors.primary,
+    color: colors.textOnPrimary,
     fontSize: 18,
     lineHeight: 23,
     fontWeight: '800'
   },
   blockCopy: {
-    color: colors.textMuted,
+    color: colors.textOnPrimaryMuted,
     fontSize: 14,
     lineHeight: 20,
     marginTop: 8
@@ -756,13 +935,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
     marginTop: 7
   },
+  exactInsightsCardFrame: {
+    width: '100%',
+    alignSelf: 'center',
+    aspectRatio: BODY_SYSTEM_INSIGHTS_CARD_ASPECT_RATIO,
+    marginBottom: 14
+  },
+  exactInsightsCardImage: {
+    width: '100%',
+    height: '100%'
+  },
   safetyCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 10,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.accent,
     backgroundColor: colors.background,
     padding: 14,
     marginBottom: 14

@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
+import { accessRoutes } from '@/features/access/accessModel';
 import { useI18n } from '@/i18n';
 import { signOutCurrentUser } from '@/services/authService';
 import { colors } from '@/theme/colors';
@@ -44,8 +45,10 @@ export default function ProfileScreen() {
           <ProfileQuickActions />
           <SettingsSection
             expanded={isSettingsExpanded}
+            onDelivery={() => router.push('/onboarding/delivery')}
             onEditProfile={() => router.push('/onboarding/profile')}
-            onSafety={() => undefined}
+            onSafety={() => router.push('/security')}
+            onSignIn={() => router.push(accessRoutes.createAccount)}
             onSignOut={() => void signOut()}
             onToggle={() => setIsSettingsExpanded((current) => !current)}
             signOutMessage={signOutMessage}
@@ -115,11 +118,6 @@ function ProfileQuickActions() {
   return (
     <View style={styles.profileQuickActions}>
       <ProfileQuickActionButton
-        icon="cube-outline"
-        label="Доставка"
-        onPress={() => router.push('/onboarding/delivery')}
-      />
-      <ProfileQuickActionButton
         icon="medkit-outline"
         label="Клиника"
         onPress={() => router.push('/clinic')}
@@ -160,16 +158,20 @@ function ProfileQuickActionButton({
 
 function SettingsSection({
   expanded,
+  onDelivery,
   onEditProfile,
   onSafety,
+  onSignIn,
   onSignOut,
   onToggle,
   signOutMessage,
   signingOut
 }: {
   expanded: boolean;
+  onDelivery: () => void;
   onEditProfile: () => void;
   onSafety: () => void;
+  onSignIn: () => void;
   onSignOut: () => void;
   onToggle: () => void;
   signOutMessage: string | null;
@@ -192,8 +194,10 @@ function SettingsSection({
       {expanded ? (
         <View style={styles.settingsPanel}>
           {signOutMessage ? <AppText style={styles.signOutError}>{signOutMessage}</AppText> : null}
-          <SettingsActionRow icon="shield-checkmark-outline" label="Безопасность" onPress={onSafety} />
+          <SettingsActionRow icon="person-circle-outline" label="Войти в аккаунт" onPress={onSignIn} />
           <SettingsActionRow icon="create-outline" label="Редактировать профиль" onPress={onEditProfile} />
+          <SettingsActionRow icon="cube-outline" label="Доставка" onPress={onDelivery} />
+          <SettingsActionRow icon="shield-checkmark-outline" label="Документы" onPress={onSafety} />
           <SettingsActionRow
             icon="log-out-outline"
             label={signingOut ? 'Выходим...' : 'Выйти'}
@@ -266,9 +270,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: colors.primary,
+    fontFamily: 'CormorantGaramond_700Bold',
     fontSize: 30,
     lineHeight: 36,
-    fontWeight: '900'
+    textShadowColor: colors.primary,
+    textShadowOffset: { width: 0.35, height: 0 },
+    textShadowRadius: 0.2
   },
   headerSubtitle: {
     color: referenceMutedText,

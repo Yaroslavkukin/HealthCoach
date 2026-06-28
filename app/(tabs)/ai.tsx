@@ -44,7 +44,7 @@ type ComposerIconName = keyof typeof Ionicons.glyphMap;
 
 const aiAssistantHeader = require('../../assets/images/ai-assistant-header.png');
 const AI_HEADER_PLAQUE_SURFACE = '#FEF8F1';
-const aiHeaderTitle = 'AI-ассистент';
+const aiHeaderTitleAccessibilityLabel = 'AI-ассистент';
 const aiHeaderSubtitle = 'Помогает понять показатели, найти причины усталости и выбрать следующий шаг.';
 const voiceInputHint = 'Голосовой ввод скоро будет доступен';
 const attachmentOnlyResponse = 'Вложения добавлены в чат. Сейчас они остаются локально; отправка файлов в AI будет подключена после backend-хранилища.';
@@ -382,14 +382,16 @@ function AIPlaque() {
       <View pointerEvents="none" style={styles.aiPlaqueLeftStripMask} />
       <View pointerEvents="none" style={styles.aiPlaqueRightStripMask} />
       <View pointerEvents="none" style={styles.aiPlaqueTextBlock}>
-        <AppText
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.84}
-          style={styles.aiPlaqueTitle}
+        <View
+          accessible
+          accessibilityRole="header"
+          accessibilityLabel={aiHeaderTitleAccessibilityLabel}
+          style={styles.aiPlaqueTitleRow}
         >
-          {aiHeaderTitle}
-        </AppText>
+          <AppText numberOfLines={1} style={styles.aiPlaqueTitle}>AI</AppText>
+          <View style={styles.aiPlaqueTitleDash} />
+          <AppText numberOfLines={1} style={styles.aiPlaqueTitle}>ассистент</AppText>
+        </View>
         <AppText style={styles.aiPlaqueSubtitle}>
           {aiHeaderSubtitle}
         </AppText>
@@ -641,11 +643,27 @@ const styles = StyleSheet.create({
     width: '60%',
     maxWidth: 330
   },
+  aiPlaqueTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start'
+  },
   aiPlaqueTitle: {
     color: colors.primary,
+    fontFamily: 'CormorantGaramond_700Bold',
     fontSize: 30,
     lineHeight: 36,
-    fontWeight: '900'
+    textShadowColor: colors.primary,
+    textShadowOffset: { width: 0.35, height: 0 },
+    textShadowRadius: 0.2
+  },
+  aiPlaqueTitleDash: {
+    width: 14,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: colors.primary,
+    marginHorizontal: 4,
+    transform: [{ translateY: 2 }]
   },
   aiPlaqueSubtitle: {
     color: colors.textMuted,

@@ -227,9 +227,12 @@ const styles = StyleSheet.create({
   },
   bodyPlaqueTitle: {
     color: colors.primary,
+    fontFamily: 'CormorantGaramond_700Bold',
     fontSize: 30,
     lineHeight: 32,
-    fontWeight: '900'
+    textShadowColor: colors.primary,
+    textShadowOffset: { width: 0.35, height: 0 },
+    textShadowRadius: 0.2
   },
   bodyPlaqueSubtitle: {
     color: colors.textMuted,
@@ -394,18 +397,18 @@ const styles = StyleSheet.create({
   summarySection: {
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.background,
+    borderColor: colors.accent,
+    backgroundColor: colors.primary,
     padding: 14
   },
   summarySectionTitle: {
-    color: colors.primary,
+    color: colors.textOnPrimary,
     fontSize: 15,
     lineHeight: 20,
     fontWeight: '800'
   },
   summarySectionText: {
-    color: colors.textMuted,
+    color: colors.textOnPrimaryMuted,
     fontSize: 14,
     lineHeight: 20,
     flex: 1
@@ -426,19 +429,19 @@ const styles = StyleSheet.create({
   sourceBlock: {
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.background,
+    borderColor: colors.accent,
+    backgroundColor: colors.primary,
     padding: 14,
     marginTop: 14
   },
   sourceTitle: {
-    color: colors.primary,
+    color: colors.textOnPrimary,
     fontSize: 14,
     lineHeight: 18,
     fontWeight: '900'
   },
   sourceText: {
-    color: colors.textMuted,
+    color: colors.textOnPrimaryMuted,
     fontSize: 12,
     lineHeight: 17,
     marginTop: 5

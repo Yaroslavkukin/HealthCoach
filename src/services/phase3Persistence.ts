@@ -28,18 +28,44 @@ export type ProfileDraft = {
   email?: string;
   firstName?: string;
   lastName?: string;
+  birthDate?: string;
   age?: number;
   gender?: 'male' | 'female' | 'other' | 'not_specified';
+  sexAtBirth?: 'male' | 'female';
   heightCm?: number;
   weightKg?: number;
+  targetWeightKg?: number;
+  waistCm?: number;
   country?: string;
   city?: string;
+  timezone?: string;
   mainGoal?: string;
+  priorityFocus?: string;
   workType?: string;
   activityLevel?: string;
   sleepSchedule?: string;
+  wakeTime?: string;
+  bedtime?: string;
+  sleepDurationHours?: number;
   stressLevel?: string;
   symptoms?: string;
+  dietType?: string;
+  mealCount?: number;
+  foodAllergies?: string;
+  foodIntolerances?: string;
+  caffeineServings?: number;
+  alcoholUse?: string;
+  chronicConditions?: string;
+  medications?: string;
+  medicationAllergies?: string;
+  contraindications?: string;
+  pregnancy?: boolean;
+  breastfeeding?: boolean;
+  currentSupplements?: string;
+  supplementReactions?: string;
+  measurementUnits?: 'metric' | 'imperial';
+  remindersEnabled?: boolean;
+  profileRecommendationsConsent?: boolean;
 };
 
 export type DeliveryDraft = {
@@ -102,6 +128,13 @@ type OnboardingChecklistRow = {
   ai_profile_generated: boolean | null;
 };
 
+type ProfileLifestyleRow = {
+  free_text: string | null;
+  activity_level: string | null;
+  stress_level: number | null;
+  work_type: string | null;
+};
+
 const mockUserId = '00000000-0000-4000-8000-000000000003';
 const mockEmail = 'demo@healthcoach.local';
 const emptyOnboardingChecklist: OnboardingChecklistState = {
@@ -112,6 +145,7 @@ const emptyOnboardingChecklist: OnboardingChecklistState = {
   aiProfileGenerated: false
 };
 let mockOnboardingChecklist: OnboardingChecklistState = { ...emptyOnboardingChecklist };
+let mockProfileDraft: (ProfileDraft & { id: string }) | null = null;
 
 export async function getAuthPlaceholderContext(): Promise<AuthPlaceholderContext> {
   if (!isSupabaseConfigured || !supabase) {
@@ -155,11 +189,16 @@ export async function registerPlaceholderAccount(email?: string): Promise<Persis
   };
 }
 
-export async function fetchProfile(): Promise<PersistenceResult<Record<string, unknown> | null>> {
+export async function fetchProfile(): Promise<PersistenceResult<(ProfileDraft & Record<string, unknown>) | null>> {
   const context = await getAuthPlaceholderContext();
 
   if (context.mode === 'mock' || !supabase) {
-    return { ok: true, mode: 'mock', message: 'Profile read skipped; using mock profile data.', data: null };
+    return {
+      ok: true,
+      mode: 'mock',
+      message: 'Profile read skipped; using mock profile data.',
+      data: mockProfileDraft ? { ...mockProfileDraft } : null
+    };
   }
 
   const { data, error } = await supabase.from('profiles').select('*').eq('id', context.userId).maybeSingle();
@@ -176,14 +215,24 @@ export async function fetchProfile(): Promise<PersistenceResult<Record<string, u
     .eq('status', 'active')
     .maybeSingle<{ title: string | null }>();
 
-  return { ok: true, mode: 'supabase', message: 'Profile loaded from Supabase.', data: data ? { ...data, main_goal: goal?.title ?? null } : null };
+  const relatedDraft = await fetchProfileRelatedDraft(context.userId);
+  const mainGoal = goal?.title ?? relatedDraft.mainGoal;
+
+  return {
+    ok: true,
+    mode: 'supabase',
+    message: 'Profile loaded from Supabase.',
+    data: data ? { ...relatedDraft, ...data, mainGoal, main_goal: mainGoal ?? null } : null
+  };
 }
 
 export async function upsertProfileDraft(profile: ProfileDraft): Promise<PersistenceResult<Record<string, unknown>>> {
   const context = await getAuthPlaceholderContext();
 
   if (context.mode === 'mock' || !supabase) {
-    return { ok: true, mode: 'mock', message: 'Profile saved to mock fallback.', data: { ...profile, id: context.userId } };
+    mockProfileDraft = { ...profile, id: context.userId };
+
+    return { ok: true, mode: 'mock', message: 'Profile saved to mock fallback.', data: { ...mockProfileDraft } };
   }
 
   const { data, error } = await supabase
@@ -193,7 +242,7 @@ export async function upsertProfileDraft(profile: ProfileDraft): Promise<Persist
       email: profile.email ?? context.email,
       first_name: profile.firstName,
       last_name: profile.lastName,
-      age: profile.age,
+      age: profile.age ?? calculateAge(profile.birthDate),
       gender: profile.gender ?? 'not_specified',
       height_cm: profile.heightCm,
       weight_kg: profile.weightKg,
@@ -569,12 +618,38 @@ async function saveProfileRelatedDrafts(userId: string, profile: ProfileDraft): 
         work_type: textOrNull(profile.workType),
         symptoms: profile.symptoms ? splitList(profile.symptoms) : null,
         free_text: buildFreeText([
+          ['Birth date', profile.birthDate],
+          ['Sex at birth', profile.sexAtBirth],
+          ['Timezone', profile.timezone],
+          ['Target weight kg', formatNumber(profile.targetWeightKg)],
+          ['Waist cm', formatNumber(profile.waistCm)],
           ['Main goal', profile.mainGoal],
+          ['Priority focus', profile.priorityFocus],
           ['Work type', profile.workType],
           ['Activity level', profile.activityLevel],
           ['Sleep schedule', profile.sleepSchedule],
+          ['Wake time', profile.wakeTime],
+          ['Bedtime', profile.bedtime],
+          ['Sleep duration hours', formatNumber(profile.sleepDurationHours)],
           ['Stress level', profile.stressLevel],
-          ['Symptoms', profile.symptoms]
+          ['Symptoms', profile.symptoms],
+          ['Diet type', profile.dietType],
+          ['Meals per day', formatNumber(profile.mealCount)],
+          ['Food allergies', profile.foodAllergies],
+          ['Food intolerances', profile.foodIntolerances],
+          ['Caffeine servings', formatNumber(profile.caffeineServings)],
+          ['Alcohol use', profile.alcoholUse],
+          ['Chronic conditions', profile.chronicConditions],
+          ['Medications', profile.medications],
+          ['Medication allergies', profile.medicationAllergies],
+          ['Contraindications', profile.contraindications],
+          ['Pregnancy', formatBoolean(profile.pregnancy)],
+          ['Breastfeeding', formatBoolean(profile.breastfeeding)],
+          ['Current supplements', profile.currentSupplements],
+          ['Supplement reactions', profile.supplementReactions],
+          ['Measurement units', profile.measurementUnits],
+          ['Reminders enabled', formatBoolean(profile.remindersEnabled)],
+          ['Profile recommendations consent', formatBoolean(profile.profileRecommendationsConsent)]
         ])
       });
 
@@ -584,6 +659,109 @@ async function saveProfileRelatedDrafts(userId: string, profile: ProfileDraft): 
   }
 
   return null;
+}
+
+async function fetchProfileRelatedDraft(userId: string): Promise<ProfileDraft> {
+  if (!supabase) {
+    return {};
+  }
+
+  const { data, error } = await supabase
+    .from('lifestyle_assessments')
+    .select('free_text,activity_level,stress_level,work_type')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle<ProfileLifestyleRow>();
+
+  if (error || !data) {
+    return {};
+  }
+
+  const parsedDraft = parseProfileFreeText(data.free_text);
+
+  return {
+    ...parsedDraft,
+    activityLevel: parsedDraft.activityLevel ?? textOrNull(data.activity_level ?? undefined) ?? undefined,
+    workType: parsedDraft.workType ?? textOrNull(data.work_type ?? undefined) ?? undefined,
+    stressLevel: parsedDraft.stressLevel ?? formatNumber(data.stress_level ?? undefined)
+  };
+}
+
+function parseProfileFreeText(value?: string | null): ProfileDraft {
+  const text = textOrNull(value ?? undefined);
+
+  if (!text) {
+    return {};
+  }
+
+  const fields = text
+    .split('\n')
+    .map((line) => line.split(/:(.*)/s).map((part) => part.trim()))
+    .filter((parts): parts is [string, string] => Boolean(parts[0] && parts[1]))
+    .reduce<Record<string, string>>((result, [label, fieldValue]) => {
+      result[label] = fieldValue;
+      return result;
+    }, {});
+
+  return {
+    birthDate: fields['Birth date'],
+    sexAtBirth: parseSexAtBirth(fields['Sex at birth']),
+    timezone: fields.Timezone,
+    targetWeightKg: parseStoredNumber(fields['Target weight kg']),
+    waistCm: parseStoredNumber(fields['Waist cm']),
+    mainGoal: fields['Main goal'],
+    priorityFocus: fields['Priority focus'],
+    workType: fields['Work type'],
+    activityLevel: fields['Activity level'],
+    sleepSchedule: fields['Sleep schedule'],
+    wakeTime: fields['Wake time'],
+    bedtime: fields.Bedtime,
+    sleepDurationHours: parseStoredNumber(fields['Sleep duration hours']),
+    stressLevel: fields['Stress level'],
+    dietType: fields['Diet type'],
+    mealCount: parseStoredNumber(fields['Meals per day']),
+    foodAllergies: fields['Food allergies'],
+    foodIntolerances: fields['Food intolerances'],
+    caffeineServings: parseStoredNumber(fields['Caffeine servings']),
+    alcoholUse: fields['Alcohol use'],
+    chronicConditions: fields['Chronic conditions'],
+    medications: fields.Medications,
+    medicationAllergies: fields['Medication allergies'],
+    contraindications: fields.Contraindications,
+    pregnancy: parseStoredBoolean(fields.Pregnancy),
+    breastfeeding: parseStoredBoolean(fields.Breastfeeding),
+    currentSupplements: fields['Current supplements'],
+    supplementReactions: fields['Supplement reactions'],
+    measurementUnits: parseMeasurementUnits(fields['Measurement units']),
+    remindersEnabled: parseStoredBoolean(fields['Reminders enabled']),
+    profileRecommendationsConsent: parseStoredBoolean(fields['Profile recommendations consent'])
+  };
+}
+
+function parseStoredNumber(value?: string) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : undefined;
+}
+
+function parseStoredBoolean(value?: string) {
+  if (value === 'yes') {
+    return true;
+  }
+
+  if (value === 'no') {
+    return false;
+  }
+
+  return undefined;
+}
+
+function parseSexAtBirth(value?: string): ProfileDraft['sexAtBirth'] {
+  return value === 'male' || value === 'female' ? value : undefined;
+}
+
+function parseMeasurementUnits(value?: string): ProfileDraft['measurementUnits'] {
+  return value === 'metric' || value === 'imperial' ? value : undefined;
 }
 
 async function upsertMainGoal(userId: string, mainGoal?: string): Promise<string | null> {
@@ -631,8 +809,33 @@ function hasProfileLifestyleAnswers(profile: ProfileDraft) {
     textOrNull(profile.workType) ||
       textOrNull(profile.activityLevel) ||
       textOrNull(profile.sleepSchedule) ||
+      textOrNull(profile.wakeTime) ||
+      textOrNull(profile.bedtime) ||
+      typeof profile.sleepDurationHours === 'number' ||
       textOrNull(profile.stressLevel) ||
-      textOrNull(profile.symptoms)
+      textOrNull(profile.symptoms) ||
+      textOrNull(profile.priorityFocus) ||
+      textOrNull(profile.dietType) ||
+      typeof profile.mealCount === 'number' ||
+      textOrNull(profile.foodAllergies) ||
+      textOrNull(profile.foodIntolerances) ||
+      typeof profile.caffeineServings === 'number' ||
+      textOrNull(profile.alcoholUse) ||
+      textOrNull(profile.chronicConditions) ||
+      textOrNull(profile.medications) ||
+      textOrNull(profile.medicationAllergies) ||
+      textOrNull(profile.contraindications) ||
+      typeof profile.pregnancy === 'boolean' ||
+      typeof profile.breastfeeding === 'boolean' ||
+      textOrNull(profile.currentSupplements) ||
+      textOrNull(profile.supplementReactions) ||
+      textOrNull(profile.measurementUnits) ||
+      typeof profile.remindersEnabled === 'boolean' ||
+      typeof profile.profileRecommendationsConsent === 'boolean' ||
+      textOrNull(profile.birthDate) ||
+      typeof profile.targetWeightKg === 'number' ||
+      typeof profile.waistCm === 'number' ||
+      textOrNull(profile.timezone)
   );
 }
 
@@ -648,9 +851,61 @@ function buildFreeText(items: [string, string | undefined][]) {
   return text || null;
 }
 
+function formatNumber(value?: number) {
+  return typeof value === 'number' && Number.isFinite(value) ? String(value) : undefined;
+}
+
+function formatBoolean(value?: boolean) {
+  return typeof value === 'boolean' ? (value ? 'yes' : 'no') : undefined;
+}
+
 function textOrNull(value?: string) {
   const text = value?.trim();
   return text ? text : null;
+}
+
+function calculateAge(birthDate?: string) {
+  const normalizedDate = parseProfileBirthDate(birthDate);
+
+  if (!normalizedDate) {
+    return undefined;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - normalizedDate.getFullYear();
+  const monthDiff = today.getMonth() - normalizedDate.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < normalizedDate.getDate())) {
+    age -= 1;
+  }
+
+  return age >= 0 ? age : undefined;
+}
+
+function parseProfileBirthDate(value?: string) {
+  const text = textOrNull(value);
+
+  if (!text) {
+    return null;
+  }
+
+  const isoMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const ruMatch = text.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  const year = isoMatch ? Number(isoMatch[1]) : ruMatch ? Number(ruMatch[3]) : NaN;
+  const month = isoMatch ? Number(isoMatch[2]) : ruMatch ? Number(ruMatch[2]) : NaN;
+  const day = isoMatch ? Number(isoMatch[3]) : ruMatch ? Number(ruMatch[1]) : NaN;
+
+  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+    return null;
+  }
+
+  const date = new Date(year, month - 1, day);
+
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+
+  return date;
 }
 
 function splitList(value: string) {
