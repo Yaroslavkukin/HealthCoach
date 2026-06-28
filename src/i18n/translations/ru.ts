@@ -112,6 +112,8 @@ export const ru: Record<TranslationKey, string> = {
   'account.noActiveSession': 'Активная сессия не получена. Войдите еще раз перед переходом к профилю.',
   'account.missingCredentials': 'Введите email и пароль, чтобы продолжить.',
   'account.authError': 'Не удалось выполнить вход. Проверьте email и пароль, затем попробуйте снова.',
+  'account.subscriptionAccessMissing': 'Доступ не найден. Проверьте, что вошли с email, на который оформлен Health Coach.',
+  'account.subscriptionCheckFailed': 'Не удалось проверить доступ. Проверьте интернет и попробуйте ещё раз.',
   'account.futureOptions': 'Будущие варианты входа',
   'account.futureOptionsBody': 'Вход через Apple и Google запланирован для будущей версии.',
 

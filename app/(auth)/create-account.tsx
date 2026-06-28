@@ -8,6 +8,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { accessRoutes } from '@/features/access/accessModel';
 import { useI18n } from '@/i18n';
 import { getCurrentAuthSession, signInWithEmailPassword } from '@/services/authService';
+import { getSubscriptionStatus, isSubscriptionStatusCheckFailure } from '@/services/subscription';
 import { colors } from '@/theme/colors';
 
 const loginHeaderIllustration = require('../../assets/images/login-header-illustration.png');
@@ -31,20 +32,39 @@ export default function CreateAccountScreen() {
     setAuthMessage(null);
 
     const result = await signInWithEmailPassword(cleanEmail, password);
-    setIsSigningIn(false);
 
     if (!result.ok) {
+      setIsSigningIn(false);
       setAuthMessage(t('account.authError'));
       return;
     }
+
+    let session = result.session;
 
     if (result.mode === 'supabase') {
       const sessionResult = await getCurrentAuthSession();
 
       if (!sessionResult.session) {
+        setIsSigningIn(false);
         setAuthMessage(t('account.noActiveSession'));
         return;
       }
+
+      session = sessionResult.session;
+    }
+
+    const subscriptionStatus = await getSubscriptionStatus(session);
+    setIsSigningIn(false);
+
+    if (!subscriptionStatus.active) {
+      setAuthMessage(
+        t(
+          isSubscriptionStatusCheckFailure(subscriptionStatus)
+            ? 'account.subscriptionCheckFailed'
+            : 'account.subscriptionAccessMissing'
+        )
+      );
+      return;
     }
 
     router.push(accessRoutes.profile);

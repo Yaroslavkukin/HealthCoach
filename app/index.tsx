@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { getCurrentAuthSession } from '@/services/authService';
+import { getSubscriptionStatus } from '@/services/subscription';
 import { colors } from '@/theme/colors';
 
 export default function SplashScreen() {
@@ -16,7 +17,18 @@ export default function SplashScreen() {
           return;
         }
 
-        router.replace(result.mode === 'supabase' && result.session ? '/(tabs)/today' : '/preview');
+        if (result.mode !== 'supabase' || !result.session) {
+          router.replace('/preview');
+          return;
+        }
+
+        const subscriptionStatus = await getSubscriptionStatus(result.session);
+
+        if (!active) {
+          return;
+        }
+
+        router.replace(subscriptionStatus.active ? '/(tabs)/today' : '/preview');
       }
 
       void routeFromSession();

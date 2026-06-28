@@ -110,6 +110,8 @@ export const en = {
   'account.noActiveSession': 'No active session was returned. Sign in again before continuing to your profile.',
   'account.missingCredentials': 'Enter an email and password to continue.',
   'account.authError': 'Authentication failed. Check the email and password, then try again.',
+  'account.subscriptionAccessMissing': 'Access was not found. Check that you used the email connected to Health Coach.',
+  'account.subscriptionCheckFailed': 'Unable to check access. Check your internet connection and try again.',
   'account.futureOptions': 'Future Login Options',
   'account.futureOptionsBody': 'Apple Login and Google Login are planned options for a future release.',
 
